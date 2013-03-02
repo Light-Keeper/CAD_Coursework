@@ -55,7 +55,7 @@ struct cad_chip
 #define CO_RIGHT	3
 #define CO_DEFAULT	CO_RIGHT
 
-#define VALUE_UNDEFINED (0xFFFFFFFF)
+#define UNDEFINED_VALUE (0xFFFFFFFF)
 
 
 // defines 1 wire, connecting many pins
@@ -112,8 +112,9 @@ struct	cad_scheme
 										
 };
 
-#define MORE_ACTIONS	0x00000001
-#define LAST_ACTION		0x00000001
+#define MORE_ACTIONS		0x00000001
+#define LAST_ACTION_OK		0x00000002
+#define LAST_ACTION_ERROR	0x00000003
 
 
 // all data for TRACEROUTE module
@@ -263,7 +264,8 @@ struct cad_kernel
 
 cad_kernel * cad_kernel_New(uint32_t argv, char *argc[]);
 
-#define KERNEL_STATE_EMPTY		0x00000000
-#define KERNEL_STATE_LOADED		0x00000000
-#define KERNEL_STATE_PLACING	0x00000000
-#define KERNEL_STATE_TRACING	0x00000000
+#define KERNEL_STATE_EMPTY			0x00000000
+#define KERNEL_STATE_NEED_PLACE		0x00000001
+#define KERNEL_STATE_NEED_TRACE		0x00000002
+#define KERNEL_STATE_PLACING		0x00000003
+#define KERNEL_STATE_TRACING		0x00000004
