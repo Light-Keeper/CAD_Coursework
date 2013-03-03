@@ -29,7 +29,8 @@ struct cad_module_info
 // each module must be declared with following macroses
 
 #define cad_module_begin() \
-		uint32_t startup_module_function(cad_module_info * mf ) { \
+		extern "C" __declspec( dllexport ) void startup_module_function(cad_module_info * mf ); \
+						 void startup_module_function(cad_module_info * mf ) { \
 				mf->module_name = NULL; \
 				mf->module_priority =  mf->module_capability = 0;
 
@@ -40,8 +41,8 @@ struct cad_module_info
 #define set_module_name( name ) mf->module_name = (name);
 #define set_module_priority( prior ) mf->module_priority = (prior);
 
-#define set_module_callbacks(open, close) mf->Open = (uint32_t (*)(cad_kernel *, void *)) open; \
-											mf->Close = (uint32_t (*)(cad_kernel *, void *)) close;
+#define set_module_callbacks(open, close) mf->Open = (void* (*)(cad_kernel *, void *)) open; \
+											mf->Close = (void* (*)(cad_kernel *, void *)) close;
 
 // module capabilities
 #define CAP_PLACEMENT		0x00000001

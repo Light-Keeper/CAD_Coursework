@@ -35,7 +35,7 @@ void kernel_Exec(cad_kernel *self)
 	self->sys->module_cout = 0;
 	self->sys->modules = NULL;
 
-	for (; FindNextFileA( hFind, &find) ; )
+	do 
 	{
 		char name[1024];
 		sprintf_s(name, ".\\plugins\\%s", find.cFileName);
@@ -56,7 +56,7 @@ void kernel_Exec(cad_kernel *self)
 			self->PrintDebug("loading %s error: cad_module_begin declaration not found\n", name );
 		}
 
-	}
+	} while ( FindNextFileA( hFind, &find) ) ;
 
 	FindClose( hFind );
 
@@ -76,6 +76,12 @@ void kernel_Exec(cad_kernel *self)
 	else 
 	{
 		cad_GUI *gui_module = (cad_GUI *)gui->Open(self, NULL);
+		if ( !gui_module ) 
+		{
+			self->PrintDebug( "can not initialize GUI module \"%s\"\n", gui->module_name);
+			gui->Close(self, gui_module);
+			return ;
+		}
 		gui_module->SetCMDArgs(GetCommandLineA());
 		gui_module->Exec( gui_module );
 	}
