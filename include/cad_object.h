@@ -41,9 +41,13 @@ struct cad_chip
 };
 
 // pakage type
-#define PT_DIP8		 8
-#define PT_DIP12	12
-#define PT_DIP16	16
+#define PT_DIP		0x01000000
+#define PT_DIP8		(PT_DIP | 8)
+#define PT_DIP12	(PT_DIP | 12)
+#define PT_DIP16	(PT_DIP | 16)
+
+#define PT_SLOT		0x02000000
+
 
 // chip orientation
 #define CO_UP		0
@@ -74,7 +78,6 @@ struct cad_connections
 	uint32_t number_of_wires;
 	cad_wire *wire;
 };
-
 
 // describe whole sheme for PLACEMENT modules
 // PLACEMENT module must initialize methods in this structure
@@ -237,7 +240,7 @@ struct cad_access_module
 	cad_access_module_private *sys;
 
 	cad_scheme * ( *ReadSchme)( cad_access_module *self );
-	cad_route_map * ( *ReadrRouteMap)( cad_access_module *self );
+	cad_route_map * ( *ReadRouteMap)( cad_access_module *self );
 };
 
 

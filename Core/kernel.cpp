@@ -49,7 +49,7 @@ void kernel_Exec(cad_kernel *self)
 		{
 			init( &info );
 			self->sys->modules = (cad_module_info *)realloc(self->sys->modules, 
-				sizeof(cad_module_info) * self->sys->module_cout + 1);
+				sizeof(cad_module_info) * (self->sys->module_cout + 1));
 			self->sys->modules[self->sys->module_cout++] = info;
 		}
 		else 
@@ -86,6 +86,8 @@ void kernel_Exec(cad_kernel *self)
 		self->sys->gui = gui_module;
 		gui_module->SetCMDArgs(gui_module, GetCommandLineA());
 		gui_module->Exec( gui_module );
+
+		gui->Close(self, gui_module);
 	}
 }
 
@@ -99,14 +101,14 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 
 		cad_access_module *reader = (cad_access_module *)sys->modules[ i ].Open(self, (void *)path);
 		if (reader == NULL) continue;
-			
+		
 		cad_scheme *scheme = reader->ReadSchme( reader );
-		cad_route_map *map = reader->ReadrRouteMap( reader );
-		if (scheme == NULL )
-		{
-			self->PrintDebug( "invalid input file %s\n", path);
-			continue;
-		} 
+		cad_route_map *map = reader->ReadRouteMap( reader );
+	
+		sys->modules[ i ].Close(self, (void *)reader);
+
+		if (scheme == NULL ) continue;
+	
 		if ( map )
 		{
 			map->sheme = scheme;
@@ -118,7 +120,8 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 		self->sys->current_route = map;
 		return true;
 	}
-
+	
+	self->PrintDebug( "invalid input file %s\n", path);	
 	return false;
 }
 

@@ -3,7 +3,7 @@
 #include <cstdio>
 
 cad_GUI * Open(cad_kernel *, void *);
-void *Close(cad_kernel*, void *);
+void *Close(cad_kernel*, cad_GUI *self);
 
 cad_module_begin()
 	set_module_name( "simple UI console module" )
@@ -36,8 +36,11 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	return gui;
 }
 
-void *Close(cad_kernel*, void *)
+void *Close(cad_kernel*, cad_GUI *self)
 {
+	free( self->sys );
+	free( self );
+
 	return NULL;
 }
 
