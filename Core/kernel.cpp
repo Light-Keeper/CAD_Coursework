@@ -116,6 +116,20 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 		} else 
 			self->sys->current_state = KERNEL_STATE_PLACE;
 
+		if (self->sys->current_sheme != NULL)
+		{
+			if ( self->sys->current_sheme->AboutToDestroy )
+				self->sys->current_sheme->AboutToDestroy( self->sys->current_sheme );
+			self->sys->current_sheme->Delete( self->sys->current_sheme );
+		}
+
+		if (self->sys->current_route != NULL)
+		{
+			if ( self->sys->current_route->AboutToDestroy )
+				self->sys->current_route->AboutToDestroy( self->sys->current_route );
+			self->sys->current_route->Delete( self->sys->current_route );
+		}
+
 		self->sys->current_sheme = scheme;
 		self->sys->current_route = map;
 		return true;
@@ -211,7 +225,8 @@ bool kernel_StartPlaceMoule( cad_kernel *self, const char *force_module_name, bo
 {
 	if ( self->sys->current_state == KERNEL_STATE_EMPTY ) return false;
 
-	self->sys->map_generator->DestroyMap( self->sys->map_generator,  self->sys->current_route );
+	if (self->sys->map_generator)
+		self->sys->map_generator->DestroyMap( self->sys->map_generator,  self->sys->current_route );
 	self->sys->current_route = NULL;
 
 	if (self->sys->current_sheme->AboutToDestroy != NULL)
@@ -265,9 +280,10 @@ cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
 {
 	cad_kernel *kernel = (cad_kernel *)malloc( sizeof(cad_kernel) ); 
 	kernel->sys = (cad_kernel_private *)malloc( sizeof(cad_kernel_private) );
+	memset(kernel->sys, 0, sizeof (cad_kernel_private));
 
 	kernel->sys->current_state = KERNEL_STATE_EMPTY;
-
+	
 	kernel->PrintDebug			= printf;
 	kernel->PrintInfo			= printf;
 	kernel->Delete				= kernel_Delete;

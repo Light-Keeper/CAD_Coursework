@@ -109,6 +109,7 @@ struct	cad_scheme
 
 	uint32_t ( * AboutToDestroy)(cad_scheme *self);		// you must delete you private data here.
 										// after call to it method structure will be deleted by kernel. 
+	void ( * Delete)(cad_scheme *self);
 										
 };
 
@@ -272,6 +273,7 @@ struct cad_kernel
 };
 
 cad_kernel * cad_kernel_New(uint32_t argv, char *argc[]);
+
 
 #define KERNEL_STATE_EMPTY			0x00000000
 #define KERNEL_STATE_PLACE			0x00000001
