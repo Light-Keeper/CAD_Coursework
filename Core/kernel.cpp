@@ -102,9 +102,9 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 		if ( map )
 		{
 			map->sheme = scheme;
-			self->sys->current_state = KERNEL_STATE_NEED_TRACE;
+			self->sys->current_state = KERNEL_STATE_TRACE;
 		} else 
-			self->sys->current_state = KERNEL_STATE_NEED_PLACE;
+			self->sys->current_state = KERNEL_STATE_PLACE;
 
 		self->sys->current_sheme = scheme;
 		self->sys->current_route = map;
@@ -141,26 +141,25 @@ uint32_t kernel_NextStep( cad_kernel *self )
 	if (self->sys->current_state == KERNEL_STATE_PLACING)
 	{
 		uint32_t result = self->sys->current_sheme->MakeStep( self->sys->current_sheme );
-		if ( result == LAST_ACTION_ERROR ) self->sys->current_state = KERNEL_STATE_NEED_PLACE;
-		if ( result == LAST_ACTION_OK ) self->sys->current_state = KERNEL_STATE_NEED_TRACE;
+		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_PLACE;
 		return result;
 	} 
 
 	if (self->sys->current_state == KERNEL_STATE_TRACING)
 	{
 		uint32_t result = self->sys->current_route->MakeStep( self->sys->current_route );
-		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_NEED_TRACE;
+		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_TRACE;
 		return result;
 	} 
 
-	if (self->sys->current_state == KERNEL_STATE_NEED_PLACE)
+	if (self->sys->current_state == KERNEL_STATE_PLACE)
 	{
-		return self->StartPlaceMoule( self, NULL, false);
+		return self->StartPlaceMoule( self, NULL, false) ? MORE_ACTIONS : LAST_ACTION_ERROR;
 	} 
 
-	if (self->sys->current_state == KERNEL_STATE_NEED_TRACE)
+	if (self->sys->current_state == KERNEL_STATE_TRACE)
 	{
-		return self->StartTraceModule( self, NULL, false);
+		return self->StartTraceModule( self, NULL, false) ? MORE_ACTIONS : LAST_ACTION_ERROR;
 	} 
 
 	return LAST_ACTION_ERROR;
@@ -212,7 +211,7 @@ bool kernel_StartPlaceMoule( cad_kernel *self, const char *force_module_name, bo
 	if (module == NULL) return false;
 
 	module->Open( self, self->sys->current_sheme );
-	self->sys->current_sheme->Clear(self->sys->current_sheme );
+	self->sys->current_sheme->Clear( self->sys->current_sheme );
 	self->sys->current_state = KERNEL_STATE_PLACING;
 	return true;
 }
@@ -220,10 +219,14 @@ bool kernel_StartPlaceMoule( cad_kernel *self, const char *force_module_name, bo
 
 bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bool demo_mode)
 {
-	if ( self->sys->current_state != KERNEL_STATE_NEED_TRACE ) return false;
+	if ( self->sys->current_state == KERNEL_STATE_EMPTY  || 
+		self->sys->current_state == KERNEL_STATE_PLACING ) return false;
 
-	// TODO: implement
-	return false;	
+	if (! self->sys->map_generator->ReinitializeRouteMap( self->sys->map_generator, self->sys->current_sheme, 
+		&self->sys->current_route)) return false;
+
+	self->sys->current_state = KERNEL_STATE_TRACING;
+	return true;	
 }
 
 

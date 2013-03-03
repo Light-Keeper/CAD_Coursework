@@ -4,10 +4,6 @@
 #include <stdint.h>
 #define NULL 0
 
-
-struct cad_chip ;
-struct cad_chip_private ;
-
 struct	cad_scheme ;
 struct  cad_scheme_private ;
 
@@ -20,7 +16,6 @@ struct cad_module_info;
 // describe 1 chip on the scheme
 struct cad_chip 
 {
-	cad_chip_private *sys;	// private data for layout module
 	uint32_t num;			// chip number in the current schme
 	uint32_t package_type;  // PT_DIP8, PT_DIP16 etc
 
@@ -156,7 +151,7 @@ struct cad_route_map
 // values for cad_route_map::map
 
 #define MAP_EMPTY				0x00000000
-#define MAP_PIN					0x01000000
+#define MAP_PIN					0x01000000		// MAP_PIN | wire_number
 #define MAP_WIRE_HORISINTAL		0x02000000
 #define MAP_WIRE_VERTICAL		0x03000000
 #define MAP_WIRE_CROSS			0x04000000
@@ -168,7 +163,7 @@ struct cad_route_map
 #define MAP_ARROW_RIGHT			0x0A000000
 #define MAP_ARROW_UP			0x0B000000
 #define MAP_ARROW_DOWN			0x0C000000
-#define MAP_NUMBER				0x0D000000
+#define MAP_NUMBER				0x0D000000		// MAP_NUMBER | number
 
 // use RouteMap(i, j) = MAP_WIRE_HORISINTAL, 
 // or  RouteMap(i, j) = MAP_NUMBER | ( number ); 
@@ -179,19 +174,19 @@ struct cad_route_map
 
 struct cad_map_generator_private;
 
+// map generator should have options for map size
 struct cad_map_generator
 {
 	cad_map_generator_private *sys;
 	
-	cad_route_map * (* FillRouteMap)(cad_map_generator *self, cad_scheme *scheme, 
-		uint32_t width, uint32_t hieght, uint32_t layers);
+	cad_route_map * (* FillRouteMap)(cad_map_generator *self, cad_scheme *scheme);
+	bool (* ReinitializeRouteMap)(cad_map_generator *self, cad_scheme *scheme, cad_route_map **map);
 
 	void (* DestroyMap)(cad_map_generator *self, cad_route_map *map);
 };
 
 
 struct cad_render_module_private;
-
 
 struct cad_picture
 {
@@ -265,7 +260,7 @@ struct cad_kernel
 cad_kernel * cad_kernel_New(uint32_t argv, char *argc[]);
 
 #define KERNEL_STATE_EMPTY			0x00000000
-#define KERNEL_STATE_NEED_PLACE		0x00000001
-#define KERNEL_STATE_NEED_TRACE		0x00000002
+#define KERNEL_STATE_PLACE			0x00000001
+#define KERNEL_STATE_TRACE			0x00000002
 #define KERNEL_STATE_PLACING		0x00000003
 #define KERNEL_STATE_TRACING		0x00000004
