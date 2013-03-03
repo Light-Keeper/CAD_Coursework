@@ -2,6 +2,8 @@
 #pragma once
 
 #include <stdint.h>
+#include <memory>
+
 #define NULL 0
 
 struct	cad_scheme ;
@@ -187,13 +189,18 @@ struct cad_map_generator
 
 
 struct cad_render_module_private;
+struct cad_picture_private;
 
 struct cad_picture
 {
+	cad_picture_private *sys;
+	
 	uint32_t height;
 	uint32_t width;
 
 	uint32_t *data; // RGB array
+
+	void (*Delete)(cad_picture *self);
 };
 
 
@@ -217,8 +224,9 @@ struct cad_GUI
 	cad_GUI_private *sys;
 
 	uint32_t ( * Exec)(cad_GUI *self);
-	void (* SetCMDArgs)(char *arg);
+	void (* SetCMDArgs)(cad_GUI *self, char *arg);
 
+	void (* UpdatePictureEvent)( cad_GUI *self );
 };
 
 
@@ -255,6 +263,8 @@ struct cad_kernel
 	uint32_t (* RunToEnd)( cad_kernel *self) ;
 
 	bool (* CloseCurrentFile)( cad_kernel *self);
+
+	cad_picture * (*RenderPicture)(cad_kernel *self, float pos_x, float pos_y, float size_x, float size_y);
 };
 
 cad_kernel * cad_kernel_New(uint32_t argv, char *argc[]);

@@ -1,6 +1,5 @@
 #include <cad_object.h>
 #include <cad_module.h>
-#include <memory>
 #include <Windows.h>
 
 struct cad_kernel_private
@@ -12,6 +11,8 @@ struct cad_kernel_private
 	cad_route_map	*	current_route;
 	cad_render_module *	render;
 	cad_map_generator *	map_generator;
+
+	cad_GUI			*	gui;
 };
 
 void kernel_Delete(cad_kernel *self)
@@ -82,7 +83,8 @@ void kernel_Exec(cad_kernel *self)
 			gui->Close(self, gui_module);
 			return ;
 		}
-		gui_module->SetCMDArgs(GetCommandLineA());
+		self->sys->gui = gui_module;
+		gui_module->SetCMDArgs(gui_module, GetCommandLineA());
 		gui_module->Exec( gui_module );
 	}
 }
@@ -148,6 +150,7 @@ uint32_t kernel_NextStep( cad_kernel *self )
 	{
 		uint32_t result = self->sys->current_sheme->MakeStep( self->sys->current_sheme );
 		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_PLACE;
+		self->sys->gui->UpdatePictureEvent( self->sys->gui );
 		return result;
 	} 
 
@@ -155,6 +158,7 @@ uint32_t kernel_NextStep( cad_kernel *self )
 	{
 		uint32_t result = self->sys->current_route->MakeStep( self->sys->current_route );
 		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_TRACE;
+		self->sys->gui->UpdatePictureEvent( self->sys->gui );
 		return result;
 	} 
 
@@ -219,6 +223,7 @@ bool kernel_StartPlaceMoule( cad_kernel *self, const char *force_module_name, bo
 	module->Open( self, self->sys->current_sheme );
 	self->sys->current_sheme->Clear( self->sys->current_sheme );
 	self->sys->current_state = KERNEL_STATE_PLACING;
+	self->sys->gui->UpdatePictureEvent( self->sys->gui );
 	return true;
 }
 
@@ -232,7 +237,24 @@ bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bo
 		&self->sys->current_route)) return false;
 
 	self->sys->current_state = KERNEL_STATE_TRACING;
+	self->sys->gui->UpdatePictureEvent( self->sys->gui );
 	return true;	
+}
+
+
+cad_picture * kernel_RenderPicture(cad_kernel *self, float pos_x, float pos_y, float size_x, float size_y)
+{
+	if (! self->sys->render ) return NULL;
+
+ 	if (self->sys->current_state == KERNEL_STATE_PLACE || 
+		self->sys->current_state == KERNEL_STATE_PLACING )
+		return self->sys->render->RenderSchme( self->sys->current_sheme, pos_x, pos_y, size_x, size_y );
+
+	if (self->sys->current_state == KERNEL_STATE_TRACE || 
+		self->sys->current_state == KERNEL_STATE_TRACING )
+		return self->sys->render->RenderMap( self->sys->current_route, pos_x, pos_y, size_x, size_y );
+
+	return NULL;
 }
 
 
@@ -254,6 +276,7 @@ cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
 	kernel->NextStep			= kernel_NextStep;
 	kernel->StartPlaceMoule		= kernel_StartPlaceMoule;
 	kernel->StartTraceModule	= kernel_StartTraceModule;
+	kernel->RenderPicture		= kernel_RenderPicture;
 
 	return kernel;
 }
