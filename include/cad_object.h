@@ -46,7 +46,7 @@ struct cad_chip
 #define PT_DIP12	(PT_DIP | 12)
 #define PT_DIP16	(PT_DIP | 16)
 
-#define PT_SLOT		0x02000000
+#define PT_SOCKET	0x02000000
 
 
 // chip orientation
@@ -149,6 +149,7 @@ struct cad_route_map
 
 	uint32_t ( * AboutToDestroy)(cad_route_map * self);		// you must delete you private data here.
 										// after call to it method structure will be deleted by kernel. 
+	void ( * Delete)(cad_route_map *self);
 
 };
 
