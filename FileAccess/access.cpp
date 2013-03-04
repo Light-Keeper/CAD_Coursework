@@ -111,21 +111,71 @@ cad_scheme * access_ReadScheme( cad_access_module *self )
 	
 	} while ( 1 );	
 
+	// read connections
+
 	do
 	{
 		if ( fgets(buffer, 1024, file) == NULL ) break;
 		if (*buffer == '\n') break;
-
-		// TODO: add new wire
+		
+		cad_wire *wire = (cad_wire *)malloc( sizeof( cad_wire ) );
+		wire->endpoints_number = 0;
+		wire->pin_numbers = NULL;
+		wire->chips = NULL;
 
 		for (char *pos = buffer; *pos != 0; pos++)
 		{
 			if (*pos != 'D') continue;
-			uint32_t number;
-			uint32_t pin;
+			uint32_t number = UNDEFINED_VALUE;
+			uint32_t pin = UNDEFINED_VALUE;
 
-			// TODO: read data from string, add it to wire
+			// read data from string, add it to wire
+			sscanf(pos, "D%d.%d", &number, &pin );
+
+			if (number == UNDEFINED_VALUE || pin == UNDEFINED_VALUE)
+			{
+				self->sys->kernel->PrintDebug( "Invalid file %s.\n  D%%d.%%d format expected\n", self->sys->fileName );
+				fclose( file );
+				scheme->Delete( scheme );
+				// TODO: fix memory leack
+				free( wire );
+				return NULL;
+			}
+
+			wire->endpoints_number++;
+			wire->pin_numbers = (uint32_t *)realloc( wire->pin_numbers, sizeof(uint32_t) * wire->endpoints_number );
+			wire->chips = (cad_chip **)realloc( wire->chips, sizeof(uint32_t) * wire->endpoints_number );
+			
+			wire->chips[wire->endpoints_number - 1] = NULL;
+			wire->pin_numbers[wire->endpoints_number - 1] = pin;
+
+			for (uint32_t i = 0; i < scheme->chip_number; i++)
+			{
+				if ( scheme->chips[i].num == number) 
+					wire->chips[wire->endpoints_number - 1] = &scheme->chips[i];
+			}
+
+			if (wire->chips[wire->endpoints_number - 1] == NULL)
+			{
+		
+				self->sys->kernel->PrintDebug( "Invalid file %s.\n referenced chip %d not foud\n", self->sys->fileName, number );
+				fclose( file );
+				scheme->Delete( scheme );
+				// TODO: fix memory leack
+				free( wire );
+				return NULL;
+			}
+
 		}
+
+		if ( wire->endpoints_number != 0 )
+		{
+			scheme->connections.number_of_wires++;
+			scheme->connections.wire = (cad_wire *)realloc( 
+					 scheme->connections.wire, scheme->connections.number_of_wires * sizeof( cad_wire ) );
+			scheme->connections.wire[scheme->connections.number_of_wires -1 ] = *wire;
+		}
+		free( wire );
 
 	} while( 1 );
 

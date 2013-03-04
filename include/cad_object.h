@@ -67,8 +67,8 @@ struct cad_wire
 	//	chip chip[i] is connected to this wire with pin pin_number[i] 
 	//	(i in range 0 .. endpoints_number - 1)
 
-	uint32_t *pin_number;		
-	cad_chip *chip;
+	uint32_t *pin_numbers;		
+	cad_chip **chips;
 
 };
 
@@ -263,10 +263,8 @@ struct cad_kernel
 	bool (* LoadFile)(cad_kernel *self, const char *path);
 	bool (* StartPlaceMoule)( cad_kernel *self, const char *force_module_name, bool demo_mode);
 	bool (* StartTraceModule)( cad_kernel *self, const char *force_module_name, bool demo_mode);
-
 	uint32_t (* NextStep)( cad_kernel *self) ;
 	uint32_t (* RunToEnd)( cad_kernel *self) ;
-
 	bool (* CloseCurrentFile)( cad_kernel *self);
 
 	cad_picture * (*RenderPicture)(cad_kernel *self, float pos_x, float pos_y, float size_x, float size_y);
