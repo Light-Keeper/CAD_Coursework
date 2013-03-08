@@ -14,6 +14,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileAccess", "FileAccess\Fi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CLRTrunk", "CLRTrunk\CLRTrunk.vcxproj", "{6AC5A42E-5530-4557-90FF-014960FD8597}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapGenerator", "MapGenerator\MapGenerator.vcxproj", "{70A3C550-DA6D-4EAA-B864-27A33DECC035}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -36,6 +38,10 @@ Global
 		{6AC5A42E-5530-4557-90FF-014960FD8597}.Debug|Win32.Build.0 = Debug|Win32
 		{6AC5A42E-5530-4557-90FF-014960FD8597}.Release|Win32.ActiveCfg = Release|Win32
 		{6AC5A42E-5530-4557-90FF-014960FD8597}.Release|Win32.Build.0 = Release|Win32
+		{70A3C550-DA6D-4EAA-B864-27A33DECC035}.Debug|Win32.ActiveCfg = Debug|Win32
+		{70A3C550-DA6D-4EAA-B864-27A33DECC035}.Debug|Win32.Build.0 = Debug|Win32
+		{70A3C550-DA6D-4EAA-B864-27A33DECC035}.Release|Win32.ActiveCfg = Release|Win32
+		{70A3C550-DA6D-4EAA-B864-27A33DECC035}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

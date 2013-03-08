@@ -22,6 +22,33 @@ void kernel_Delete(cad_kernel *self)
 
 typedef uint32_t ( *init_module_f)(cad_module_info *) ;
 
+cad_module_info *internal_find_module_by_name(cad_kernel *self, const char *force_module_name, uint32_t type)
+{
+	cad_module_info *module = NULL;
+
+	for (uint32_t i = 0; i < self->sys->module_cout; i++)
+	{
+		if (self->sys->modules[ i ].module_capability != type) continue;
+
+		if (force_module_name != NULL && 
+			strcmp( force_module_name, self->sys->modules[ i ].module_name ) != 0) continue;
+
+		if (force_module_name != NULL) 
+		{
+			module = &self->sys->modules[ i ];
+			break;
+		}
+
+		if (module == NULL || module->module_priority < self->sys->modules[ i ].module_priority)
+			module = &self->sys->modules[ i ];
+	} 
+
+	if ( module == NULL )
+		self->PrintDebug( "no module found, %s module requestd\n", force_module_name );
+
+	return module;
+}
+
 void kernel_Exec(cad_kernel *self)
 {
 	WIN32_FIND_DATAA find ;
@@ -60,18 +87,15 @@ void kernel_Exec(cad_kernel *self)
 	} while ( FindNextFileA( hFind, &find) ) ;
 
 	FindClose( hFind );
+	cad_module_info *info;
 
+	info = internal_find_module_by_name(self, NULL, CAP_MAP_GENERATOR );
+//	if (info) self->sys->map_generator = (cad_map_generator *)info->Open(self, NULL);
 
-	// find best GUI module and run it
+	info = internal_find_module_by_name(self, NULL, CAP_RENDER );
+	if (info) self->sys->render = (cad_render_module *)info->Open(self, NULL);
 
-	cad_module_info *gui = NULL;
-	for(uint32_t i = 0; i < self->sys->module_cout; i++)
-	{
-		if (self->sys->modules[ i ].module_capability == CAP_GUI && 
-			( gui == NULL || gui->module_priority <  self->sys->modules[ i ].module_priority ))
-					gui = &self->sys->modules[ i ];
-	}
-
+	cad_module_info *gui = internal_find_module_by_name(self, NULL, CAP_GUI);
 	if (gui == NULL) 
 		self->PrintDebug("no GUI module found. can not start.");
 	else 
@@ -115,7 +139,8 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 		if ( map )
 		{
 			self->sys->current_state = KERNEL_STATE_TRACE;
-//			self->sys->map_generator->ReinitializeRouteMap(self->sys->map_generator, scheme, &map);
+			if ( self->sys->map_generator )
+				self->sys->map_generator->ReinitializeRouteMap(self->sys->map_generator, scheme, &map);
 		} else 
 			self->sys->current_state = KERNEL_STATE_PLACE;
 
@@ -194,43 +219,18 @@ uint32_t kernel_NextStep( cad_kernel *self )
 }
 
 
-cad_module_info *internal_find_module_by_name(cad_kernel *self, const char *force_module_name, uint32_t type)
-{
-	cad_module_info *module = NULL;
-
-	for (uint32_t i = 0; i < self->sys->module_cout; i++)
-	{
-		if (self->sys->modules[ i ].module_capability != type) continue;
-
-		if (force_module_name != NULL && 
-			strcmp( force_module_name, self->sys->modules[ i ].module_name ) != 0) continue;
-
-		if (force_module_name != NULL) 
-		{
-			module = &self->sys->modules[ i ];
-			break;
-		}
-
-		if (module == NULL || module->module_priority < self->sys->modules[ i ].module_priority)
-			module = &self->sys->modules[ i ];
-	} 
-
-	if ( module == NULL )
-		self->PrintDebug( "no module found, %s module requestd\n", force_module_name );
-
-	return module;
-}
-
-
 bool kernel_StartPlaceMoule( cad_kernel *self, const char *force_module_name, bool demo_mode)
 {
 	if ( self->sys->current_state == KERNEL_STATE_EMPTY ) return false;
-
-	if (self->sys->map_generator)
-		self->sys->map_generator->DestroyMap( self->sys->map_generator,  self->sys->current_route );
+	
+	if (self->sys->current_route && self->sys->current_route->AboutToDestroy)
+		self->sys->current_route->AboutToDestroy( self->sys->current_route );
+	
+	if (self->sys->current_route)
+	self->sys->current_route->Delete( self->sys->current_route );
 	self->sys->current_route = NULL;
 
-	if (self->sys->current_sheme->AboutToDestroy != NULL)
+	if (self->sys->current_sheme && self->sys->current_sheme->AboutToDestroy != NULL)
 		self->sys->current_sheme->AboutToDestroy( self->sys->current_sheme );
 	
 	self->sys->current_sheme->sys = NULL;
@@ -251,6 +251,8 @@ bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bo
 {
 	if ( self->sys->current_state == KERNEL_STATE_EMPTY  || 
 		self->sys->current_state == KERNEL_STATE_PLACING ) return false;
+
+	if (! self->sys->map_generator) return false;
 
 	if (! self->sys->map_generator->ReinitializeRouteMap( self->sys->map_generator, self->sys->current_sheme, 
 		&self->sys->current_route)) return false;

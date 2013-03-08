@@ -79,7 +79,7 @@ uint32_t gui_Exec(cad_GUI *self)
 				break;
 
 			case 'l': // load file
-				kernel->LoadFile(kernel, "input_file.txt");
+				kernel->LoadFile(kernel, "..\\inputFiles\\input_file.txt");
 				break;
 			case 't': // traceriute
 				kernel->StartTraceModule( kernel, NULL, false);

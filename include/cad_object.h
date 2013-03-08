@@ -175,11 +175,11 @@ struct cad_route_map
 #define CODE_MASK				0xFF000000
 #define NUMBER_MASK				0x00FFFFFF
 
-// use RouteMap(i, j) = MAP_WIRE_HORISINTAL, 
-// or  RouteMap(i, j) = MAP_NUMBER | ( number ); 
+// use MapElement(i, j) = MAP_WIRE_HORISINTAL, 
+// or  MapElement(i, j) = MAP_NUMBER | ( number ); 
 
-#define RouteMap(_i, _j) (self->map[(_i) * self->width + (_j)])
-//#define RouteMap(_i, _j, _z) (self->map[(_z)* self->width * self->height  +  (_i) * self->width + (_j)])
+#define MapElement(_self, _i, _j) (_self->map[(_i) * _self->width + (_j)])
+#define MapElement3D(_self, _i, _j, _z) (_self->map[(_z)* _self->width * _self->height  +  (_i) * _self->width + (_j)])
 
 
 struct cad_map_generator_private;
@@ -188,11 +188,7 @@ struct cad_map_generator_private;
 struct cad_map_generator
 {
 	cad_map_generator_private *sys;
-	
-	cad_route_map * (* FillRouteMap)(cad_map_generator *self, cad_scheme *scheme);
 	bool (* ReinitializeRouteMap)(cad_map_generator *self, cad_scheme *scheme, cad_route_map **map);
-
-	void (* DestroyMap)(cad_map_generator *self, cad_route_map *map);
 };
 
 
@@ -220,8 +216,6 @@ struct cad_render_module
 
 	cad_picture *( *RenderSchme)(cad_scheme * scheme, float pos_x, float pos_y, float size_x, float size_y);
 	cad_picture *( *RenderMap)(cad_route_map * map, float pos_x, float pos_y, float size_x, float size_y);
-
-	void (* DeletePicture)(cad_picture *picture);
 };
 
 
