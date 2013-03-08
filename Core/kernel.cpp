@@ -91,6 +91,7 @@ void kernel_Exec(cad_kernel *self)
 	}
 }
 
+
 bool kernel_LoadFile(cad_kernel *self, const char *path)
 {
 	cad_kernel_private *sys = self->sys;
@@ -102,17 +103,19 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 		cad_access_module *reader = (cad_access_module *)sys->modules[ i ].Open(self, (void *)path);
 		if (reader == NULL) continue;
 		
-		cad_scheme *scheme = reader->ReadSchme( reader );
-		cad_route_map *map = reader->ReadRouteMap( reader );
-	
-		sys->modules[ i ].Close(self, (void *)reader);
+		cad_scheme *scheme ;
+		cad_route_map *map ; 
+		
+		reader->ReadAll(reader, &scheme, &map);
+
+		sys->modules[ i ].Close(self, reader);
 
 		if (scheme == NULL ) continue;
 	
 		if ( map )
 		{
-			map->sheme = scheme;
 			self->sys->current_state = KERNEL_STATE_TRACE;
+//			self->sys->map_generator->ReinitializeRouteMap(self->sys->map_generator, scheme, &map);
 		} else 
 			self->sys->current_state = KERNEL_STATE_PLACE;
 
@@ -134,8 +137,6 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 		self->sys->current_route = map;
 		return true;
 	}
-	
-	self->PrintDebug( "invalid input file %s\n", path);	
 	return false;
 }
 

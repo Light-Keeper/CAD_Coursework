@@ -243,9 +243,7 @@ struct cad_access_module_private;
 struct cad_access_module
 {
 	cad_access_module_private *sys;
-
-	cad_scheme * ( *ReadSchme)( cad_access_module *self );
-	cad_route_map * ( *ReadRouteMap)( cad_access_module *self );
+	void ( *ReadAll)(cad_access_module *self,cad_scheme **scheme, cad_route_map **route_map);
 };
 
 
@@ -281,3 +279,8 @@ cad_kernel * cad_kernel_New(uint32_t argv, char *argc[]);
 #define KERNEL_STATE_TRACE			0x00000002
 #define KERNEL_STATE_PLACING		0x00000003
 #define KERNEL_STATE_TRACING		0x00000004
+
+
+#define E_OK		0x00000001
+#define E_NOT_FOUND 0x00000002
+#define E_ERROR		0x00000003
