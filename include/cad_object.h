@@ -176,7 +176,7 @@ struct cad_route_map
 #define NUMBER_MASK				0x00FFFFFF
 
 // use MapElement(i, j) = MAP_WIRE_HORISINTAL, 
-// or  MapElement(i, j) = MAP_NUMBER | ( number ); 
+// or  MapElement(i, j) = MAP_NUMBER | ( number ) | MAP_WIRE_HORISINTAL; 
 
 #define MapElement(_self, _i, _j) (_self->map[(_i) * _self->width + (_j)])
 #define MapElement3D(_self, _i, _j, _z) (_self->map[(_z)* _self->width * _self->height  +  (_i) * _self->width + (_j)])
@@ -213,9 +213,8 @@ struct cad_render_module
 	cad_render_module_private *sys;
 	
 	void (* SetPitcureSize)(uint32_t width, uint32_t height);
-
-	cad_picture *( *RenderSchme)(cad_scheme * scheme, float pos_x, float pos_y, float size_x, float size_y);
-	cad_picture *( *RenderMap)(cad_route_map * map, float pos_x, float pos_y, float size_x, float size_y);
+	cad_picture *( *RenderSchme)(cad_render_module *self, cad_scheme * scheme, float pos_x, float pos_y, float size_x, float size_y);
+	cad_picture *( *RenderMap)(cad_render_module *self, cad_route_map * map, float pos_x, float pos_y, float size_x, float size_y);
 };
 
 

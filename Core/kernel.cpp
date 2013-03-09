@@ -90,7 +90,7 @@ void kernel_Exec(cad_kernel *self)
 	cad_module_info *info;
 
 	info = internal_find_module_by_name(self, NULL, CAP_MAP_GENERATOR );
-//	if (info) self->sys->map_generator = (cad_map_generator *)info->Open(self, NULL);
+	if (info) self->sys->map_generator = (cad_map_generator *)info->Open(self, NULL);
 
 	info = internal_find_module_by_name(self, NULL, CAP_RENDER );
 	if (info) self->sys->render = (cad_render_module *)info->Open(self, NULL);

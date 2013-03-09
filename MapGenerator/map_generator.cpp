@@ -20,10 +20,10 @@ cad_module_end()
 bool generator_FillMap(cad_map_generator *self, cad_route_map *map)
 {
 	for (uint32_t i = 0; i < map->height; i++)
-		for (uint32_t j = 0; j < map->height; j++)
+		for (uint32_t j = 0; j < map->width; j++)
 			for(uint32_t z = 0; z < map->depth; z++)
-//				MapElement3D(map, i, j, z) = MAP_EMPTY;
-			;
+				MapElement3D(map, i, j, z) = MAP_EMPTY;
+
 	// place pins, only CO_RIGHT support
 	// TODO: implement
 	
