@@ -14,11 +14,12 @@ cad_module_end()
 
 struct cad_access_module_private
 {
+	static const int BUFFER_SIZE = 10 * 1024;
 	cad_kernel *kernel;
 	char *fileName;
+	char buffer[BUFFER_SIZE];
 
 	uint32_t position;
-
 };
 
 void access_delete_scheme( cad_scheme *scheme);
@@ -238,8 +239,8 @@ uint32_t access_ReadBlock(cad_access_module *self, FILE *f, char *blockName,
 				bool (* read_f)(cad_access_module *self, char *str, cad_scheme *s, cad_route_map *map), 
 				cad_scheme *s, cad_route_map *map)
 {
-	static const int BUFFER_SIZE = 100 * 1024;
-	char *buffer = (char *)malloc( BUFFER_SIZE );
+	int BUFFER_SIZE = cad_access_module_private::BUFFER_SIZE;
+	char *buffer = self->sys->buffer;
 
 	do {
 		if ( fgets(buffer, BUFFER_SIZE, f) == NULL )

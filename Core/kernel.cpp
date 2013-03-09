@@ -141,6 +141,7 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 			self->sys->current_state = KERNEL_STATE_TRACE;
 			if ( self->sys->map_generator )
 				self->sys->map_generator->ReinitializeRouteMap(self->sys->map_generator, scheme, &map);
+			else map->Delete( map ), map = NULL;
 		} else 
 			self->sys->current_state = KERNEL_STATE_PLACE;
 
