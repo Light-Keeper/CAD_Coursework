@@ -222,7 +222,7 @@ bool access_ReadMap(cad_access_module *self, char *str, cad_scheme *s, cad_route
 
 	uint32_t d, left, top;
 
-	if ( sscanf(str, "D%d%d%d", &d, &top, &left) != 3) return false;
+	if ( sscanf(str, "D%d%d%d", &d, &left, &top) != 3) return false;
 	
 	cad_chip *c = NULL;
 		for (uint32_t i = 0; i < s->chip_number && c == NULL; i++)

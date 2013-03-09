@@ -170,6 +170,7 @@ struct cad_route_map
 #define MAP_ARROW_RIGHT			0x0A000000
 #define MAP_ARROW_UP			0x0B000000
 #define MAP_ARROW_DOWN			0x0C000000
+#define MAP_UNUSED				0x0D000000
 #define MAP_NUMBER				0x10000000		// MAP_NUMBER | number
 
 #define CODE_MASK				0xFF000000
