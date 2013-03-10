@@ -198,14 +198,13 @@ struct cad_picture_private;
 
 struct cad_picture
 {
-	cad_picture_private *sys;
-	
-	uint32_t height;
-	uint32_t width;
+	// do not change order of fields in this struct!
+	volatile cad_picture_private *sys;
+	volatile uint32_t height;
+	volatile uint32_t width;
+	volatile uint32_t *data; // RGB array
 
-	uint32_t *data; // RGB array
-
-	void (*Delete)(cad_picture *self);
+	volatile void (*Delete)(cad_picture *self);
 };
 
 

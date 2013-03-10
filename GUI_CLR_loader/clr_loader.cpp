@@ -28,6 +28,7 @@ void gui_UpdatePictureEvent( cad_GUI *self );
 bool InitCLR(cad_GUI *self);
 bool DestroyCLR(cad_GUI *self);
 
+static cad_GUI *self = NULL;
 
 struct cad_GUI_private
 {
@@ -48,7 +49,7 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	gui->Exec = gui_Exec;
 	gui->SetCMDArgs = gui_SetCMDArgs;
 	gui->UpdatePictureEvent = gui_UpdatePictureEvent;
-
+	
 	if (! InitCLR( gui ) )
 	{
 		kernel->PrintDebug("Can not start .NET, CLR 2.0 or 4.0 required.\n");
@@ -56,7 +57,7 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 		free( gui );
 		return NULL;
 	}
-
+	self = gui;
 	return gui;
 }
 
@@ -87,11 +88,19 @@ uint32_t gui_Exec(cad_GUI *self)
 
 void gui_UpdatePictureEvent( cad_GUI *self )
 {
-	cad_picture *p = self->sys->kernel->RenderPicture(self->sys->kernel, 0,0,1,1);
-	if ( p )
-	{
-		p->Delete( p );
-	}
+//	cad_picture *p = self->sys->kernel->RenderPicture(self->sys->kernel, 0,0,1,1);
+//	if ( p )
+//	{
+//		p->Delete( p );
+//	}
+
+	DWORD dwRetCode;
+ 	HRESULT  hr = self->sys->pClrRuntimeHost->ExecuteInDefaultAppDomain(L"plugins\\WPF_GUI.dll", 
+        L"WPF_GUI.StaticLoader", L"UpdatePictureEvent", L"", &dwRetCode);
+    if (FAILED(hr)) {
+        self->sys->kernel->PrintDebug("Failed to call StaticLoader::UpdatePictureEvent\n" );
+     }
+
 }
 
 bool InitCLR(cad_GUI *self)
@@ -138,7 +147,6 @@ bool InitCLR(cad_GUI *self)
         goto Cleanup;
     }
 
-
 	hr = self->sys->pClrRuntimeHost->Start();
     if (FAILED(hr))
     {
@@ -166,4 +174,94 @@ bool DestroyCLR(cad_GUI *self)
         self->sys->pRuntimeInfo = NULL;
     }
 	return true;
+}
+
+// .NET assembly interface 
+
+extern "C" __declspec( dllexport ) uint32_t  GetCurrentState();
+extern "C" __declspec( dllexport ) int GetModuleList(int bufferSize, char *buffer);
+extern "C" __declspec( dllexport ) bool LoadFile( const char *path );
+extern "C" __declspec( dllexport ) bool StartPlaceMoule( char *name, bool inDemoMode );
+extern "C" __declspec( dllexport ) bool StartTraceModule(char *name, bool inDemoMode );
+extern "C" __declspec( dllexport ) uint32_t RunToEnd();
+extern "C" __declspec( dllexport ) uint32_t NextStep();
+
+extern "C" __declspec( dllexport ) bool CloseCurrentFile();
+extern "C" __declspec( dllexport ) cad_picture * RenderPicture(float pos_x, float pos_y, float size_x, float size_y );
+extern "C" __declspec( dllexport ) void FreePicture( cad_picture *p );
+
+uint32_t  GetCurrentState()
+{
+	return self->sys->kernel->GetCurrentState( self->sys->kernel );
+}
+
+int GetModuleList(int bufferSize, char *buffer)
+{
+	cad_module_info *mod;
+	uint32_t count = self->sys->kernel->GetModuleList( self->sys->kernel, &mod);
+	char *pos = buffer;
+
+	for (uint32_t i = 0; i < count; i++)
+	{
+//		if (mod[i].module_capability != CAP_PLACEMENT || 
+//			mod[i].module_capability != CAP_TRACEROUTE) 	continue;
+
+		int l = strlen( mod[i].module_name ) + 2;
+		if (pos + l >= buffer + bufferSize) return -1;
+		sprintf(pos, "%c%s\n", mod[i].module_capability == CAP_PLACEMENT ? 'P' : 'T', mod[i].module_name);
+		pos += l;
+	}
+	return pos - buffer;
+}
+
+bool LoadFile( const char *path )
+{
+	return self->sys->kernel->LoadFile( self->sys->kernel, path );
+}
+
+bool StartPlaceMoule( char *name, bool inDemoMode )
+{
+	return self->sys->kernel->StartPlaceMoule( self->sys->kernel, name, inDemoMode );
+}
+
+bool StartTraceModule( char *name, bool inDemoMode )
+{
+	return self->sys->kernel->StartTraceModule( self->sys->kernel, name, inDemoMode );
+}
+
+uint32_t RunToEnd()
+{
+	return self->sys->kernel->RunToEnd( self->sys->kernel );
+}
+
+uint32_t NextStep()
+{
+	return self->sys->kernel->NextStep( self->sys->kernel );
+}
+
+bool CloseCurrentFile()
+{
+	return self->sys->kernel->CloseCurrentFile( self->sys->kernel );
+}
+
+cad_picture * RenderPicture(float pos_x, float pos_y, float size_x, float size_y )
+{
+	// temporary stuff for testing
+	cad_picture* p = (cad_picture *)malloc( sizeof(cad_picture));
+	p->height = 100;
+	p->width = 200;
+	p->sys = NULL;
+	p->data = (uint32_t *)malloc(sizeof(uint32_t) * p->height * p->width);
+	p->data[0] = 0xFFAFFFFF;
+	p->Delete = NULL;
+	return p;
+
+	// normal code. use it!
+//	return self->sys->kernel->RenderPicture(self->sys->kernel, pos_x, pos_y, size_x, size_y);
+}
+
+void FreePicture( cad_picture *p )
+{
+	if (p->Delete)
+		p->Delete( p );
 }

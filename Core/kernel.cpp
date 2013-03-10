@@ -222,6 +222,9 @@ uint32_t kernel_NextStep( cad_kernel *self )
 
 bool kernel_StartPlaceMoule( cad_kernel *self, const char *force_module_name, bool demo_mode)
 {
+	// call it in debugging purpose. should be deleted
+	self->sys->gui->UpdatePictureEvent( self->sys->gui );
+
 	if ( self->sys->current_state == KERNEL_STATE_EMPTY ) return false;
 	
 	if (self->sys->current_route && self->sys->current_route->AboutToDestroy)
