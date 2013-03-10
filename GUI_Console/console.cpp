@@ -88,7 +88,7 @@ uint32_t gui_Exec(cad_GUI *self)
 				kernel->StartPlaceMoule( kernel, NULL, false);
 				break;
 			case 'n': // next step
-				kernel->NextStep( kernel );
+				kernel->NextStep( kernel, true );
 				break;
 		}
 

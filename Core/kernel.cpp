@@ -183,16 +183,16 @@ uint32_t kernel_GetModuleList(cad_kernel *self, cad_module_info **modules)
 uint32_t kernel_RunToEnd( cad_kernel *self) 
 {
 	uint32_t code ;
-	while ( (code = self->NextStep( self )) == MORE_ACTIONS );
+	while ( (code = self->NextStep(self, false)) == MORE_ACTIONS );
 	return code;
 }
 
 
-uint32_t kernel_NextStep( cad_kernel *self )
+uint32_t kernel_NextStep( cad_kernel *self,  bool demo_mode)
 {
 	if (self->sys->current_state == KERNEL_STATE_PLACING)
 	{
-		uint32_t result = self->sys->current_sheme->MakeStep( self->sys->current_sheme );
+		uint32_t result = self->sys->current_sheme->MakeStep( self->sys->current_sheme, demo_mode );
 		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_PLACE;
 		self->sys->gui->UpdatePictureEvent( self->sys->gui );
 		return result;
@@ -200,7 +200,7 @@ uint32_t kernel_NextStep( cad_kernel *self )
 
 	if (self->sys->current_state == KERNEL_STATE_TRACING)
 	{
-		uint32_t result = self->sys->current_route->MakeStep( self->sys->current_route );
+		uint32_t result = self->sys->current_route->MakeStep( self->sys->current_route, demo_mode );
 		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_TRACE;
 		self->sys->gui->UpdatePictureEvent( self->sys->gui );
 		return result;

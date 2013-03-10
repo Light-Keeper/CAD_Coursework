@@ -99,7 +99,7 @@ struct	cad_scheme
 
 	// PLACEMENT module must initialize these methods :
 
-	uint32_t ( * MakeStep)(cad_scheme *self);	// find place for 1 element and ruturn.
+	uint32_t ( * MakeStep)(cad_scheme *self,  bool demo_mode);	// find place for 1 element and ruturn.
 								// return MORE_ACTIONS if next MakeStep can be performed
 								// return LAST_ACTION_OK if all is done.
 								// return LAST_ACTION_ERROR if an error occured ( height * width < chip_number, etc. )
@@ -140,7 +140,7 @@ struct cad_route_map
 
 	// TRACEROUTE module must initialize these methods :
 
-	uint32_t ( * MakeStep)(cad_route_map * self);	// make 1 algorithm step, fill data field 
+	uint32_t ( * MakeStep)(cad_route_map * self,  bool demo_mode);	// make 1 algorithm step, fill data field 
 								// return LAST_ACTION_OK if all is done.
 								// return LAST_ACTION_ERROR if an error occured ( no path found, etc. )
 								// LAST_ACTION_ERROR must be returned only if no one wire can be routed
@@ -257,7 +257,7 @@ struct cad_kernel
 	bool (* LoadFile)(cad_kernel *self, const char *path);
 	bool (* StartPlaceMoule)( cad_kernel *self, const char *force_module_name, bool demo_mode);
 	bool (* StartTraceModule)( cad_kernel *self, const char *force_module_name, bool demo_mode);
-	uint32_t (* NextStep)( cad_kernel *self) ;
+	uint32_t (* NextStep)( cad_kernel *self, bool demo_mode) ;
 	uint32_t (* RunToEnd)( cad_kernel *self) ;
 	bool (* CloseCurrentFile)( cad_kernel *self);
 

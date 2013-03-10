@@ -184,7 +184,7 @@ extern "C" __declspec( dllexport ) bool LoadFile( const char *path );
 extern "C" __declspec( dllexport ) bool StartPlaceMoule( char *name, bool inDemoMode );
 extern "C" __declspec( dllexport ) bool StartTraceModule(char *name, bool inDemoMode );
 extern "C" __declspec( dllexport ) uint32_t RunToEnd();
-extern "C" __declspec( dllexport ) uint32_t NextStep();
+extern "C" __declspec( dllexport ) uint32_t NextStep( bool inDemoMode );
 
 extern "C" __declspec( dllexport ) bool CloseCurrentFile();
 extern "C" __declspec( dllexport ) cad_picture * RenderPicture(float pos_x, float pos_y, float size_x, float size_y );
@@ -234,9 +234,9 @@ uint32_t RunToEnd()
 	return self->sys->kernel->RunToEnd( self->sys->kernel );
 }
 
-uint32_t NextStep()
+uint32_t NextStep( bool inDemoMode )
 {
-	return self->sys->kernel->NextStep( self->sys->kernel );
+	return self->sys->kernel->NextStep( self->sys->kernel, inDemoMode);
 }
 
 bool CloseCurrentFile()
