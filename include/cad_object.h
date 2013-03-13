@@ -113,9 +113,10 @@ struct	cad_scheme
 										
 };
 
-#define MORE_ACTIONS		0x00000001
-#define LAST_ACTION_OK		0x00000002
-#define LAST_ACTION_ERROR	0x00000003
+#define MORE_ACTIONS_IN_DEMO_MODE		0x00000001
+#define MORE_ACTIONS					0x00000002
+#define LAST_ACTION_OK					0x00000003
+#define LAST_ACTION_ERROR				0x00000004
 
 
 // all data for TRACEROUTE module
