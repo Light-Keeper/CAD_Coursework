@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GUI_CLR_loader", "GUI_CLR_l
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPF_GUI", "WPF_GUI\WPF_GUI.csproj", "{0111EC73-6A98-4C34-B15A-43BA29FE0159}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Kraveckiy", "Kraveckiy\Kraveckiy.vcxproj", "{B1C10F0D-8D9A-4C9A-B205-665D5392F408}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -104,6 +106,18 @@ Global
 		{0111EC73-6A98-4C34-B15A-43BA29FE0159}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0111EC73-6A98-4C34-B15A-43BA29FE0159}.Release|Win32.ActiveCfg = Release|Any CPU
 		{0111EC73-6A98-4C34-B15A-43BA29FE0159}.Release|x86.ActiveCfg = Release|Any CPU
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Debug|Win32.Build.0 = Debug|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Debug|x86.ActiveCfg = Debug|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Release|Any CPU.ActiveCfg = Release|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Release|Win32.ActiveCfg = Release|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Release|Win32.Build.0 = Release|Win32
+		{B1C10F0D-8D9A-4C9A-B205-665D5392F408}.Release|x86.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
