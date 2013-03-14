@@ -48,6 +48,10 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper.cs" />
+    <Compile Include="LogWindow.xaml.cs">
+      <DependentUpon>LogWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -55,10 +59,30 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="LogWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\background.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\ok.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\loading.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\loading.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\cursor_drag_hand.ico" />
+    <Content Include="Content\cursor_hand.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

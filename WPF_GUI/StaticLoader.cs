@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Application = System.Windows.Application;
+using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace WPF_GUI
 {
@@ -17,21 +20,27 @@ namespace WPF_GUI
 
     public class StaticLoader
     {
-        private static MainWindow window;
+        private static Application _app;
+        public static MainWindow MainWindow;
 
         // call forom native code
         public static int Exec(string arg)
         {
             // если убрать этот месседж бокс, то и окно не появится. наверно он что-то там инициализирует, надо разобраться.
             MessageBox.Show("hello, " + arg + "!");
-            (new System.Windows.Application()).Run( window = new MainWindow() );      
+            _app = new Application();
+            MainWindow = new MainWindow();
+            _app.Run(MainWindow);
+
+//            (new Application()).Run( _window = new MainWindow() );
+//            MessageBox.Show("hello, " + arg + "!");
             return 0;
         }
 
         // call forom native code
         public static int UpdatePictureEvent(string arg)
         {
-            window.UpdatePictureEvent();
+            MainWindow.UpdatePictureEvent();
             return 0;
         }
 
@@ -76,10 +85,5 @@ namespace WPF_GUI
         {
             FreePicture(picture.UnmanagedStruct);
         }
-
-
     }
-
-
-
 }
