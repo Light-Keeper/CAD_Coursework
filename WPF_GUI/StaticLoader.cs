@@ -13,26 +13,25 @@ namespace WPF_GUI
     public unsafe struct Picture
     {
         public IntPtr UnmanagedStruct;
-        public int Width;
-        public int Height;
-        public UIntPtr Data;
+        public int width;
+        public int height;
+        public UIntPtr data;
     };
 
     public class StaticLoader
     {
-        private static App _app;
+        private static Application _app;
         public static MainWindow MainWindow;
 
         // call forom native code
         public static int Exec(string arg)
         {
             // если убрать этот месседж бокс, то и окно не появится. наверно он что-то там инициализирует, надо разобраться.
-            MessageBox.Show("Test");
-            _app = new App();
+            MessageBox.Show("hello, " + arg + "!");
+            _app = new Application();
             MainWindow = new MainWindow();
             _app.Run(MainWindow);
 
-            _app.Run();
 //            (new Application()).Run( _window = new MainWindow() );
 //            MessageBox.Show("hello, " + arg + "!");
             return 0;
@@ -50,9 +49,9 @@ namespace WPF_GUI
 
         public static List<string> GetModuleList()
         {
-            const int bufferSize = 10000;
-            var str = new StringBuilder(bufferSize);
-            int res = GetModuleList(bufferSize, str);
+            int BufferSize = 10000;
+            var str = new StringBuilder(BufferSize);
+            int res = GetModuleList(BufferSize, str);
             if (res < 0) return new List<string>();
             return str.ToString().Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).ToList() ;
         }
@@ -61,19 +60,19 @@ namespace WPF_GUI
         public static extern bool StartPlaceMoule(string moduleName, bool inDemoMode);
 
         [DllImport("GUI_CLR_loader.dll")]
-        private static extern IntPtr RenderPicture(float posX, float posY, float sizeX, float sizeY);
+        private static extern IntPtr RenderPicture(float pos_x, float pos_y, float size_x, float size_y);
 
-        public static Picture GetPicture(float posX, float posY, float sizeX, float sizeY)
+        public static Picture GetPicture(float pos_x, float pos_y, float size_x, float size_y)
         { 
-            var p = new Picture();
+            Picture p = new Picture();
 
-            var data = RenderPicture(posX, posY, sizeX, sizeY);
+            IntPtr data = RenderPicture(pos_x, pos_y, size_x, size_y);
             unsafe 
             {
                 p.UnmanagedStruct = data;
-                p.Height = *((int*)(data.ToPointer()) + 1);
-                p.Width = *((int*)(data.ToPointer()) + 2);
-                p.Data = (UIntPtr)((int*)(data.ToPointer()) + 3);
+                p.height = *((int*)(data.ToPointer()) + 1);
+                p.width = *((int*)(data.ToPointer()) + 2);
+                p.data = (UIntPtr)((int*)(data.ToPointer()) + 3);
             }
 
             return p;
