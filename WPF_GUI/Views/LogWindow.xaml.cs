@@ -23,7 +23,7 @@ namespace WPF_GUI
             public String Msg;
         }
 
-        private static readonly int MAX_MSG_IN_BUFFER = 200;
+        private static readonly int MAX_MSGS_IN_BUFFER = 200;
 
         private static readonly List<LogInfo> Buffer = new List<LogInfo>();
 
@@ -55,7 +55,7 @@ namespace WPF_GUI
             LogViewer.Text += FormLogMsg(newLog);
 
             // Delete first output log
-            if (Buffer.Count > MAX_MSG_IN_BUFFER)
+            if (Buffer.Count > MAX_MSGS_IN_BUFFER)
             {
                 Buffer.RemoveAt(0);
             }

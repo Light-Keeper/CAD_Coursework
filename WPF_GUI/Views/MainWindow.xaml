@@ -45,8 +45,6 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -73,13 +71,13 @@
                     <StackPanel>
                         <RadioButton Content="Демонстрационный" IsChecked="True" Margin="0,3"/>
                         <RadioButton Content="Автоматический" Margin="0,3"/>
-                        <RadioButton Content="Пошаговый" Margin="0,3"/>
+                        <RadioButton Name="StepMode" Content="Пошаговый" Margin="0,3"/>
                     </StackPanel>
                 </GroupBox>
                 <GroupBox Grid.Row="3" Header="Моделирование" Margin="2" Padding="2">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Content="Запустить" Padding="5" Margin="1,1,4,1" Width="95" FontSize="14" />
+                            <Button Content="Запустить" Padding="5" Margin="1,1,4,1" Width="95" FontSize="14"/>
                             <Button Content="Остановить" Padding="5" Margin="4,1,1,1" Width="95" FontSize="14" IsEnabled="False"/>
                         </StackPanel>
                         <CheckBox Name="ShowLogViewer" Content="Отображать консоль" IsChecked="False" Margin="0,5,0,3"
