@@ -153,6 +153,34 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
+        #region ImageViewerWidth
+        private bool _imageViewerWidth;
+        public bool ImageViewerWidth
+        {
+            get { return _imageViewerWidth; }
+            set
+            {
+                if (_imageViewerWidth == value) return;
+                _imageViewerWidth = value;
+                RaisePropertyChanged(() => ImageViewerWidth);
+            }
+        }
+        #endregion
+
+        #region ImageViewerHeight
+        private bool _imageViewerHeight;
+        public bool ImageViewerHeight
+        {
+            get { return _imageViewerHeight; }
+            set
+            {
+                if (_imageViewerHeight == value) return;
+                _imageViewerHeight = value;
+                RaisePropertyChanged(() => ImageViewerHeight);
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Commands

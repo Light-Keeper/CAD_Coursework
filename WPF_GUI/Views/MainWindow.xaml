@@ -5,7 +5,14 @@
         MinWidth="800" MinHeight="500"
         Width="800" Height="500"
         WindowStartupLocation="CenterScreen"
-        >
+        Icon="../Recources/Images/icon.ico"
+        Name="MainWin">
+    <Window.Resources>
+        <ResourceDictionary>
+            <TextBlock x:Key="CursorGrab" Cursor="../Recources/Cursors/grab.cur"/>
+            <TextBlock x:Key="CursorGrabbing" Cursor="../Recources/Cursors/grabbing.cur"/>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -15,9 +22,13 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Viewbox Name="GridViewer" Grid.Column="0" Grid.Row="0" Stretch="Uniform">
-<!--            <Image Source="Content\background.jpg" Stretch="Fill"/>-->
-        </Viewbox>
+        <Canvas Name="ImageViewer" Grid.Column="0" Grid.Row="0"
+                Width="{Binding ElementName=MainWin, Path=ActualWidth}"
+                Height="{Binding ElementName=MainWin, Path=ActualHeight}"
+                MouseDown="ImageViewer_OnMouseDown"
+                MouseUp="ImageViewer_OnMouseUp"
+                Background="Crimson">
+        </Canvas>
         <Border  Grid.Column="1" BorderBrush="DarkGray" BorderThickness="5,0,0,0" Grid.Row="0" Grid.RowSpan="2">
             <Grid Width="220" Background="WhiteSmoke">
                 <Grid.RowDefinitions>
@@ -93,7 +104,7 @@
         <!-- Строка состояния -->
         <StatusBar Grid.Row="1" Height="25">
             <StatusBarItem>
-                <Image Source="\Content\ok.png">
+                <Image Source="../Content/ok.png">
                     <Image.ToolTip>
                         Программа готова к работе
                     </Image.ToolTip>

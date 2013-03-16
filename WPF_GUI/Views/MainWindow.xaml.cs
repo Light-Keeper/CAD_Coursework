@@ -17,14 +17,27 @@ using System.Windows.Shapes;
 
 namespace WPF_GUI
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly Cursor _cursorGrab;
+        private readonly Cursor _cursorGrabbing;
+
         public MainWindow()
         {
             InitializeComponent();
+            _cursorGrab = ((TextBlock) this.Resources["CursorGrab"]).Cursor;
+            _cursorGrabbing = ((TextBlock) this.Resources["CursorGrabbing"]).Cursor;
+            ImageViewer.Cursor = _cursorGrab;
+        }
+
+        private void ImageViewer_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ImageViewer.Cursor = this._cursorGrabbing;
+        }
+
+        private void ImageViewer_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ImageViewer.Cursor = this._cursorGrab;
         }
     }
 }
