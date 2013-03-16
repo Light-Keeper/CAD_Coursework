@@ -5,7 +5,7 @@ using System.Text;
 
 namespace WPF_GUI.Models
 {
-    public class LogModel
+    public class Picture
     {
     }
 }
