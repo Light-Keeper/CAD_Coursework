@@ -5,7 +5,7 @@
         MinWidth="800" MinHeight="500"
         Width="800" Height="500"
         WindowStartupLocation="CenterScreen"
-        Icon="../Recources/Images/icon.ico">
+        Icon="../Recources/Images/pcb.ico">
     <Window.Resources>
         <ResourceDictionary>
             <TextBlock x:Key="CursorGrab" Cursor="../Recources/Cursors/grab.cur"/>
@@ -27,7 +27,7 @@
         <Canvas Name="ImageViewer" Grid.Column="0" Grid.Row="0"
                 Width="{Binding ElementName=FirstColumn, Path=Width}"
                 Height="{Binding ElementName=FirstRow, Path=Height}"
-                Background="Thistle">
+                Background="MintCream">
             <Image Source="../Recources/Images/background.jpg" Stretch="Uniform"
                    Width="400" Name="DisplayedImage"
                    MouseMove="DisplayedImage_OnMouseMove"
@@ -59,13 +59,7 @@
                 </Grid.RowDefinitions>
                 <!-- Заголовок и кнопка скрытия панели управления -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Button Content=">>>" Width="30">
-                        <Button.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#C9FFFFFF" Offset="0" />
-                                <GradientStop Color="#E85D6DB5" Offset="1" />
-                            </LinearGradientBrush>
-                        </Button.Background>
+                    <Button Content=">>>" Width="30" Template="{StaticResource MinimizeButton}">
                         <Button.ToolTip>
                             Свернуть панель управления
                         </Button.ToolTip>
@@ -134,7 +128,7 @@
         <!-- Строка состояния -->
         <StatusBar Grid.Row="1" Height="25">
             <StatusBarItem>
-                <Image Source="../Recources/Images/ok.png">
+                <Image Source="../Recources/Images/error.png">
                     <Image.ToolTip>
                         Программа готова к работе
                     </Image.ToolTip>
@@ -145,7 +139,11 @@
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <Slider Minimum="10" Maximum="200" Width="100" TickPlacement="BottomRight" Value="{Binding ImageZoom}"
-                            IsSnapToTickEnabled="True" Ticks="25, 50, 75, 100, 125, 150, 175, 200"/>
+                            IsSnapToTickEnabled="True" Ticks="25, 50, 75, 100, 125, 150, 175, 200">
+                    <Slider.ToolTip>
+                        Масштаб 
+                    </Slider.ToolTip>
+                </Slider>
             </StatusBarItem>
         </StatusBar>
     </Grid>

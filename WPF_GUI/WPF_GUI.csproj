@@ -33,28 +33,17 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Recources\Images\pcb.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Activities" />
-    <Reference Include="System.Activities.Presentation" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Activities" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.xaml.cs">
@@ -117,8 +106,11 @@
   <ItemGroup>
     <Resource Include="Recources\Cursors\grabbing.cur" />
     <Resource Include="Recources\Cursors\grab.cur" />
-    <Content Include="Recources\Images\error.png" />
+    <Resource Include="Recources\Images\error.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Recources\Images\icon.ico" />
+    <Resource Include="Recources\Images\pcb.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

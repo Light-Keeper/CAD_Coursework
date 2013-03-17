@@ -125,6 +125,7 @@ namespace WPF_GUI.ViewModels
                 if (_showLog)
                 {
                     StaticLoader.Application.LogViewer.Show();
+                    StaticLoader.Application.LogViewer.WindowState = WindowState.Normal;
                 }
                 else
                 {
