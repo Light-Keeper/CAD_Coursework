@@ -5,31 +5,50 @@
         MinWidth="800" MinHeight="500"
         Width="800" Height="500"
         WindowStartupLocation="CenterScreen"
-        Icon="../Recources/Images/icon.ico"
-        Name="MainWin">
+        Icon="../Recources/Images/icon.ico">
     <Window.Resources>
         <ResourceDictionary>
             <TextBlock x:Key="CursorGrab" Cursor="../Recources/Cursors/grab.cur"/>
             <TextBlock x:Key="CursorGrabbing" Cursor="../Recources/Cursors/grabbing.cur"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Recources/StylesRecourceDictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid>
+    <Grid MouseUp="DisplayedImage_OnMouseUp">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*" Name="FirstColumn"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="*" Name="FirstRow"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Canvas Name="ImageViewer" Grid.Column="0" Grid.Row="0"
-                Width="{Binding ElementName=MainWin, Path=ActualWidth}"
-                Height="{Binding ElementName=MainWin, Path=ActualHeight}"
-                MouseDown="ImageViewer_OnMouseDown"
-                MouseUp="ImageViewer_OnMouseUp"
-                Background="Crimson">
+                Width="{Binding ElementName=FirstColumn, Path=Width}"
+                Height="{Binding ElementName=FirstRow, Path=Height}"
+                Background="Thistle">
+            <Image Source="../Recources/Images/background.jpg" Stretch="Uniform"
+                   Width="400" Name="DisplayedImage"
+                   MouseMove="DisplayedImage_OnMouseMove"
+                   MouseDown="DisplayedImage_OnMouseDown"/>
         </Canvas>
-        <Border  Grid.Column="1" BorderBrush="DarkGray" BorderThickness="5,0,0,0" Grid.Row="0" Grid.RowSpan="2">
+        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                BorderBrush="DarkGray" BorderThickness="5,0,0,0"
+                Visibility="Collapsed">
+            <Grid Background="WhiteSmoke">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Button Content="Back" Width="30"/>
+            </Grid>
+        </Border>
+        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" BorderBrush="DarkGray" BorderThickness="5,0,0,0"
+                 Visibility="Visible">
             <Grid Width="220" Background="WhiteSmoke">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="25"/>
@@ -40,9 +59,19 @@
                 </Grid.RowDefinitions>
                 <!-- Заголовок и кнопка скрытия панели управления -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Button Content=">>>" Width="30"/>
-                    <Label Content="Панель управления" HorizontalAlignment="Center" FontSize="14" Padding="1" BorderThickness="1"
-                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="190" BorderBrush="DarkGray">
+                    <Button Content=">>>" Width="30">
+                        <Button.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#C9FFFFFF" Offset="0" />
+                                <GradientStop Color="#E85D6DB5" Offset="1" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                        <Button.ToolTip>
+                            Свернуть панель управления
+                        </Button.ToolTip>
+                    </Button>
+                    <Label Content="Панель управления" HorizontalAlignment="Center" FontSize="14" Padding="1"
+                           HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="190">
                         <Label.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#C9FFFFFF" Offset="0" />
@@ -54,6 +83,7 @@
                 <GroupBox Grid.Row="1" Header="Исходные данные" Margin="2" Padding="2">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
@@ -87,8 +117,8 @@
                 <GroupBox Grid.Row="3" Header="Моделирование" Margin="2" Padding="2">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Content="{Binding Path=StartButtonName, Mode=OneWay}" Padding="5" Margin="1,1,4,1" Width="95" FontSize="14" />
-                            <Button Content="Остановить" Padding="5" Margin="4,1,1,1" Width="95" FontSize="14" IsEnabled="False"/>
+                            <Button Content="{Binding Path=StartButtonName, Mode=OneWay}" Style="{StaticResource StartStopButton}" />
+                            <Button Content="Остановить" Style="{StaticResource StartStopButton}" IsEnabled="False"/>
                         </StackPanel>
                         <CheckBox Name="ShowLogViewer" Content="Отображать консоль" Margin="0,5,0,3"
                                   IsChecked="{Binding Path=ShowLog}"/>
@@ -104,14 +134,13 @@
         <!-- Строка состояния -->
         <StatusBar Grid.Row="1" Height="25">
             <StatusBarItem>
-                <Image Source="../Content/ok.png">
+                <Image Source="../Recources/Images/ok.png">
                     <Image.ToolTip>
                         Программа готова к работе
                     </Image.ToolTip>
                 </Image>
             </StatusBarItem>
-            <StatusBarItem>
-                Исходный файл успешно загружен
+            <StatusBarItem Content="{Binding Path=StatusBarInfo}">
                 <!-- Вывод информации о текущем состоянии программы -->
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">

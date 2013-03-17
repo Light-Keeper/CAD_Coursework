@@ -149,6 +149,7 @@ namespace WPF_GUI.ViewModels
                 if (_imageZoom == value) return;
                 _imageZoom = value;
                 RaisePropertyChanged(() => ImageZoom);
+                StatusBarInfo = "Изменён масштаб изображения на " + ImageZoom;
             }
         }
         #endregion
@@ -181,10 +182,24 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
+        #region StatuBarInfo
+        private string _statusBarInfo = "Что-то там случилось";
+        public string StatusBarInfo
+        {
+            get { return _statusBarInfo; }
+            set
+            {
+                if (_statusBarInfo == value) return;
+                _statusBarInfo = value;
+                RaisePropertyChanged(() => StatusBarInfo);
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Commands
-        
+
         #endregion
 
         #region Public Methods
@@ -192,6 +207,7 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region Private Methods
+
         #endregion
     }
 }
