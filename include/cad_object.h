@@ -136,7 +136,7 @@ struct cad_route_map
 
 	uint32_t currerntLayer; // this layer will be shown by render module [0..depth-1]
 
-	uint32_t *map;  // array. it is not very useful, so you can use macros RouteMap(row , column) 
+	uint32_t *map;  // array. it is not very useful, so you can use macros MapElement3D(row , column, layer) 
 					// instead of something like map[row][column]
 					// for 3D routing use RouteMap(row , column, layer) 
 					// possible values for this array are defined below
