@@ -134,12 +134,17 @@ struct cad_route_map
 	uint32_t width;
 	uint32_t depth; // can be 1 or 2
 
-	uint32_t *map;  // array. it is not very useful, so you can use macros RouteMap(row , column) 
+	uint32_t currerntLayer; // this layer will be shown by render module [0..depth-1]
+
+	uint32_t *map;  // array. it is not very useful, so you can use macros MapElement3D(row , column, layer) 
 					// instead of something like map[row][column]
 					// for 3D routing use RouteMap(row , column, layer) 
 					// possible values for this array are defined below
 
 	// TRACEROUTE module must initialize these methods :
+
+	// use it to add new layer
+	bool (* ReallocMap)(cad_route_map *self, uint32_t newDepth);
 
 	uint32_t ( * MakeStep)(cad_route_map * self,  bool demo_mode);	// make 1 algorithm step, fill data field 
 								// return LAST_ACTION_OK if all is done.

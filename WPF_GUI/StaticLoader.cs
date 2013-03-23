@@ -79,5 +79,10 @@ namespace WPF_GUI
         {
             FreePicture(picture.UnmanagedStruct);
         }
+
+        public static void CoreMessage(string msg)
+        {
+            // TODO
+        }
     }
 }
