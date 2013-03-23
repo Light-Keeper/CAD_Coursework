@@ -1,4 +1,4 @@
-#include <cad_module.h>
+﻿#include <cad_module.h>
 #include <cad_object.h>
 #include <cstdio>
 
@@ -166,7 +166,7 @@ bool access_ReadLayout(cad_access_module *self, char *str, cad_scheme *s, cad_ro
 		
 		if (c == NULL)
 		{
-			self->sys->kernel->PrintDebug( "Invalid file %s.\n undefined chip �%d referenced in [Positions] section\n", 
+			self->sys->kernel->PrintDebug( "Invalid file %s.\n undefined chip №%d referenced in [Positions] section\n", 
 				self->sys->fileName, number );
 			return false;
 		}
