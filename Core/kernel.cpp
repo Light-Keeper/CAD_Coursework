@@ -52,12 +52,25 @@ cad_module_info *internal_find_module_by_name(cad_kernel *self, const char *forc
 void kernel_Exec(cad_kernel *self)
 {
 	WIN32_FIND_DATAA find ;
-	HANDLE hFind = FindFirstFileA(".\\plugins\\*.dll", &find );
+	char ExecutableName[2048];
+	GetModuleFileNameA(NULL, ExecutableName, sizeof(ExecutableName));
+	ExecutableName[sizeof(ExecutableName) - 1] = 0;
+	
+	for (int i = strlen( ExecutableName ) - 1; i >= 0; i--)
+		if (ExecutableName[i] == '\\' || i == 0)
+		{
+			ExecutableName[i] = 0;
+			break;
+		}
+
+	strcat_s(ExecutableName, "\\plugins\\*.dll");
+
+	HANDLE hFind = FindFirstFileA(ExecutableName, &find );
 	
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
-			self->PrintDebug("loading: no plagins foud. can not start.\n");
-			return;
+		self->PrintDebug("loading: no plagins foud. can not start.\n");
+		return;
 	}
 
 	self->sys->module_cout = 0;
@@ -65,9 +78,13 @@ void kernel_Exec(cad_kernel *self)
 
 	do 
 	{
-		char name[1024];
-		sprintf_s(name, ".\\plugins\\%s", find.cFileName);
-		HMODULE hModule = LoadLibraryA( name );
+		{
+			uint32_t pos = strlen( ExecutableName );
+			while (ExecutableName[pos] != '\\') pos--;
+			strcpy_s(ExecutableName + pos + 1, sizeof(ExecutableName) - pos - 1, find.cFileName);
+		}
+
+		HMODULE hModule = LoadLibraryA( ExecutableName );
 		if (hModule == NULL) continue;
 		cad_module_info info;
 		init_module_f init = (init_module_f)GetProcAddress(hModule, "startup_module_function") ;
@@ -81,7 +98,7 @@ void kernel_Exec(cad_kernel *self)
 		}
 		else 
 		{
-			self->PrintDebug("loading %s error: cad_module_begin declaration not found\n", name );
+			self->PrintDebug("loading %s error: cad_module_begin declaration not found\n", ExecutableName );
 		}
 
 	} while ( FindNextFileA( hFind, &find) ) ;
