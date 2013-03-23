@@ -19,7 +19,7 @@ struct cad_route_map_private
 	// объект ядра нужен для вывода отладочной информации
 	cad_kernel *kernel;
 	// очередь обхода в ширину
-	std::queue<uint64_t> queue;
+	std::deque<uint64_t> queue;
 	// множество еще не протрассированных соединений
 	std::set<cad_wire *> NewWires;
 	// возможно надо что-то еще...
@@ -28,12 +28,30 @@ struct cad_route_map_private
 // удалить привытные данные, закрыть все используемые модулем ресурсы.
 // после этого структура cad_route_map *self больше не будет принадлежать вам
 // и вероятно будет использоваться другим модулем
-uint32_t CleanUp(cad_route_map *self)
+uint32_t AboutToDestroy(cad_route_map *self)
 {
 	delete self->sys;
 	self->sys = NULL;
 	self->AboutToDestroy = NULL;
 	self->MakeStepInDemoMode = NULL;
+	return 0;
+}
+
+// очистить все следы прибывания
+uint32_t Clear(cad_route_map *self)
+{
+	for (uint32_t i = 0; i < self->height * self->width * self->depth; i++)
+	{
+		if (self->map[i] & MAP_PIN != MAP_PIN) 
+			self->map[i] = MAP_EMPTY;
+	}
+	
+	// переинициализировать внутренние структуры
+	self->sys->queue.clear();
+	self->sys->NewWires.clear();
+
+	self->sys->NewWires.insert(self->sheme->connections.wire, 
+		self->sheme->connections.wire + self->sheme->connections.number_of_wires);
 	return 0;
 }
 
@@ -73,8 +91,10 @@ uint32_t MakeStepInDemoMode( cad_route_map *self)
 cad_route_map *Open(cad_kernel *c, cad_route_map *m)
 {
 	m->sys = new cad_route_map_private;
-	m->AboutToDestroy = CleanUp;
+	m->AboutToDestroy = AboutToDestroy;
 	m->MakeStepInDemoMode = MakeStepInDemoMode; 
+	m->Clear = Clear;
+	m->Clear( m );
 	return m;
 }
 
