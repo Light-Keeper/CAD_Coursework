@@ -208,8 +208,8 @@ bool access_ReadMap(cad_access_module *self, char *str, cad_scheme *s, cad_route
 		map->depth = t;
 		return true;
 	}
-
-	if ( map->depth == 0 || map->height == 0 || map->width == 0 ) return false;
+	if ( map->depth == 0 ) map->depth = 1;
+	if ( map->height == 0 || map->width == 0 ) return false;
 
 	if (map->map == NULL)
 	{

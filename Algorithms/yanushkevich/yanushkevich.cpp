@@ -56,6 +56,8 @@ uint32_t Clear(cad_route_map *self)
 	return 0;
 }
 
+uint32_t MakeStepInDemoModeImplementation( cad_route_map *self );
+
 // этот метод реализут алгоритм
 uint32_t MakeStepInDemoMode( cad_route_map *self)
 {
@@ -82,7 +84,7 @@ uint32_t MakeStepInDemoMode( cad_route_map *self)
 	// если достигнута конечная точка, и при этом был проложен провод, и есть еще не проложенные провода
 	// вернуть MORE_ACTIONS
 	// если оказалось, что делать больше нечего, вернуь LAST_ACTION_OK
-	return LAST_ACTION_OK;
+	return MakeStepInDemoModeImplementation( self );
 }
 
 
@@ -99,7 +101,17 @@ cad_route_map *Open(cad_kernel *c, cad_route_map *m)
 	return m;
 }
 
+// тут ничего не надо делать
 cad_route_map *Close(cad_kernel *c, cad_route_map *m)
 {
 	return NULL;
+}
+
+//----------------------------------------------------------------------------------//
+//--------------реализация моего алгоритма (Метод путевых координат)----------------//
+//----------------------------------------------------------------------------------//
+
+uint32_t MakeStepInDemoModeImplementation( cad_route_map *self )
+{
+	return LAST_ACTION_OK;
 }
