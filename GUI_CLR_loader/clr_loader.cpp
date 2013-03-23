@@ -4,6 +4,10 @@
 #include <windows.h>
 #include <metahost.h>
 
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+
 #import "mscorlib.tlb" raw_interfaces_only				\
     high_property_prefixes("_get","_put","_putref")		\
     rename("ReportEvent", "InteropServices_ReportEvent")
@@ -27,6 +31,7 @@ void gui_UpdatePictureEvent( cad_GUI *self );
 
 bool InitCLR(cad_GUI *self);
 bool DestroyCLR(cad_GUI *self);
+int my_printf(const char * format, ... );
 
 static cad_GUI *self = NULL;
 
@@ -44,7 +49,6 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	cad_GUI *gui = ( cad_GUI* ) malloc( sizeof(cad_GUI) );
 	gui->sys = (cad_GUI_private *) malloc( sizeof(cad_GUI_private) );
 	cad_GUI_private *sys = gui->sys;
-
 	sys->kernel = kernel;
 	gui->Exec = gui_Exec;
 	gui->SetCMDArgs = gui_SetCMDArgs;
@@ -57,6 +61,9 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 		free( gui );
 		return NULL;
 	}
+	kernel->PrintDebug = my_printf;
+	kernel->PrintInfo = my_printf; 
+	//kernel->PrintInfo("%d asdasd %s",10,"asd");
 	self = gui;
 	return gui;
 }
@@ -175,6 +182,25 @@ bool DestroyCLR(cad_GUI *self)
     }
 	return true;
 }
+
+int my_printf(const char * format, ... )
+{ 
+	char str[2048];
+	wchar_t wc_str[2048];
+	DWORD dwRetCode;
+	va_list args;
+    va_start(args, format);
+    int result = vsprintf(str,format, args);
+    va_end(args);
+	mbstowcs(wc_str, str, 2048);
+ 	HRESULT hr = self->sys->pClrRuntimeHost->ExecuteInDefaultAppDomain(L"plugins\\WPF_GUI.dll", 
+        L"WPF_GUI.StaticLoader", L"AddLog", wc_str, &dwRetCode);
+    if (FAILED(hr)) {
+		return 0;
+     }
+	return result;
+}
+
 
 // .NET assembly interface 
 
