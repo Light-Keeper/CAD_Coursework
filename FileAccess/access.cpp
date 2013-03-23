@@ -25,6 +25,7 @@ struct cad_access_module_private
 void access_delete_scheme( cad_scheme *scheme);
 void access_delete_map( cad_route_map *map);
 void access_ReadAll( cad_access_module *self,cad_scheme **scheme, cad_route_map **route_map );
+bool access_realloc_map(cad_route_map *self, uint32_t newDepth);
 
 cad_access_module * Open(cad_kernel * kernel, char *fileName)
 {
@@ -272,6 +273,7 @@ void access_ReadAll( cad_access_module *self,cad_scheme **scheme, cad_route_map 
 	cad_route_map * _map = (cad_route_map *)malloc( sizeof(cad_route_map) );
 	memset( _map, 0, sizeof( cad_route_map ));
 	_map->Delete = access_delete_map;
+	_map->ReallocMap = access_realloc_map;
 
 	__try
 	{
@@ -289,6 +291,25 @@ void access_ReadAll( cad_access_module *self,cad_scheme **scheme, cad_route_map 
 		else _map->sheme = _scheme;
 		fclose( file );
 	}
+}
+
+bool access_realloc_map(cad_route_map *self, uint32_t newDepth)
+{
+	if (newDepth == self->depth) return true;
+	self->map = (uint32_t *)::realloc( self->map, newDepth * self->width * self->height * sizeof(* self->map ) );
+	if (self->map == NULL) return false;
+
+	for (uint32_t t = self->depth; t < newDepth; t++)
+	{
+		for (uint32_t i = 0; i < self->height; i++)
+			for (uint32_t j = 0; j < self->width; j++)
+			{
+				MapElement3D(self,i,j,t) = 
+					MapElement3D(self,i,j,0) & MAP_PIN ? MapElement3D(self,i,j,0) : MAP_EMPTY;
+			}	
+	}
+	self->depth = newDepth;
+	return true;
 }
 
 void access_delete_scheme( cad_scheme *scheme)

@@ -54,7 +54,6 @@
     <Compile Include="Helpers\NotificationObject.cs" />
     <Compile Include="Models\Log.cs" />
     <Compile Include="Models\Picture.cs" />
-    <Compile Include="Models\Test.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ControlPanelViewModel.cs" />
