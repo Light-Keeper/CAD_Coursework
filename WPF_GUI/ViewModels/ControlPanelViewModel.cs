@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Input;
+using System.Windows.Forms;
 using WPF_GUI.Helpers;
+using WPF_GUI.Models;
 
 namespace WPF_GUI.ViewModels
 {
-    public class MainWindowViewModel : BaseViewModel
+    public class ControlPanelViewModel : BaseViewModel
     {
-        public MainWindowViewModel() // Must be deleted in realese
+        public ControlPanelViewModel() // Must be deleted in realese
         {
             RouteMethodCollection = new ObservableCollection<string>();
             MapMethodCollection = new ObservableCollection<string>();
@@ -21,16 +21,17 @@ namespace WPF_GUI.ViewModels
                 RouteMethodCollection.Add("Метод трассировки " + (i + 1));
                 MapMethodCollection.Add("Метод компановки " + (i + 1));
             }
-        }
 
-        #region Properties
+            this.IsDemoMode = true;
+        }
 
         #region StartButtonName
         private string _startButtonName;
         public string StartButtonName
         {
             get { return _startButtonName; }
-            set {
+            set
+            {
                 if (_startButtonName == value) return;
                 _startButtonName = value;
                 RaisePropertyChanged(() => StartButtonName);
@@ -49,6 +50,7 @@ namespace WPF_GUI.ViewModels
                 _isDemoMode = value;
                 if (_isDemoMode) this.StartButtonName = "Показать";
                 RaisePropertyChanged(() => IsDemoMode);
+                RaisePropertyChanged(() => StartButtonName);
             }
         }
         #endregion
@@ -70,7 +72,7 @@ namespace WPF_GUI.ViewModels
 
         #region IsStepMode
         private bool _isStepMode;
-        public bool IsStepMode 
+        public bool IsStepMode
         {
             get { return _isStepMode; }
             set
@@ -111,6 +113,36 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
+        #region SelectedRouteMethod
+        private string _selectedRouteMethod;
+        public string SelectedRouteMethod
+        {
+            get { return _selectedRouteMethod; }
+            set
+            {
+                if (_selectedRouteMethod == value) return;
+
+                _selectedRouteMethod = value;
+                RaisePropertyChanged(() => SelectedRouteMethod);
+            }
+        }
+        #endregion
+
+        #region SelectedMapMethod
+        private string _selectedMapMethod;
+        public string SelectedMapMethod
+        {
+            get { return _selectedMapMethod; }
+            set
+            {
+                if (_selectedMapMethod == value) return;
+
+                _selectedMapMethod = value;
+                RaisePropertyChanged(() => SelectedMapMethod);
+            }
+        }
+        #endregion
+
         #region ShowLog
         private bool _showLog;
         public bool ShowLog
@@ -121,94 +153,9 @@ namespace WPF_GUI.ViewModels
                 if (_showLog == value) return;
                 _showLog = value;
                 RaisePropertyChanged(() => ShowLog);
-                
-                if (_showLog)
-                {
-                    StaticLoader.Application.LogViewer.Show();
-                    StaticLoader.Application.LogViewer.WindowState = WindowState.Normal;
-                }
-                else
-                {
-                    StaticLoader.Application.LogViewer.Hide();
-                }
-                RaisePropertyChanged(() => ShowLog);
+                Mediator.NotifyColleagues(MediatorMessages.ShowLogWindow, _showLog);
             }
         }
-        #endregion
-
-        #region ImageZomm
-        private int _imageZoom = 100;
-        /// <summary>
-        /// Image Zoom
-        /// Can be 25, 50, 75, 100 (default), 125, 150, 175 or 200
-        /// </summary>
-        public int ImageZoom
-        {
-            get { return _imageZoom; }
-            set
-            {
-                if (_imageZoom == value) return;
-                _imageZoom = value;
-                RaisePropertyChanged(() => ImageZoom);
-                StatusBarInfo = "Изменён масштаб изображения на " + ImageZoom;
-            }
-        }
-        #endregion
-
-        #region ImageViewerWidth
-        private bool _imageViewerWidth;
-        public bool ImageViewerWidth
-        {
-            get { return _imageViewerWidth; }
-            set
-            {
-                if (_imageViewerWidth == value) return;
-                _imageViewerWidth = value;
-                RaisePropertyChanged(() => ImageViewerWidth);
-            }
-        }
-        #endregion
-
-        #region ImageViewerHeight
-        private bool _imageViewerHeight;
-        public bool ImageViewerHeight
-        {
-            get { return _imageViewerHeight; }
-            set
-            {
-                if (_imageViewerHeight == value) return;
-                _imageViewerHeight = value;
-                RaisePropertyChanged(() => ImageViewerHeight);
-            }
-        }
-        #endregion
-
-        #region StatuBarInfo
-        private string _statusBarInfo = "Что-то там случилось";
-        public string StatusBarInfo
-        {
-            get { return _statusBarInfo; }
-            set
-            {
-                if (_statusBarInfo == value) return;
-                _statusBarInfo = value;
-                RaisePropertyChanged(() => StatusBarInfo);
-            }
-        }
-        #endregion
-
-        #endregion
-
-        #region Commands
-
-        #endregion
-
-        #region Public Methods
-
-        #endregion
-
-        #region Private Methods
-
         #endregion
     }
 }

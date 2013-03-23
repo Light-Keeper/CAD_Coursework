@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using MediatorLib;
 using WPF_GUI.ViewModels;
 
 namespace WPF_GUI
@@ -11,14 +12,17 @@ namespace WPF_GUI
                 DataContext = new LogWindowViewModel()
             };
 
+//        private static readonly Mediator _mediator = new Mediator();
+//        public Mediator Mediator
+//        {
+//            get { return _mediator; }
+//        }
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            var mainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel { IsAutoMode = true }
-                };
+            var mainWindow = new MainWindow();
 
             mainWindow.Show();
         }
@@ -26,8 +30,7 @@ namespace WPF_GUI
         protected override void OnExit(ExitEventArgs e)
         {
             base.OnExit(e);
-
-            // Close log window and do something else
+            this.LogViewer.Close();
         }
     }
 }

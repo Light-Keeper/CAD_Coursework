@@ -35,16 +35,16 @@ namespace WPF_GUI
 
         private void DisplayedImage_OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton != MouseButtonState.Pressed || !_isDragging || sender == null)
-            {
-                return;
-            }
+//            if (e.LeftButton != MouseButtonState.Pressed || !_isDragging || sender == null)
+//            {
+//                return;
+//            }
 
-            var canvas = (sender as Image).Parent as Canvas;
-            var mouse = e.GetPosition(canvas);
-            mouse.Offset(-_mouseOffset.X, -_mouseOffset.Y);
-            DisplayedImage.SetValue(Canvas.LeftProperty, mouse.X);
-            DisplayedImage.SetValue(Canvas.TopProperty, mouse.Y);
+//            var canvas = (sender as Image).Parent as Canvas;
+//            var mouse = e.GetPosition(canvas);
+//            mouse.Offset(-_mouseOffset.X, -_mouseOffset.Y);
+//            DisplayedImage.SetValue(Canvas.LeftProperty, mouse.X);
+//            DisplayedImage.SetValue(Canvas.TopProperty, mouse.Y);
         }
     }
 }

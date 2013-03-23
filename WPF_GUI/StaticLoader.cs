@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using MediatorLib;
+using WPF_GUI.Helpers;
+using WPF_GUI.Models;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace WPF_GUI
@@ -18,6 +22,7 @@ namespace WPF_GUI
     public class StaticLoader
     {
         public static App Application;
+        public static Mediator Mediator;
 
         // call forom native code
         public static int Exec(string arg)
@@ -25,8 +30,12 @@ namespace WPF_GUI
             // если убрать этот месседж бокс, то и окно не появится
             // наверно он что-то там инициализирует, надо разобраться.
             MessageBox.Show("hello, " + arg + "!");
+//            System.Windows.Forms.Application.Run();
+//            Debug.Print("Something");
             Application = new App();
             Application.Run();
+
+            Mediator = new Mediator();
             return 0;
         }
 
@@ -78,6 +87,15 @@ namespace WPF_GUI
         public static void FreePicture(Picture picture)
         {
             FreePicture(picture.UnmanagedStruct);
+        }
+
+        public static void AddLog(string msg)
+        {
+//            Application.Mediator.NotifyColleagues(MediatorMessages.NewLog, new Log
+//                {
+//                    Message = msg,
+//                    CreateTime = DateTime.Now
+//                });
         }
     }
 }

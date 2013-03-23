@@ -50,13 +50,17 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\DelegateCommand.cs" />
+    <Compile Include="Helpers\MediatorMessages.cs" />
     <Compile Include="Helpers\NotificationObject.cs" />
     <Compile Include="Models\Log.cs" />
     <Compile Include="Models\Picture.cs" />
+    <Compile Include="Models\Test.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
+    <Compile Include="ViewModels\ControlPanelViewModel.cs" />
+    <Compile Include="ViewModels\ImageViewerViewModel.cs" />
     <Compile Include="ViewModels\LogWindowViewModel.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\StatusBarViewModel.cs" />
     <Compile Include="Views\LogWindow.xaml.cs">
       <DependentUpon>LogWindow.xaml</DependentUpon>
     </Compile>
@@ -111,6 +115,12 @@
   <ItemGroup>
     <Resource Include="Recources\Images\icon.ico" />
     <Resource Include="Recources\Images\pcb.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MediatorLib\MediatorLib.csproj">
+      <Project>{47500C2E-F8E7-4A5D-AA31-BAA2BF68D875}</Project>
+      <Name>MediatorLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
