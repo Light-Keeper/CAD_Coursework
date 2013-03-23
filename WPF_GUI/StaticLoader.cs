@@ -80,9 +80,10 @@ namespace WPF_GUI
             FreePicture(picture.UnmanagedStruct);
         }
 
-        public static void CoreMessage(string msg)
+        public static int CoreMessage(string msg)
         {
-            // TODO
+            MessageBox.Show(msg);
+            return 0;
         }
     }
 }

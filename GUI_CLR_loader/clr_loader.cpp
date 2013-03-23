@@ -63,8 +63,8 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	}
 	kernel->PrintDebug = my_printf;
 	kernel->PrintInfo = my_printf; 
-	//kernel->PrintInfo("%d asdasd %s",10,"asd");
 	self = gui;
+	kernel->PrintInfo("%d asdasd %s",10,"asd");
 	return gui;
 }
 
@@ -194,7 +194,7 @@ int my_printf(const char * format, ... )
     va_end(args);
 	mbstowcs(wc_str, str, 2048);
  	HRESULT hr = self->sys->pClrRuntimeHost->ExecuteInDefaultAppDomain(L"plugins\\WPF_GUI.dll", 
-        L"WPF_GUI.StaticLoader", L"AddLog", wc_str, &dwRetCode);
+        L"WPF_GUI.StaticLoader", L"CoreMessage", wc_str, &dwRetCode);
     if (FAILED(hr)) {
 		return 0;
      }
