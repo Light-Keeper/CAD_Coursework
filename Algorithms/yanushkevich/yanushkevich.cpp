@@ -49,9 +49,10 @@ uint32_t Clear(cad_route_map *self)
 	// переинициализировать внутренние структуры
 	self->sys->queue.clear();
 	self->sys->NewWires.clear();
-
-	self->sys->NewWires.insert(self->sheme->connections.wire, 
-		self->sheme->connections.wire + self->sheme->connections.number_of_wires);
+	
+	for (uint32_t i = 0; i < self->sheme->connections.number_of_wires; i++)
+		self->sys->NewWires.insert(&self->sheme->connections.wire[i]);
+	
 	return 0;
 }
 

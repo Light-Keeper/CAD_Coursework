@@ -267,21 +267,34 @@ bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bo
 }
 
 
-cad_picture * kernel_RenderPicture(cad_kernel *self, float pos_x, float pos_y, float size_x, float size_y)
+cad_picture * kernel_RenderPicture(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
 	if (! self->sys->render ) return NULL;
 
  	if (self->sys->current_state == KERNEL_STATE_PLACE || 
 		self->sys->current_state == KERNEL_STATE_PLACING )
-		return self->sys->render->RenderSchme(self->sys->render, self->sys->current_sheme, pos_x, pos_y, size_x, size_y );
+		return self->sys->render->RenderSchme(self->sys->render, self->sys->current_sheme );
 
 	if (self->sys->current_state == KERNEL_STATE_TRACE || 
 		self->sys->current_state == KERNEL_STATE_TRACING )
-		return self->sys->render->RenderMap(self->sys->render, self->sys->current_route, pos_x, pos_y, size_x, size_y );
+		return self->sys->render->RenderMap(self->sys->render, self->sys->current_route, forceDrawLayer,  forceDrawLayerNunber);
 
 	return NULL;
 }
 
+void kernel_StopCurrentModule( cad_kernel *self )
+{
+	if (self->sys->current_state == KERNEL_STATE_PLACING)
+	{
+		self->sys->current_sheme->AboutToDestroy( self->sys->current_sheme );
+		self->sys->current_state = KERNEL_STATE_PLACE;
+	}
+	if (self->sys->current_state == KERNEL_STATE_TRACING)
+	{
+		self->sys->current_sheme->AboutToDestroy( self->sys->current_sheme );
+		self->sys->current_state = KERNEL_STATE_TRACE;
+	}
+}
 
 cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
 {
@@ -303,7 +316,7 @@ cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
 	kernel->StartPlaceMoule		= kernel_StartPlaceMoule;
 	kernel->StartTraceModule	= kernel_StartTraceModule;
 	kernel->RenderPicture		= kernel_RenderPicture;
-
+	kernel->StopCurrentModule	= kernel_StopCurrentModule;
 	return kernel;
 }
 
