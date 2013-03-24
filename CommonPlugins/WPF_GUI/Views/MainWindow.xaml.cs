@@ -128,34 +128,14 @@ namespace WPF_GUI
 
         private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)
         {
-            MinControlPanel.Visibility = Visibility.Visible;
-
-            var fadeOutStoryboard = this.Resources["FadeOut"] as Storyboard;
-
-            if (fadeOutStoryboard == null) return;
-
-            fadeOutStoryboard.Begin();
-        }
-
-        private void FadeOut_OnCompleted(object sender, EventArgs e)
-        {
             FullControlPanel.Visibility = Visibility.Collapsed;
+            MinControlPanel.Visibility = Visibility.Visible;
         }
 
         private void MaximizeButton_OnClick(object sender, RoutedEventArgs e)
         {
-            FullControlPanel.Visibility = Visibility.Visible;
-
-            var fadeInStoryboard = this.Resources["FadeIn"] as Storyboard;
-
-            if (fadeInStoryboard == null) return;
-
-            fadeInStoryboard.Begin();
-        }
-
-        private void FadeIn_OnCompleted(object sender, EventArgs e)
-        {
             MinControlPanel.Visibility = Visibility.Collapsed;
+            FullControlPanel.Visibility = Visibility.Visible;
         }
     }
 }
