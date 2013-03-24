@@ -213,7 +213,7 @@ extern "C" __declspec( dllexport ) uint32_t RunToEnd();
 extern "C" __declspec( dllexport ) uint32_t NextStep( bool inDemoMode );
 
 extern "C" __declspec( dllexport ) bool CloseCurrentFile();
-extern "C" __declspec( dllexport ) cad_picture * RenderPicture(float pos_x, float pos_y, float size_x, float size_y );
+extern "C" __declspec( dllexport ) cad_picture * RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNunber );
 extern "C" __declspec( dllexport ) void FreePicture( cad_picture *p );
 
 uint32_t  GetCurrentState()
@@ -270,7 +270,7 @@ bool CloseCurrentFile()
 	return self->sys->kernel->CloseCurrentFile( self->sys->kernel );
 }
 
-cad_picture * RenderPicture(float pos_x, float pos_y, float size_x, float size_y )
+cad_picture * RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
 	// temporary stuff for testing
 	cad_picture* p = (cad_picture *)malloc( sizeof(cad_picture));
@@ -283,7 +283,7 @@ cad_picture * RenderPicture(float pos_x, float pos_y, float size_x, float size_y
 	return p;
 
 	// normal code. use it!
-//	return self->sys->kernel->RenderPicture(self->sys->kernel, pos_x, pos_y, size_x, size_y);
+//	return self->sys->kernel->RenderPicture(self->sys->kernel, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
 }
 
 void FreePicture( cad_picture *p )

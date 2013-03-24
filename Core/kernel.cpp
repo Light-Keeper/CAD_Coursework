@@ -52,12 +52,25 @@ cad_module_info *internal_find_module_by_name(cad_kernel *self, const char *forc
 void kernel_Exec(cad_kernel *self)
 {
 	WIN32_FIND_DATAA find ;
-	HANDLE hFind = FindFirstFileA(".\\plugins\\*.dll", &find );
+	char ExecutableName[2048];
+	GetModuleFileNameA(NULL, ExecutableName, sizeof(ExecutableName));
+	ExecutableName[sizeof(ExecutableName) - 1] = 0;
+	
+	for (int i = strlen( ExecutableName ) - 1; i >= 0; i--)
+		if (ExecutableName[i] == '\\' || i == 0)
+		{
+			ExecutableName[i] = 0;
+			break;
+		}
+
+	strcat_s(ExecutableName, "\\plugins\\*.dll");
+
+	HANDLE hFind = FindFirstFileA(ExecutableName, &find );
 	
 	if (hFind == INVALID_HANDLE_VALUE)
 	{
-			self->PrintDebug("loading: no plagins foud. can not start.\n");
-			return;
+		self->PrintDebug("loading: no plagins foud. can not start.\n");
+		return;
 	}
 
 	self->sys->module_cout = 0;
@@ -65,9 +78,13 @@ void kernel_Exec(cad_kernel *self)
 
 	do 
 	{
-		char name[1024];
-		sprintf_s(name, ".\\plugins\\%s", find.cFileName);
-		HMODULE hModule = LoadLibraryA( name );
+		{
+			uint32_t pos = strlen( ExecutableName );
+			while (ExecutableName[pos] != '\\') pos--;
+			strcpy_s(ExecutableName + pos + 1, sizeof(ExecutableName) - pos - 1, find.cFileName);
+		}
+
+		HMODULE hModule = LoadLibraryA( ExecutableName );
 		if (hModule == NULL) continue;
 		cad_module_info info;
 		init_module_f init = (init_module_f)GetProcAddress(hModule, "startup_module_function") ;
@@ -81,7 +98,7 @@ void kernel_Exec(cad_kernel *self)
 		}
 		else 
 		{
-			self->PrintDebug("loading %s error: cad_module_begin declaration not found\n", name );
+			self->PrintDebug("loading %s error: cad_module_begin declaration not found\n", ExecutableName );
 		}
 
 	} while ( FindNextFileA( hFind, &find) ) ;
@@ -222,9 +239,6 @@ uint32_t kernel_NextStep( cad_kernel *self,  bool demo_mode)
 
 bool kernel_StartPlaceMoule( cad_kernel *self, const char *force_module_name, bool demo_mode)
 {
-	// call it in debugging purpose. should be deleted
-	self->sys->gui->UpdatePictureEvent( self->sys->gui );
-
 	if ( self->sys->current_state == KERNEL_STATE_EMPTY ) return false;
 	
 	if (self->sys->current_route && self->sys->current_route->AboutToDestroy)
@@ -267,21 +281,34 @@ bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bo
 }
 
 
-cad_picture * kernel_RenderPicture(cad_kernel *self, float pos_x, float pos_y, float size_x, float size_y)
+cad_picture * kernel_RenderPicture(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
 	if (! self->sys->render ) return NULL;
 
  	if (self->sys->current_state == KERNEL_STATE_PLACE || 
 		self->sys->current_state == KERNEL_STATE_PLACING )
-		return self->sys->render->RenderSchme(self->sys->render, self->sys->current_sheme, pos_x, pos_y, size_x, size_y );
+		return self->sys->render->RenderSchme(self->sys->render, self->sys->current_sheme );
 
 	if (self->sys->current_state == KERNEL_STATE_TRACE || 
 		self->sys->current_state == KERNEL_STATE_TRACING )
-		return self->sys->render->RenderMap(self->sys->render, self->sys->current_route, pos_x, pos_y, size_x, size_y );
+		return self->sys->render->RenderMap(self->sys->render, self->sys->current_route, forceDrawLayer,  forceDrawLayerNunber);
 
 	return NULL;
 }
 
+void kernel_StopCurrentModule( cad_kernel *self )
+{
+	if (self->sys->current_state == KERNEL_STATE_PLACING)
+	{
+		self->sys->current_sheme->AboutToDestroy( self->sys->current_sheme );
+		self->sys->current_state = KERNEL_STATE_PLACE;
+	}
+	if (self->sys->current_state == KERNEL_STATE_TRACING)
+	{
+		self->sys->current_sheme->AboutToDestroy( self->sys->current_sheme );
+		self->sys->current_state = KERNEL_STATE_TRACE;
+	}
+}
 
 cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
 {
@@ -303,7 +330,7 @@ cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
 	kernel->StartPlaceMoule		= kernel_StartPlaceMoule;
 	kernel->StartTraceModule	= kernel_StartTraceModule;
 	kernel->RenderPicture		= kernel_RenderPicture;
-
+	kernel->StopCurrentModule	= kernel_StopCurrentModule;
 	return kernel;
 }
 

@@ -101,7 +101,7 @@ uint32_t gui_Exec(cad_GUI *self)
 
 void gui_UpdatePictureEvent( cad_GUI *self )
 {
-	cad_picture *p = self->sys->kernel->RenderPicture(self->sys->kernel, 0,0,1,1);
+	cad_picture *p = self->sys->kernel->RenderPicture(self->sys->kernel, false, 0);
 	if ( p )
 	{
 		p->Delete( p );

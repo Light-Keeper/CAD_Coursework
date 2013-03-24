@@ -220,8 +220,8 @@ struct cad_render_module
 	cad_render_module_private *sys;
 	
 	void (* SetPitcureSize)(uint32_t width, uint32_t height);
-	cad_picture *( *RenderSchme)(cad_render_module *self, cad_scheme * scheme, float pos_x, float pos_y, float size_x, float size_y);
-	cad_picture *( *RenderMap)(cad_render_module *self, cad_route_map * map, float pos_x, float pos_y, float size_x, float size_y);
+	cad_picture *( *RenderSchme)(cad_render_module *self, cad_scheme * scheme);
+	cad_picture *( *RenderMap)(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
 };
 
 
@@ -266,9 +266,10 @@ struct cad_kernel
 	bool (* StartTraceModule)( cad_kernel *self, const char *force_module_name, bool demo_mode);
 	uint32_t (* NextStep)( cad_kernel *self, bool demo_mode) ;
 	uint32_t (* RunToEnd)( cad_kernel *self) ;
+	void ( *StopCurrentModule)( cad_kernel *self);
 	bool (* CloseCurrentFile)( cad_kernel *self);
 
-	cad_picture * (*RenderPicture)(cad_kernel *self, float pos_x, float pos_y, float size_x, float size_y);
+	cad_picture * (*RenderPicture)(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
 };
 
 cad_kernel * cad_kernel_New(uint32_t argv, char *argc[]);
