@@ -11,6 +11,28 @@
         PreviewKeyDown="MainWindow_OnPreviewKeyDown">
     <Window.Resources>
         <ResourceDictionary>
+            <Storyboard x:Key="FadeOut">
+                <DoubleAnimation
+                    Storyboard.TargetProperty="Width"
+                    Storyboard.TargetName="FullControlPanel"
+                    To="30" Duration="0:0:0.5"/>
+                <DoubleAnimation
+                    Storyboard.TargetProperty="Opacity"
+                    Storyboard.TargetName="FullControlPanel"
+                    To="0.0" Duration="0:0:0.5"
+                    Completed="FadeOut_OnCompleted"/>
+            </Storyboard>
+            <Storyboard x:Key="FadeIn">
+                <DoubleAnimation
+                    Storyboard.TargetProperty="Width"
+                    Storyboard.TargetName="FullControlPanel"
+                    To="220" Duration="0:0:0.5"/>
+                <DoubleAnimation
+                    Storyboard.TargetProperty="Opacity"
+                    Storyboard.TargetName="FullControlPanel"
+                    To="1.0" Duration="0:0:0.5"
+                    Completed="FadeIn_OnCompleted"/>
+            </Storyboard>
             <TextBlock x:Key="CursorGrab" Cursor="../Recources/Cursors/grab.cur"/>
             <TextBlock x:Key="CursorGrabbing" Cursor="../Recources/Cursors/grabbing.cur"/>
             <ResourceDictionary.MergedDictionaries>
@@ -35,28 +57,37 @@
             <ScrollViewer.DataContext>
                 <viewModel:ImageViewerViewModel/>
             </ScrollViewer.DataContext>
+            <Border Padding="10">
             <Image Source="../Recources/Images/background.jpg" Stretch="Uniform"
                    Height="{Binding Path=ImageHeight, Mode=OneWay}" Name="DisplayedImage"
                    MouseDown="DisplayedImage_OnMouseDown"
-                   HorizontalAlignment="Center" VerticalAlignment="Center" />
+                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
         </ScrollViewer>
-<!--        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"-->
-<!--                BorderBrush="DarkGray" BorderThickness="5,0,0,0"-->
-<!--                Visibility="Collapsed">-->
-<!--            <Grid Background="WhiteSmoke">-->
-<!--                <Grid.RowDefinitions>-->
-<!--                    <RowDefinition Height="25"/>-->
-<!--                    <RowDefinition Height="Auto"/>-->
-<!--                    <RowDefinition Height="Auto"/>-->
-<!--                    <RowDefinition Height="Auto"/>-->
-<!--                    <RowDefinition Height="Auto"/>-->
-<!--                </Grid.RowDefinitions>-->
-<!--                <Button Content="Back" Width="30"/>-->
-<!--            </Grid>-->
-<!--        </Border>-->
-        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" BorderBrush="DarkGray" BorderThickness="5,0,0,0"
-                 Visibility="Visible">
-            <Grid Width="220" Background="WhiteSmoke">
+        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                BorderBrush="DarkGray" BorderThickness="5,0,0,0">
+            <Grid Background="WhiteSmoke" Name="MinControlPanel" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Button Name="MaximizeButton" Content="&lt;&lt;&lt;" Width="30"
+                            Template="{StaticResource FadeInOutButton}"
+                            Click="MaximizeButton_OnClick">
+                        <Button.ToolTip>
+                            Развернуть панель управления
+                        </Button.ToolTip>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                BorderBrush="DarkGray" BorderThickness="5,0,0,0" Visibility="Visible">
+            <Grid Width="220" Background="WhiteSmoke" Name="FullControlPanel">
                 <Grid.DataContext>
                     <viewModel:ControlPanelViewModel/>
                 </Grid.DataContext>
@@ -69,7 +100,9 @@
                 </Grid.RowDefinitions>
                 <!-- Заголовок и кнопка скрытия панели управления -->
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Button Content=">>>" Width="30" Template="{StaticResource MinimizeButton}">
+                    <Button Name="MinimizeButton" Content="&gt;&gt;&gt;" Width="30"
+                            Template="{StaticResource FadeInOutButton}"
+                            Click="MinimizeButton_OnClick">
                         <Button.ToolTip>
                             Свернуть панель управления
                         </Button.ToolTip>
@@ -145,9 +178,9 @@
                 <viewModel:StatusBarViewModel/>
             </StatusBar.DataContext>
             <StatusBarItem>
-                <Image Source="../Recources/Images/error.png">
+                <Image Source="{Binding Path=ImageStatePath}">
                     <Image.ToolTip>
-                        Программа готова к работе
+                        <Label Content="{Binding Path=ImageStateToolTip}"/>
                     </Image.ToolTip>
                 </Image>
             </StatusBarItem>
@@ -159,7 +192,7 @@
                         Value="{Binding ImageZoom, Mode=TwoWay}"
                         IsSnapToTickEnabled="True" Name="ImageZoom">
                     <Slider.ToolTip>
-                        <Label Content="{Binding Path=ZoomInfo}"/>
+                        <Label Content="{Binding Path=ZoomToolTip}"/>
                     </Slider.ToolTip>
                 </Slider>
             </StatusBarItem>

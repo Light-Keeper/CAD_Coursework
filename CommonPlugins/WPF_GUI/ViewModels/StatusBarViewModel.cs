@@ -10,23 +10,43 @@ namespace WPF_GUI.ViewModels
 {
     public class StatusBarViewModel : BaseViewModel
     {
+        private class StateInfo
+        {
+            public string ImagePath;
+            public string Description;
+        }
+
         private const int MIN_IMAGE_ZOOM = 10;
         private const int MAX_IMAGE_ZOOM = 200;
 
+        private readonly List<StateInfo> _stateInfo = new List<StateInfo>();
+
         public StatusBarViewModel()
         {
+            _stateInfo.Add(new StateInfo
+                {
+                    ImagePath = "../Recources/Images/ok.png",
+                    Description = "Всё в порядке, программа готова к работе"
+                });
+
+            _stateInfo.Add(new StateInfo
+                {
+                    ImagePath = "../Recources/Images/loading.png",
+                    Description = "Программа выполняет какие-то действия"
+                });
+
+            _stateInfo.Add(new StateInfo
+                {
+                    ImagePath = "../Recources/Images/error.png",
+                    Description = "Произошла ошибка в ходе работы программы"
+                });
+
             this.InfoMessage = "Что-то там случилось";
             this.ImageZoom = 100;
+            _currentState = 1;
         }
 
         #region Properties
-
-        #region ZoomInfo
-        public string ZoomInfo
-        {
-            get { return "Масштаб " + this.ImageZoom + "%"; }
-        }
-        #endregion
 
         #region InfoMessage
         private string _infoMessage;
@@ -67,6 +87,32 @@ namespace WPF_GUI.ViewModels
                 RaisePropertyChanged(() => ImageZoom);
                 Mediator.NotifyColleagues(MediatorMessages.ZoomChanged, _imageZoom);
             }
+        }
+
+        #endregion
+
+        #region CurrentState
+        private int _currentState;
+        #endregion
+
+        #region ImageStatePath
+        public string ImageStatePath 
+        {
+            get { return _stateInfo[_currentState].ImagePath; } 
+        }
+        #endregion
+
+        #region ZoomToolTip
+        public string ZoomToolTip
+        {
+            get { return "Масштаб " + this.ImageZoom + "%"; }
+        }
+        #endregion
+
+        #region ImageStateToolTip
+        public string ImageStateToolTip
+        {
+            get { return _stateInfo[_currentState].Description; }
         }
         #endregion
 

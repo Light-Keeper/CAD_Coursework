@@ -1,7 +1,9 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace WPF_GUI
 {
@@ -122,6 +124,38 @@ namespace WPF_GUI
                     return;
                 }
             }
+        }
+
+        private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            MinControlPanel.Visibility = Visibility.Visible;
+
+            var fadeOutStoryboard = this.Resources["FadeOut"] as Storyboard;
+
+            if (fadeOutStoryboard == null) return;
+
+            fadeOutStoryboard.Begin();
+        }
+
+        private void FadeOut_OnCompleted(object sender, EventArgs e)
+        {
+            FullControlPanel.Visibility = Visibility.Collapsed;
+        }
+
+        private void MaximizeButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            FullControlPanel.Visibility = Visibility.Visible;
+
+            var fadeInStoryboard = this.Resources["FadeIn"] as Storyboard;
+
+            if (fadeInStoryboard == null) return;
+
+            fadeInStoryboard.Begin();
+        }
+
+        private void FadeIn_OnCompleted(object sender, EventArgs e)
+        {
+            MinControlPanel.Visibility = Visibility.Collapsed;
         }
     }
 }
