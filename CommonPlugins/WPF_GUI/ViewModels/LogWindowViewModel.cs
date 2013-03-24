@@ -63,7 +63,6 @@ namespace WPF_GUI.ViewModels
             set
             {
                 if (_windowVisibility == value) return;
-
                 _windowVisibility = value;
                 RaisePropertyChanged(() => WindowVisibility);
             }
@@ -81,6 +80,7 @@ namespace WPF_GUI.ViewModels
         public void ChangeVisibility(bool visibility)
         {
             this.WindowVisibility = visibility;
+//            MessageBox.Show("xa-xa-xa" + visibility);
         }
     }
 }

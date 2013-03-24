@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -8,8 +9,9 @@ namespace WPF_GUI
     {
         private readonly Cursor _cursorGrab;
         private readonly Cursor _cursorGrabbing;
-        private Point _mouseOffset;
+
         private bool _isDragging;
+        private Point _mouseOffset;
 
         public MainWindow()
         {
@@ -23,28 +25,103 @@ namespace WPF_GUI
         private void DisplayedImage_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             DisplayedImage.Cursor = this._cursorGrabbing;
-            _mouseOffset = e.GetPosition(sender as Image);
+            _mouseOffset = e.GetPosition((sender as Image).Parent as ScrollViewer);
             _isDragging = true;
         }
 
-        private void DisplayedImage_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void MainWindow_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
             DisplayedImage.Cursor = this._cursorGrab;
             _isDragging = false;
         }
 
-        private void DisplayedImage_OnMouseMove(object sender, MouseEventArgs e)
+        private void ScrollViewer_OnMouseMove(object sender, MouseEventArgs e)
         {
-//            if (e.LeftButton != MouseButtonState.Pressed || !_isDragging || sender == null)
-//            {
-//                return;
-//            }
+            if (e.LeftButton != MouseButtonState.Pressed || !_isDragging || sender == null)
+            {
+                return;
+            }
 
-//            var canvas = (sender as Image).Parent as Canvas;
-//            var mouse = e.GetPosition(canvas);
-//            mouse.Offset(-_mouseOffset.X, -_mouseOffset.Y);
-//            DisplayedImage.SetValue(Canvas.LeftProperty, mouse.X);
-//            DisplayedImage.SetValue(Canvas.TopProperty, mouse.Y);
+            var mainImage = sender as ScrollViewer;
+            var mouse = e.GetPosition(mainImage);
+
+            mouse.Offset(-_mouseOffset.X, -_mouseOffset.Y);
+
+            ImageViewer.ScrollToHorizontalOffset(ImageViewer.HorizontalOffset - mouse.X);
+            ImageViewer.ScrollToVerticalOffset(ImageViewer.VerticalOffset - mouse.Y);
+
+            _mouseOffset = e.GetPosition(mainImage);
+        }
+
+        private void ImageViewer_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            // Scroll Width
+            if (Keyboard.Modifiers != ModifierKeys.Control &&
+                Keyboard.Modifiers == ModifierKeys.Shift &&
+                Keyboard.Modifiers != ModifierKeys.Alt)
+            {
+                e.Handled = true;
+
+                if (e.Delta > 0)
+                {
+                    if (ImageViewer.HorizontalOffset > 1)
+                    {
+                        ImageViewer.LineLeft();
+                        ImageViewer.LineLeft();
+                        ImageViewer.LineLeft();
+                        return;
+                    }
+                }
+
+                if (e.Delta < 0)
+                {
+                    if (ImageViewer.HorizontalOffset < ImageViewer.ScrollableWidth)
+                    {
+                        ImageViewer.LineRight();
+                        ImageViewer.LineRight();
+                        ImageViewer.LineRight();
+                        return;
+                    }
+                }
+            }
+            // Change Image Size
+            if (Keyboard.Modifiers == ModifierKeys.Control &&
+                Keyboard.Modifiers != ModifierKeys.Shift &&
+                Keyboard.Modifiers != ModifierKeys.Alt)
+            {
+                e.Handled = true;
+
+                if (e.Delta < 0)
+                {
+                    ImageZoom.Value -= 5;
+                    return;
+                }
+
+                if (e.Delta > 0)
+                {
+                    ImageZoom.Value += 5;
+                    return;
+                }
+            }
+        }
+
+        private void MainWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers == ModifierKeys.Control &&
+                Keyboard.Modifiers != ModifierKeys.Shift &&
+                Keyboard.Modifiers != ModifierKeys.Alt)
+            {
+                if (e.Key == Key.OemPlus)
+                {
+                    ImageZoom.Value += 5;
+                    return;
+                }
+                if (e.Key == Key.OemMinus)
+                {
+                    ImageZoom.Value -= 5;
+                    return;
+                }
+            }
         }
     }
 }

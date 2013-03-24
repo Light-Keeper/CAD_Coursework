@@ -47,7 +47,8 @@ namespace WPF_GUI.ViewModels
         public void ChangeImageZoom(int zoom)
         {
             this.ImageZoom = zoom;
-            this.ImageHeight = (SystemParameters.WorkArea.Height - 80.0) * zoom / 100;
+//            this.ImageHeight = (SystemParameters.WorkArea.Height - 80.0) * zoom / 100;
+            this.ImageHeight = 10*zoom;
         }
     }
 }

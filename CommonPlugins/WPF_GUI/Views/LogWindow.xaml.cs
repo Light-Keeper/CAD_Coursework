@@ -13,7 +13,7 @@ namespace WPF_GUI
         {
             e.Cancel = true;
             base.OnClosing(e);
-//            this.Hide();
+            this.Visibility = Visibility.Hidden;
         }
     }
 }

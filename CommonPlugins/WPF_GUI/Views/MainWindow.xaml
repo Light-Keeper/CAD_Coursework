@@ -6,7 +6,9 @@
         MinWidth="800" MinHeight="500"
         Width="800" Height="500"
         WindowStartupLocation="CenterScreen"
-        Icon="../Recources/Images/pcb.ico">
+        Icon="../Recources/Images/pcb.ico"
+        MouseUp="MainWindow_OnMouseUp"
+        PreviewKeyDown="MainWindow_OnPreviewKeyDown">
     <Window.Resources>
         <ResourceDictionary>
             <TextBlock x:Key="CursorGrab" Cursor="../Recources/Cursors/grab.cur"/>
@@ -16,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid MouseUp="DisplayedImage_OnMouseUp">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
@@ -28,13 +30,13 @@
         <ScrollViewer Name="ImageViewer" Grid.Column="0" Grid.Row="0" Background="MintCream"
                       HorizontalScrollBarVisibility="Visible"
                       BorderThickness="3" BorderBrush="DarkGray"
-                      Margin="1">
+                      PreviewMouseWheel="ImageViewer_OnMouseWheel"
+                      MouseMove="ScrollViewer_OnMouseMove" Focusable="False">
             <ScrollViewer.DataContext>
                 <viewModel:ImageViewerViewModel/>
             </ScrollViewer.DataContext>
             <Image Source="../Recources/Images/background.jpg" Stretch="Uniform"
                    Height="{Binding Path=ImageHeight, Mode=OneWay}" Name="DisplayedImage"
-                   MouseMove="DisplayedImage_OnMouseMove"
                    MouseDown="DisplayedImage_OnMouseDown"
                    HorizontalAlignment="Center" VerticalAlignment="Center" />
         </ScrollViewer>
@@ -99,14 +101,14 @@
                         <Label Content="Входной файл:" Grid.Row="0" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
                         <TextBox Grid.Row="1" IsReadOnly="True" VerticalAlignment="Center" Margin="0,0,3,0" Width="140" Height="22" Focusable="False" />
                         <Button Grid.Row="1" Grid.Column="1" Content="Открыть" Padding="1" Margin="2,0,0,0"/>
-                        <Label Content="Метод трассировки:" Grid.Row="2" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
+                        <Label Content="Метод компановки:" Grid.Row="2" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
                         <ComboBox Grid.Row="3" Grid.ColumnSpan="2"
-                                  ItemsSource="{Binding Path=RouteMethodCollection, Mode=OneWay}"
-                                  SelectedItem="{Binding Path=SelectedRouteMethod, Mode=OneWayToSource}"/>
-                        <Label Content="Метод компановки:" Grid.Row="4" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
-                        <ComboBox Grid.Row="5" Grid.ColumnSpan="2"
                                   ItemsSource="{Binding Path=MapMethodCollection, Mode=OneWay}"
                                   SelectedItem="{Binding Path=SelectedMapMethod, Mode=OneWayToSource}"/>
+                        <Label Content="Метод трассировки:" Grid.Row="4" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
+                        <ComboBox Grid.Row="5" Grid.ColumnSpan="2"
+                                  ItemsSource="{Binding Path=RouteMethodCollection, Mode=OneWay}"
+                                  SelectedItem="{Binding Path=SelectedRouteMethod, Mode=OneWayToSource}"/>
                     </Grid>
                 </GroupBox>
                 <GroupBox Grid.Row="2" Header="Режим работы" Margin="2" Padding="2">
@@ -122,6 +124,10 @@
                             <Button Content="{Binding Path=StartButtonName, Mode=OneWay}" Style="{StaticResource StartStopButton}" />
                             <Button Content="Остановить" Style="{StaticResource StartStopButton}" IsEnabled="False"/>
                         </StackPanel>
+                        <StackPanel>
+                            <RadioButton Content="Компановать" Margin="0,3" IsChecked="True"/>
+                            <RadioButton Content="Трассировать" Margin="0,3" IsEnabled="False"/>
+                        </StackPanel>
                         <CheckBox Name="ShowLogViewer" Content="Отображать консоль" Margin="0,5,0,3"
                                   IsChecked="{Binding Path=ShowLog}"/>
                     </StackPanel>
@@ -134,7 +140,7 @@
             </Grid>
         </Border>
         <!-- Строка состояния -->
-        <StatusBar Grid.Row="1" Height="25">
+        <StatusBar Grid.Row="1" Height="25" BorderThickness="0 1 0 0" BorderBrush="DarkGray">
             <StatusBar.DataContext>
                 <viewModel:StatusBarViewModel/>
             </StatusBar.DataContext>
@@ -151,7 +157,7 @@
             <StatusBarItem HorizontalAlignment="Right">
                 <Slider Minimum="10" Maximum="200" Width="100" TickPlacement="BottomRight"
                         Value="{Binding ImageZoom, Mode=TwoWay}"
-                        IsSnapToTickEnabled="True">
+                        IsSnapToTickEnabled="True" Name="ImageZoom">
                     <Slider.ToolTip>
                         <Label Content="{Binding Path=ZoomInfo}"/>
                     </Slider.ToolTip>

@@ -10,11 +10,16 @@ namespace WPF_GUI.ViewModels
 {
     public class StatusBarViewModel : BaseViewModel
     {
+        private const int MIN_IMAGE_ZOOM = 10;
+        private const int MAX_IMAGE_ZOOM = 200;
+
         public StatusBarViewModel()
         {
             this.InfoMessage = "Что-то там случилось";
             this.ImageZoom = 100;
         }
+
+        #region Properties
 
         #region ZoomInfo
         public string ZoomInfo
@@ -45,11 +50,30 @@ namespace WPF_GUI.ViewModels
             set
             {
                 if (_imageZoom == value) return;
-                _imageZoom = value;
+
+                if (value < MIN_IMAGE_ZOOM)
+                {
+                    _imageZoom = MIN_IMAGE_ZOOM;
+                }
+                else if (value > MAX_IMAGE_ZOOM)
+                {
+                    _imageZoom = MAX_IMAGE_ZOOM;
+                }
+                else
+                {
+                    _imageZoom = value;
+                }
+
                 RaisePropertyChanged(() => ImageZoom);
                 Mediator.NotifyColleagues(MediatorMessages.ZoomChanged, _imageZoom);
             }
         }
+        #endregion
+
+        #endregion
+
+        #region Public Methods
+
         #endregion
     }
 }

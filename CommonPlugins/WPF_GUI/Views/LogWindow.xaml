@@ -9,7 +9,7 @@
         Title="CAD Course Work - Log Viewer"
         WindowStartupLocation="CenterScreen"
         Icon="../Recources/Images/pcb.ico"
-        Visibility="{Binding WindowVisibility, Mode=OneWay}">
+        Visibility="{Binding WindowVisibility, Mode=TwoWay}">
     <Window.DataContext>
         <viewModel:LogWindowViewModel/>
     </Window.DataContext>
