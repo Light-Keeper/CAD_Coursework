@@ -66,7 +66,7 @@
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StaticLoader.cs" />
+    <Compile Include="Helpers\StaticLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
@@ -135,11 +135,13 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Recources\Images\gear.png" />
-    <Resource Include="Recources\Images\place.png" />
     <Resource Include="Recources\Images\trace.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Recources\Images\mode.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\place.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

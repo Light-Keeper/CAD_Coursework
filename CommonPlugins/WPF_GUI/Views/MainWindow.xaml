@@ -42,179 +42,205 @@
                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
         </ScrollViewer>
-        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+        <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+            <Grid.DataContext>
+                <viewModel:ControlPanelViewModel/>
+            </Grid.DataContext>
+            <Border 
                 BorderBrush="DarkGray" BorderThickness="5,0,0,0">
-            <Grid Background="WhiteSmoke" Name="MinControlPanel" Visibility="Collapsed">
-                <Grid.DataContext>
-                    <viewModel:ControlPanelViewModel/>
-                </Grid.DataContext>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Button Name="MaximizeButton" Content="&lt;&lt;&lt;" Width="40"
+                <Grid Background="WhiteSmoke" Name="MinControlPanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <Button Name="MaximizeButton" Content="&lt;&lt;&lt;" Width="40"
                             Template="{StaticResource FadeInOutButton}" Margin="0 0 0 2"
-                            Click="MaximizeButton_OnClick">
+                            Click="MaximizeButton_OnClick"
+                            Command="{Binding Path=RefreshContent}">
+                            <Button.ToolTip>
+                                Развернуть панель управления
+                            </Button.ToolTip>
+                        </Button>
+                    </StackPanel>
+                    <Button Grid.Row="1" Template="{StaticResource MinPanelButtonTemplate}"
+                        IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                        <Image Source="../Recources/Images/open.png"/>
                         <Button.ToolTip>
-                            Развернуть панель управления
+                            Открыть входной файл
                         </Button.ToolTip>
                     </Button>
-                </StackPanel>
-                <Button Grid.Row="1" Template="{StaticResource MinPanelButtonTemplate}">
-                    <Image Source="../Recources/Images/open.png"/>
-                    <Button.ToolTip>
-                        Открыть входной файл
-                    </Button.ToolTip>
-                </Button>
-                <Button Grid.Row="2" Template="{StaticResource MinPanelButtonTemplate}">
-                    <Image Source="../Recources/Images/place.png"/>
-                    <Button.ToolTip>
-                        Выбрать метод компановки
-                    </Button.ToolTip>
-                </Button>
-                <Button Grid.Row="3" Template="{StaticResource MinPanelButtonTemplate}">
-                    <Image Source="../Recources/Images/trace.png"/>
-                    <Button.ToolTip>
-                        Выбрать метод трассировки
-                    </Button.ToolTip>
-                </Button>
-                <Button Grid.Row="4" Template="{StaticResource MinPanelButtonTemplate}">
-                    <Image Source="../Recources/Images/mode.png"/>
-                    <Button.ToolTip>
-                        Выбрать режим работы
-                    </Button.ToolTip>
-                </Button>
-                <Separator Height="2" Grid.Row="5"/>
-                <Button Grid.Row="6" Template="{StaticResource MinPanelButtonTemplate}">
-                    <Image Source="../Recources/Images/start.png"/>
-                    <Button.ToolTip>
-                        Запустить моделирование
-                    </Button.ToolTip>
-                </Button>
-                <Button Grid.Row="7" Template="{StaticResource MinPanelButtonTemplate}" IsEnabled="False">
-                    <Image Source="../Recources/Images/stop.png"/>
-                    <Button.ToolTip>
-                        Остановить моделирование
-                    </Button.ToolTip>
-                </Button>
-                <Button Grid.Row="8" Template="{StaticResource MinPanelButtonTemplate}">
-                    <Image Source="../Recources/Images/gear.png"/>
-                    <Button.ToolTip>
-                        Выбрать способ обработки данных
-                    </Button.ToolTip>
-                </Button>
-                <Separator Height="2" Grid.Row="9"/>
-                <Button Grid.Row="10" Template="{StaticResource MinPanelButtonTemplate}">
-                    <Image Source="../Recources/Images/cmd.png"/>
-                    <Button.ToolTip>
-                        Показать/скрыть командную строку
-                    </Button.ToolTip>
-                </Button>
-                <Button Grid.Row="11" Template="{StaticResource MinPanelButtonTemplate}">
-                    <Image Source="../Recources/Images/info.png"/>
-                    <Button.ToolTip>
-                        Показать информацию о программе
-                    </Button.ToolTip>
-                </Button>
-            </Grid>
-        </Border>
-        <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2"
+                    <Button Grid.Row="2" Template="{StaticResource MinPanelButtonTemplate}"
+                        IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                        <Image Source="../Recources/Images/place.png"/>
+                        <Button.ToolTip>
+                            Выбрать метод компановки
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Grid.Row="3" Template="{StaticResource MinPanelButtonTemplate}"
+                        IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                        <Image Source="../Recources/Images/trace.png"/>
+                        <Button.ToolTip>
+                            Выбрать метод трассировки
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Grid.Row="4" Template="{StaticResource MinPanelButtonTemplate}"
+                        IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                        <Image Source="../Recources/Images/mode.png"/>
+                        <Button.ToolTip>
+                            Выбрать режим работы
+                        </Button.ToolTip>
+                    </Button>
+                    <Separator Height="2" Grid.Row="5"/>
+                    <Button Grid.Row="6" Template="{StaticResource MinPanelButtonTemplate}"
+                        IsEnabled="{Binding Path=IsStartButtonEnabled, NotifyOnSourceUpdated=True}"
+                        Command="{Binding Path=StartModeling}">
+                        <Image Source="../Recources/Images/start.png"/>
+                        <Button.ToolTip>
+                            Запустить моделирование
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Grid.Row="7" Template="{StaticResource MinPanelButtonTemplate}"
+                        IsEnabled="{Binding Path=IsStopButtonEnabled, NotifyOnSourceUpdated=True}"
+                        Command="{Binding Path=StopModeling}">
+                        <Image Source="../Recources/Images/stop.png"/>
+                        <Button.ToolTip>
+                            Остановить моделирование
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Grid.Row="8" Template="{StaticResource MinPanelButtonTemplate}"
+                        IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                        <Image Source="../Recources/Images/gear.png"/>
+                        <Button.ToolTip>
+                            Выбрать способ обработки данных
+                        </Button.ToolTip>
+                    </Button>
+                    <Separator Height="2" Grid.Row="9"/>
+                    <Button Grid.Row="10" Template="{StaticResource MinPanelButtonTemplate}"
+                        Command="{Binding Path=ShowConsole}">
+                        <Image Source="../Recources/Images/cmd.png"/>
+                        <Button.ToolTip>
+                            Показать/скрыть консоль
+                        </Button.ToolTip>
+                    </Button>
+                    <Button Grid.Row="11" Command="{Binding ShowInformation}"
+                        Template="{StaticResource MinPanelButtonTemplate}">
+                        <Image Source="../Recources/Images/info.png"/>
+                        <Button.ToolTip>
+                            Показать информацию о программе
+                        </Button.ToolTip>
+                    </Button>
+                </Grid>
+            </Border>
+            <!-- Full Control Panel -->
+            <Border 
                 BorderBrush="DarkGray" BorderThickness="5,0,0,0" Visibility="Visible">
-            <Grid Width="220" Background="WhiteSmoke" Name="FullControlPanel">
-                <Grid.DataContext>
-                    <viewModel:ControlPanelViewModel/>
-                </Grid.DataContext>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <!-- Заголовок и кнопка скрытия панели управления -->
-                <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Button Name="MinimizeButton" Content="&gt;&gt;&gt;" Width="40"
+                <Grid Width="220" Background="WhiteSmoke" Name="FullControlPanel">
+<!--                    <Grid.DataContext>-->
+<!--                        <viewModel:ControlPanelViewModel/>-->
+<!--                    </Grid.DataContext>-->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <!-- Заголовок и кнопка скрытия панели управления -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal">
+                        <Button Name="MinimizeButton" Content="&gt;&gt;&gt;" Width="40"
                             Template="{StaticResource FadeInOutButton}"
-                            Click="MinimizeButton_OnClick">
-                        <Button.ToolTip>
-                            Свернуть панель управления
-                        </Button.ToolTip>
-                    </Button>
-                    <Label Content="Панель управления" HorizontalAlignment="Center" FontSize="14" Padding="1"
+                            Click="MinimizeButton_OnClick"
+                            Command="{Binding Path=RefreshContent}">
+                            <Button.ToolTip>
+                                Свернуть панель управления
+                            </Button.ToolTip>
+                        </Button>
+                        <Label Content="Панель управления" HorizontalAlignment="Center" FontSize="14" Padding="1"
                            HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="180">
-                        <Label.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#C9FFFFFF" Offset="0" />
-                                <GradientStop Color="#E85D6DB5" Offset="1" />
-                            </LinearGradientBrush>
-                        </Label.Background>
-                    </Label>
-                </StackPanel>
-                <GroupBox Grid.Row="1" Header="Исходные данные" Margin="2" Padding="2">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Входной файл:" Grid.Row="0" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
-                        <TextBox Grid.Row="1" IsReadOnly="True" VerticalAlignment="Center" Margin="0,0,3,0" Width="140" Height="22" Focusable="False" />
-                        <Button Grid.Row="1" Grid.Column="1" Content="Открыть" Padding="1" Margin="2,0,0,0"/>
-                        <Label Content="Метод компановки:" Grid.Row="2" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
-                        <ComboBox Grid.Row="3" Grid.ColumnSpan="2"
+                            <Label.Background>
+                                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                    <GradientStop Color="#C9FFFFFF" Offset="0" />
+                                    <GradientStop Color="#E85D6DB5" Offset="1" />
+                                </LinearGradientBrush>
+                            </Label.Background>
+                        </Label>
+                    </StackPanel>
+                    <GroupBox Grid.Row="1" Header="Исходные данные" Margin="2" Padding="2"
+                          IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Входной файл:" Grid.Row="0" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
+                            <TextBox Grid.Row="1" IsReadOnly="True" VerticalAlignment="Center" Margin="0,0,3,0" Width="140" Height="22" Focusable="False" />
+                            <Button Grid.Row="1" Grid.Column="1" Content="Открыть" Padding="1" Margin="2,0,0,0"/>
+                            <Label Content="Метод компановки:" Grid.Row="2" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
+                            <ComboBox Grid.Row="3" Grid.ColumnSpan="2"
                                   ItemsSource="{Binding Path=MapMethodCollection, Mode=OneWay}"
                                   SelectedItem="{Binding Path=SelectedMapMethod, Mode=OneWayToSource}"/>
-                        <Label Content="Метод трассировки:" Grid.Row="4" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
-                        <ComboBox Grid.Row="5" Grid.ColumnSpan="2"
+                            <Label Content="Метод трассировки:" Grid.Row="4" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
+                            <ComboBox Grid.Row="5" Grid.ColumnSpan="2"
                                   ItemsSource="{Binding Path=RouteMethodCollection, Mode=OneWay}"
                                   SelectedItem="{Binding Path=SelectedRouteMethod, Mode=OneWayToSource}"/>
-                    </Grid>
-                </GroupBox>
-                <GroupBox Grid.Row="2" Header="Режим работы" Margin="2" Padding="2">
-                    <StackPanel>
-                        <RadioButton Content="Демонстрационный" Margin="0,3" IsChecked="{Binding Path=IsDemoMode, Mode=TwoWay}"/>
-                        <RadioButton Content="Автоматический" Margin="0,3" IsChecked="{Binding Path=IsAutoMode, Mode=TwoWay}"/>
-                        <RadioButton Content="Пошаговый" Margin="0,3" IsChecked="{Binding Path=IsStepMode, Mode=TwoWay}"/>
-                    </StackPanel>
-                </GroupBox>
-                <GroupBox Grid.Row="3" Header="Моделирование" Margin="2" Padding="2">
-                    <StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Button Content="{Binding Path=StartButtonName, Mode=OneWay}" Style="{StaticResource StartStopButton}" />
-                            <Button Content="Остановить" Style="{StaticResource StartStopButton}" IsEnabled="False"/>
-                        </StackPanel>
+                        </Grid>
+                    </GroupBox>
+                    <GroupBox Grid.Row="2" Header="Режим работы" Margin="2" Padding="2"
+                          IsEnabled="{Binding Path=IsAllElementsEnabled}">
                         <StackPanel>
-                            <RadioButton Content="Компановать" Margin="0,3" IsChecked="True"/>
-                            <RadioButton Content="Трассировать" Margin="0,3" IsEnabled="False"/>
+                            <RadioButton Content="Демонстрационный" Margin="0,3" IsChecked="{Binding Path=IsDemoMode, Mode=TwoWay}"/>
+                            <RadioButton Content="Автоматический" Margin="0,3" IsChecked="{Binding Path=IsAutoMode, Mode=TwoWay}"/>
+                            <RadioButton Content="Пошаговый" Margin="0,3" IsChecked="{Binding Path=IsStepMode, Mode=TwoWay}"/>
                         </StackPanel>
-                    </StackPanel>
-                </GroupBox>
-                <GroupBox Grid.Row="4" Header="Информация" Margin="2" Padding="2">
-                    <StackPanel>
-                        <Button Content="Отобразить консоль" Margin="1,2" Padding="3"/>
-                        <Button Content="О программе" Margin="1,3" Padding="3"/>
-                    </StackPanel>
-                </GroupBox>
-            </Grid>
-        </Border>
+                    </GroupBox>
+                    <GroupBox Grid.Row="3" Header="Моделирование" Margin="2" Padding="2">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <Button Content="{Binding Path=StartButtonName, Mode=OneWay}"
+                                    IsEnabled="{Binding Path=IsStartButtonEnabled}"
+                                    Style="{StaticResource StartStopButton}"
+                                    Command="{Binding Path=StartModeling}"/>
+                                <Button Content="Остановить"
+                                    Style="{StaticResource StartStopButton}"
+                                    IsEnabled="{Binding Path=IsStopButtonEnabled}"
+                                    Command="{Binding Path=StopModeling}"/>
+                            </StackPanel>
+                            <StackPanel IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                                <RadioButton Content="Компановать" Margin="0,3" IsChecked="True"/>
+                                <RadioButton Content="Трассировать" Margin="0,3" IsEnabled="False"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox Grid.Row="4" Header="Информация" Margin="2" Padding="2">
+                        <StackPanel>
+                            <Button Content="{Binding Path=ConsoleButtonText, Mode=OneWay}" Margin="1,2" Padding="3"
+                                Command="{Binding Path=ShowConsole}"/>
+                            <Button Content="О программе" Margin="1,3" Padding="3"
+                                Command="{Binding Path=ShowInformation}"/>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </Border>
+        </Grid>
         <!-- Строка состояния -->
         <StatusBar Grid.Row="1" Height="25" BorderThickness="0 1 0 0" BorderBrush="DarkGray">
             <StatusBar.DataContext>

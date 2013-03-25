@@ -3,27 +3,35 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using WPF_GUI.Helpers;
 using WPF_GUI.Models;
+using WPF_GUI.Views;
 
 namespace WPF_GUI.ViewModels
 {
     public class ControlPanelViewModel : BaseViewModel
     {
-        public ControlPanelViewModel() // Must be deleted in realese
+        public ControlPanelViewModel()
         {
-            RouteMethodCollection = new ObservableCollection<string>();
-            MapMethodCollection = new ObservableCollection<string>();
-
-            for (var i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++) // Must be deleted in realese
             {
                 RouteMethodCollection.Add("Метод трассировки " + (i + 1));
                 MapMethodCollection.Add("Метод компановки " + (i + 1));
             }
 
             this.IsDemoMode = true;
+            this.ConsoleButtonText = "Показать консоль";
+            this.IsStartButtonEnabled = true;
+            this.IsStopButtonEnabled = false;
+            this.IsAllElementsEnabled = true;
+
+            Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>) this.ConsoleWasClosed);
         }
+
+        #region Properties
 
         #region StartButtonName
         private string _startButtonName;
@@ -86,7 +94,7 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region RouteMethodCollection
-        private ObservableCollection<string> _routeMethodCollection;
+        private ObservableCollection<string> _routeMethodCollection = new ObservableCollection<string>();
         public ObservableCollection<string> RouteMethodCollection
         {
             get { return _routeMethodCollection; }
@@ -100,7 +108,7 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region MapMethodCollection
-        private ObservableCollection<string> _mapMethodCollection;
+        private ObservableCollection<string> _mapMethodCollection = new ObservableCollection<string>();
         public ObservableCollection<string> MapMethodCollection
         {
             get { return _mapMethodCollection; }
@@ -143,19 +151,122 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
-        #region ShowLog
-        private bool _showLog;
-        public bool ShowLog
+        #region IsStartButtonEnabled
+        private bool _isStartButtonEnabled;
+        public bool IsStartButtonEnabled
         {
-            get { return _showLog; }
+            get { return _isStartButtonEnabled; }
             set
             {
-                if (_showLog == value) return;
-                _showLog = value;
-                RaisePropertyChanged(() => ShowLog);
-                Mediator.NotifyColleagues(MediatorMessages.ShowLogWindow, _showLog);
+                if (_isStartButtonEnabled == value) return;
+                _isStartButtonEnabled = value;
+                RaisePropertyChanged(() => IsStartButtonEnabled);
             }
         }
         #endregion
+
+        #region IsStopButtonEnabled
+        private bool _isStopButtonEnabled;
+        public bool IsStopButtonEnabled
+        {
+            get { return _isStopButtonEnabled; }
+            set
+            {
+                if (_isStopButtonEnabled == value) return;
+                _isStopButtonEnabled = value;
+                RaisePropertyChanged(() => IsStopButtonEnabled);
+            }
+        }
+        #endregion
+
+        #region ConsoleButtonText
+        private string _consoleButtonText;
+        public string ConsoleButtonText
+        {
+            get { return _consoleButtonText; }
+            set
+            {
+                if (_consoleButtonText == value) return;
+                _consoleButtonText = value;
+                RaisePropertyChanged(() => ConsoleButtonText);
+            }
+        }
+        #endregion
+
+        #region IsAllElementsEnabled
+        private bool _isAllElementsEnabled;
+        public bool IsAllElementsEnabled
+        {
+            get { return _isAllElementsEnabled; }
+            set
+            {
+                if (_isAllElementsEnabled == value) return;
+                _isAllElementsEnabled = value;
+                RaisePropertyChanged(() => IsAllElementsEnabled);
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Commands
+
+        public ICommand StartModeling { get { return new DelegateCommand(OnStartModeling); } }
+        public ICommand StopModeling { get { return new DelegateCommand(OnStopModeling); } }
+        public ICommand ShowInformation { get { return new DelegateCommand(OnShowInformation); } }
+        public ICommand ShowConsole { get { return new DelegateCommand(OnShowConsole); } }
+        public ICommand RefreshContent {get { return new DelegateCommand(OnRefreshContent); } }
+
+        #endregion
+
+        #region Private Methods
+
+        private void OnStartModeling()
+        {
+            this.IsStartButtonEnabled = false;
+            this.IsStopButtonEnabled = true;
+            this.IsAllElementsEnabled = false;
+        }
+
+        private void OnStopModeling()
+        {
+            this.IsStartButtonEnabled = true;
+            this.IsStopButtonEnabled = false;
+            this.IsAllElementsEnabled = true;
+        }
+
+        private void OnShowInformation()
+        {
+            var infoWindow = new AboutWindow();
+            infoWindow.ShowDialog();
+        }
+
+        private void OnShowConsole()
+        {
+            if (StaticLoader.Application.LogViewer.Visibility == Visibility.Visible)
+            {
+                StaticLoader.Application.LogViewer.Hide();
+                this.ConsoleButtonText = "Показать консоль";
+            }
+            else
+            {
+                StaticLoader.Application.LogViewer.Show();
+                StaticLoader.Application.LogViewer.WindowState = WindowState.Normal;
+                this.ConsoleButtonText = "Скрыть консоль";
+            }
+        }
+
+        private void OnRefreshContent()
+        {
+            RaisePropertyChanged(() => IsStartButtonEnabled);
+        }
+
+        #endregion
+
+        public void ConsoleWasClosed(bool state)
+        {
+            this.ConsoleButtonText = "Показать консоль";
+        }
     }
 }
