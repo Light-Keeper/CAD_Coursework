@@ -46,8 +46,8 @@
             <Grid.DataContext>
                 <viewModel:ControlPanelViewModel/>
             </Grid.DataContext>
-            <Border 
-                BorderBrush="DarkGray" BorderThickness="5,0,0,0">
+            <!-- Minimized Control Panel -->
+            <Border BorderBrush="DarkGray" BorderThickness="5,0,0,0">
                 <Grid Background="WhiteSmoke" Name="MinControlPanel" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
@@ -63,18 +63,16 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <Button Name="MaximizeButton" Content="&lt;&lt;&lt;" Width="40"
-                            Template="{StaticResource FadeInOutButton}" Margin="0 0 0 2"
-                            Click="MaximizeButton_OnClick"
-                            Command="{Binding Path=RefreshContent}">
-                            <Button.ToolTip>
-                                Развернуть панель управления
-                            </Button.ToolTip>
-                        </Button>
-                    </StackPanel>
+                    <Button Grid.Row="0" Name="MaximizeButton" Content="&lt;&lt;&lt;" Width="40"
+                        Template="{StaticResource FadeInOutButton}" Margin="0 0 0 2"
+                        Click="MaximizeButton_OnClick">
+                        <Button.ToolTip>
+                            Развернуть панель управления
+                        </Button.ToolTip>
+                    </Button>
                     <Button Grid.Row="1" Template="{StaticResource MinPanelButtonTemplate}"
-                        IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                        IsEnabled="{Binding Path=IsAllElementsEnabled}"
+                            Command="{Binding Path=OpenSourceFile}">
                         <Image Source="../Recources/Images/open.png"/>
                         <Button.ToolTip>
                             Открыть входной файл
@@ -143,12 +141,8 @@
                 </Grid>
             </Border>
             <!-- Full Control Panel -->
-            <Border 
-                BorderBrush="DarkGray" BorderThickness="5,0,0,0" Visibility="Visible">
+            <Border BorderBrush="DarkGray" BorderThickness="5,0,0,0" Visibility="Visible">
                 <Grid Width="220" Background="WhiteSmoke" Name="FullControlPanel">
-<!--                    <Grid.DataContext>-->
-<!--                        <viewModel:ControlPanelViewModel/>-->
-<!--                    </Grid.DataContext>-->
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
                         <RowDefinition Height="Auto"/>
@@ -156,12 +150,11 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <!-- Заголовок и кнопка скрытия панели управления -->
+                    <!-- Header and Minimize Button -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
                         <Button Name="MinimizeButton" Content="&gt;&gt;&gt;" Width="40"
                             Template="{StaticResource FadeInOutButton}"
-                            Click="MinimizeButton_OnClick"
-                            Command="{Binding Path=RefreshContent}">
+                            Click="MinimizeButton_OnClick">
                             <Button.ToolTip>
                                 Свернуть панель управления
                             </Button.ToolTip>
@@ -192,8 +185,15 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <Label Content="Входной файл:" Grid.Row="0" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
-                            <TextBox Grid.Row="1" IsReadOnly="True" VerticalAlignment="Center" Margin="0,0,3,0" Width="140" Height="22" Focusable="False" />
-                            <Button Grid.Row="1" Grid.Column="1" Content="Открыть" Padding="1" Margin="2,0,0,0"/>
+                            <TextBox Grid.Row="1" IsReadOnly="True" VerticalAlignment="Center"
+                                     Margin="0,0,3,0" Width="140" Height="22"
+                                     Text="{Binding Path=InputFile, Mode=OneWay}">
+                                <TextBox.ToolTip>
+                                    <Label Content="{Binding Path=InputFile, Mode=OneWay}"/>
+                                </TextBox.ToolTip>
+                            </TextBox>
+                            <Button Grid.Row="1" Grid.Column="1" Content="Открыть" Padding="1"
+                                    Margin="2,0,0,0" Command="{Binding Path=OpenSourceFile}"/>
                             <Label Content="Метод компановки:" Grid.Row="2" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
                             <ComboBox Grid.Row="3" Grid.ColumnSpan="2"
                                   ItemsSource="{Binding Path=MapMethodCollection, Mode=OneWay}"
@@ -241,7 +241,7 @@
                 </Grid>
             </Border>
         </Grid>
-        <!-- Строка состояния -->
+        <!-- Status Line -->
         <StatusBar Grid.Row="1" Height="25" BorderThickness="0 1 0 0" BorderBrush="DarkGray">
             <StatusBar.DataContext>
                 <viewModel:StatusBarViewModel/>

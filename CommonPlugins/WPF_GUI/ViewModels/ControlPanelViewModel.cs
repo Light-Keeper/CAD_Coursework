@@ -205,7 +205,20 @@ namespace WPF_GUI.ViewModels
                 RaisePropertyChanged(() => IsAllElementsEnabled);
             }
         }
+        #endregion
 
+        #region InputFile
+        private string _inputFile;
+        public string InputFile
+        {
+            get { return _inputFile; }
+            set
+            {
+                if (_inputFile == value) return;
+                _inputFile = value;
+                RaisePropertyChanged(() => InputFile);
+            }
+        }
         #endregion
 
         #endregion
@@ -216,7 +229,7 @@ namespace WPF_GUI.ViewModels
         public ICommand StopModeling { get { return new DelegateCommand(OnStopModeling); } }
         public ICommand ShowInformation { get { return new DelegateCommand(OnShowInformation); } }
         public ICommand ShowConsole { get { return new DelegateCommand(OnShowConsole); } }
-        public ICommand RefreshContent {get { return new DelegateCommand(OnRefreshContent); } }
+        public ICommand OpenSourceFile { get { return new DelegateCommand(OnOpenSourceFile); } }
 
         #endregion
 
@@ -257,9 +270,21 @@ namespace WPF_GUI.ViewModels
             }
         }
 
-        private void OnRefreshContent()
+        private void OnOpenSourceFile()
         {
-            RaisePropertyChanged(() => IsStartButtonEnabled);
+            var dialog = new OpenFileDialog
+                {
+                    Title = "Открытие файла с входными данными",
+                    Filter = "Файл данных (*.txt)|*.txt|Все файлы (*.*)|*.*",
+                    DefaultExt = "*.txt"
+                };
+
+            if (dialog.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            this.InputFile = dialog.FileName;
         }
 
         #endregion
