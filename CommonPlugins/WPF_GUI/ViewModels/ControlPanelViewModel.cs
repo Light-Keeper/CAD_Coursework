@@ -9,6 +9,7 @@ using System.Windows.Input;
 using WPF_GUI.Helpers;
 using WPF_GUI.Models;
 using WPF_GUI.Views;
+using MessageBox = System.Windows.MessageBox;
 
 namespace WPF_GUI.ViewModels
 {
@@ -16,10 +17,23 @@ namespace WPF_GUI.ViewModels
     {
         public ControlPanelViewModel()
         {
+            this.PlaceMethodCollection = new ObservableCollection<Place>();
+            this.RouteMethodCollection = new ObservableCollection<Route>();
             for (var i = 0; i < 5; i++) // Must be deleted in realese
             {
-                RouteMethodCollection.Add("Метод трассировки " + (i + 1));
-                MapMethodCollection.Add("Метод компановки " + (i + 1));
+                PlaceMethodCollection.Add(
+                    new Place
+                    {
+                        Name = "Метод компановки " + (i + 1),
+                        Command = SelectPlaceMethod
+                    });
+
+                RouteMethodCollection.Add(
+                    new Route
+                    {
+                        Name = "Метод трассировки " + (i + 1),
+                        Command = SelectRouteMethod
+                    });
             }
 
             this.IsDemoMode = true;
@@ -27,6 +41,9 @@ namespace WPF_GUI.ViewModels
             this.IsStartButtonEnabled = true;
             this.IsStopButtonEnabled = false;
             this.IsAllElementsEnabled = true;
+            this.IsPlaceMethodChecked = true;
+            this.IsPlaceMethodEnabled = true;
+            this.IsTraceMethodEnabled = false;
 
             Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>) this.ConsoleWasClosed);
         }
@@ -56,9 +73,12 @@ namespace WPF_GUI.ViewModels
             {
                 if (_isDemoMode == value) return;
                 _isDemoMode = value;
-                if (_isDemoMode) this.StartButtonName = "Показать";
+                if (_isDemoMode)
+                {
+                    this.StartButtonName = "Показать";
+                    this.IsAutoMode = this.IsStepMode = false;
+                }
                 RaisePropertyChanged(() => IsDemoMode);
-                RaisePropertyChanged(() => StartButtonName);
             }
         }
         #endregion
@@ -72,7 +92,11 @@ namespace WPF_GUI.ViewModels
             {
                 if (_isAutoMode == value) return;
                 _isAutoMode = value;
-                if (_isAutoMode) this.StartButtonName = "Запустить";
+                if (_isAutoMode)
+                {
+                    this.StartButtonName = "Запустить";
+                    this.IsDemoMode = this.IsStepMode = false;
+                }
                 RaisePropertyChanged(() => IsAutoMode);
             }
         }
@@ -87,66 +111,50 @@ namespace WPF_GUI.ViewModels
             {
                 if (_isStepMode == value) return;
                 _isStepMode = value;
-                if (_isStepMode) this.StartButtonName = "Шаг";
+                if (_isStepMode)
+                {
+                    this.StartButtonName = "Шаг";
+                    this.IsAutoMode = this.IsDemoMode = false;
+                }
                 RaisePropertyChanged(() => IsStepMode);
             }
         }
         #endregion
 
         #region RouteMethodCollection
-        private ObservableCollection<string> _routeMethodCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> RouteMethodCollection
-        {
-            get { return _routeMethodCollection; }
-            set
-            {
-                if (_routeMethodCollection == value) return;
-                _routeMethodCollection = value;
-                RaisePropertyChanged(() => RouteMethodCollection);
-            }
-        }
+        public ObservableCollection<Route> RouteMethodCollection { get; private set; }
         #endregion
 
-        #region MapMethodCollection
-        private ObservableCollection<string> _mapMethodCollection = new ObservableCollection<string>();
-        public ObservableCollection<string> MapMethodCollection
-        {
-            get { return _mapMethodCollection; }
-            set
-            {
-                if (_mapMethodCollection == value) return;
-                _mapMethodCollection = value;
-                RaisePropertyChanged(() => MapMethodCollection);
-            }
-        }
+        #region PlaceMethodCollection
+        public ObservableCollection<Place> PlaceMethodCollection { get; private set; }
         #endregion
 
         #region SelectedRouteMethod
-        private string _selectedRouteMethod;
-        public string SelectedRouteMethod
+        private Route _selectedRouteMethod;
+        public Route SelectedRouteMethod
         {
             get { return _selectedRouteMethod; }
             set
             {
                 if (_selectedRouteMethod == value) return;
-
                 _selectedRouteMethod = value;
+                RouteMethodCollection.First(x => x.Name == value.Name).IsChecked = true;
                 RaisePropertyChanged(() => SelectedRouteMethod);
             }
         }
         #endregion
 
-        #region SelectedMapMethod
-        private string _selectedMapMethod;
-        public string SelectedMapMethod
+        #region SelectedPlaceMethod
+        private Place _selectedPlaceMethod;
+        public Place SelectedPlaceMethod
         {
-            get { return _selectedMapMethod; }
+            get { return _selectedPlaceMethod; }
             set
             {
-                if (_selectedMapMethod == value) return;
-
-                _selectedMapMethod = value;
-                RaisePropertyChanged(() => SelectedMapMethod);
+                if (_selectedPlaceMethod == value) return;
+                _selectedPlaceMethod = value;
+                PlaceMethodCollection.First(x => x.Name == value.Name).IsChecked = true;
+                RaisePropertyChanged(() => SelectedPlaceMethod);
             }
         }
         #endregion
@@ -221,12 +229,70 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
+        #region IsTraceMethodChecked
+        private bool _isTraceMethodChecked;
+        public bool IsTraceMethodChecked
+        {
+            get { return _isTraceMethodChecked; }
+            set
+            {
+               if (_isTraceMethodChecked == value) return;
+                _isTraceMethodChecked = value;
+                RaisePropertyChanged(() => IsTraceMethodChecked);
+            }
+        }
+        #endregion
+
+        #region IsTraceMethodEnabled
+        private bool _isTraceMethodEnabled;
+        public bool IsTraceMethodEnabled
+        {
+            get { return _isTraceMethodEnabled; }
+            set
+            {
+                if (_isTraceMethodEnabled == value) return;
+                _isTraceMethodEnabled = value;
+                RaisePropertyChanged(() => IsTraceMethodEnabled);
+            }
+        }
+        #endregion
+
+        #region IsPlaceMethodChecked
+        private bool _isPlaceMethodChecked;
+        public bool IsPlaceMethodChecked
+        {
+            get { return _isPlaceMethodChecked; }
+            set
+            {
+                if (_isPlaceMethodChecked == value) return;
+                _isPlaceMethodChecked = value;
+                RaisePropertyChanged(() => IsPlaceMethodChecked);
+            }
+        }
+        #endregion
+
+        #region IsPlaceMethodEnabled
+        private bool _isPlaceMethodEnabled;
+        public bool IsPlaceMethodEnabled
+        {
+            get { return _isPlaceMethodEnabled; }
+            set
+            {
+                if (_isPlaceMethodEnabled == value) return;
+                _isPlaceMethodEnabled = value;
+                RaisePropertyChanged(() => IsPlaceMethodEnabled);
+            }
+        }
+        #endregion
+
         #endregion
 
         #region Commands
 
         public ICommand StartModeling { get { return new DelegateCommand(OnStartModeling); } }
         public ICommand StopModeling { get { return new DelegateCommand(OnStopModeling); } }
+        public ICommand SelectPlaceMethod { get { return new DelegateCommand(OnSelectPlaceMethod); } }
+        public ICommand SelectRouteMethod { get { return new DelegateCommand(OnSelectRouteMethod); } }
         public ICommand ShowInformation { get { return new DelegateCommand(OnShowInformation); } }
         public ICommand ShowConsole { get { return new DelegateCommand(OnShowConsole); } }
         public ICommand OpenSourceFile { get { return new DelegateCommand(OnOpenSourceFile); } }
@@ -235,27 +301,27 @@ namespace WPF_GUI.ViewModels
 
         #region Private Methods
 
-        private void OnStartModeling()
+        private void OnStartModeling(object o)
         {
             this.IsStartButtonEnabled = false;
             this.IsStopButtonEnabled = true;
             this.IsAllElementsEnabled = false;
         }
 
-        private void OnStopModeling()
+        private void OnStopModeling(object o)
         {
             this.IsStartButtonEnabled = true;
             this.IsStopButtonEnabled = false;
             this.IsAllElementsEnabled = true;
         }
 
-        private void OnShowInformation()
+        private void OnShowInformation(object o)
         {
             var infoWindow = new AboutWindow();
             infoWindow.ShowDialog();
         }
 
-        private void OnShowConsole()
+        private void OnShowConsole(object o)
         {
             if (StaticLoader.Application.LogViewer.Visibility == Visibility.Visible)
             {
@@ -270,7 +336,7 @@ namespace WPF_GUI.ViewModels
             }
         }
 
-        private void OnOpenSourceFile()
+        private void OnOpenSourceFile(object o)
         {
             var dialog = new OpenFileDialog
                 {
@@ -285,6 +351,40 @@ namespace WPF_GUI.ViewModels
             }
 
             this.InputFile = dialog.FileName;
+        }
+
+        private void OnSelectPlaceMethod(object o)
+        {
+            if (o == null) return;
+
+            foreach (var place in PlaceMethodCollection)
+            {
+                if (place.Name == (o as String))
+                {
+                    this.SelectedPlaceMethod = place;
+                }
+                else
+                {
+                    place.IsChecked = false;
+                }
+            }
+        }
+
+        private void OnSelectRouteMethod(object o)
+        {
+            if (o == null) return;
+
+            foreach (var route in RouteMethodCollection)
+            {
+                if (route.Name == (o as String))
+                {
+                    this.SelectedRouteMethod = route;
+                }
+                else
+                {
+                    route.IsChecked = false;
+                }
+            }
         }
 
         #endregion

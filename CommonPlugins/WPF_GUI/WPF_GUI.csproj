@@ -54,6 +54,8 @@
     <Compile Include="Helpers\NotificationObject.cs" />
     <Compile Include="Models\Log.cs" />
     <Compile Include="Models\Picture.cs" />
+    <Compile Include="Models\Place.cs" />
+    <Compile Include="Models\Route.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ControlPanelViewModel.cs" />
@@ -142,6 +144,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Recources\Images\place.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\options.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

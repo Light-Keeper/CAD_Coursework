@@ -68,4 +68,17 @@
       </Trigger>
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
+
+    <Style x:Key="RadioMenuItemStyle" TargetType="{x:Type MenuItem}">
+        <Setter Property="IsCheckable" Value="True"/>
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True">
+                <Setter Property="MenuItem.IsCheckable" Value="False"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False">
+                <Setter Property="MenuItem.IsCheckable" Value="True"/>
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>
