@@ -118,6 +118,29 @@
   <ItemGroup>
     <Resource Include="Recources\Images\loading.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\cmd.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\start.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\stop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\gear.png" />
+    <Resource Include="Recources\Images\place.png" />
+    <Resource Include="Recources\Images\trace.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Recources\Images\mode.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
