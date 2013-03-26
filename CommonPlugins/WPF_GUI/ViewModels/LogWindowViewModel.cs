@@ -24,8 +24,6 @@ namespace WPF_GUI.ViewModels
                         Message = "Тестовое сообщение " + (i+1)
                     });
             }
-
-            Mediator.Register(MediatorMessages.ShowLogWindow, (Action<bool>) this.ChangeVisibility);
         }
 
         #region Properties
@@ -55,33 +53,29 @@ namespace WPF_GUI.ViewModels
 
         #endregion
 
-        #region WindowVisibility
-        private bool _windowVisibility;
-        public bool WindowVisibility
+        #region IsLogVisible
+        private Visibility _isLogVisible;
+        public Visibility IsLogVisible
         {
-            get { return _windowVisibility; }
+            get { return _isLogVisible; }
             set
             {
-                if (_windowVisibility == value) return;
-                _windowVisibility = value;
-                RaisePropertyChanged(() => WindowVisibility);
+                if (_isLogVisible == value) return;
+                _isLogVisible = value;
+                RaisePropertyChanged(() => IsLogVisible);
+                if (_isLogVisible == Visibility.Hidden) Mediator.NotifyColleagues(MediatorMessages.LogWindowClosed, true);
             }
         }
         #endregion
 
         #endregion
 
-//        [MediatorMessageSink(MediatorMessages.NewLog, ParameterType = typeof(Log))]
+        #region Public Methods
         public void AddLog(Log log)
         {
             _logCollection.Add(log);
         }
-
-        public void ChangeVisibility(bool visibility)
-        {
-            this.WindowVisibility = visibility;
-//            MessageBox.Show("xa-xa-xa" + visibility);
-        }
+        #endregion
     }
 }
 

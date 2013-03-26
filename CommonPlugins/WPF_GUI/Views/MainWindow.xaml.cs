@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 
@@ -136,6 +137,17 @@ namespace WPF_GUI
         {
             MinControlPanel.Visibility = Visibility.Collapsed;
             FullControlPanel.Visibility = Visibility.Visible;
+        }
+
+        private void OptionsButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            OptionsButtonContextMenu.PlacementTarget = sender as Button;
+            OptionsButtonContextMenu.IsOpen = true;
+        }
+
+        private void OptionsButton_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
         }
     }
 }
