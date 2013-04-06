@@ -206,12 +206,12 @@ struct cad_picture_private;
 struct cad_picture
 {
 	// do not change order of fields in this struct!
-	volatile cad_picture_private *sys;
-	volatile uint32_t height;
-	volatile uint32_t width;
-	volatile uint32_t *data; // RGB array
+	cad_picture_private *sys;
+	uint32_t height;
+	uint32_t width;
+	uint32_t *data; // RGB array
 
-	volatile void (*Delete)(cad_picture *self);
+	void (*Delete)(cad_picture *self);
 };
 
 
@@ -219,7 +219,7 @@ struct cad_render_module
 {
 	cad_render_module_private *sys;
 	
-	void (* SetPitcureSize)(uint32_t width, uint32_t height);
+	void (* SetPitcureSize)(cad_render_module *self, uint32_t width, uint32_t height);
 	cad_picture *( *RenderSchme)(cad_render_module *self, cad_scheme * scheme);
 	cad_picture *( *RenderMap)(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
 };

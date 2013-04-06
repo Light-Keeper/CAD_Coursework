@@ -95,12 +95,6 @@ uint32_t gui_Exec(cad_GUI *self)
 
 void gui_UpdatePictureEvent( cad_GUI *self )
 {
-//	cad_picture *p = self->sys->kernel->RenderPicture(self->sys->kernel, 0,0,1,1);
-//	if ( p )
-//	{
-//		p->Delete( p );
-//	}
-
 	DWORD dwRetCode;
  	HRESULT  hr = self->sys->pClrRuntimeHost->ExecuteInDefaultAppDomain(L"plugins\\WPF_GUI.dll", 
         L"WPF_GUI.StaticLoader", L"UpdatePictureEvent", L"", &dwRetCode);
