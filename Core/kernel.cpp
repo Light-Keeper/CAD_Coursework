@@ -17,6 +17,7 @@ struct cad_kernel_private
 
 void kernel_Delete(cad_kernel *self)
 {
+	free(self->sys);
 	free(self);
 }
 

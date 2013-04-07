@@ -88,6 +88,7 @@ bool access_ReadConnection(cad_access_module *self, char *buffer, cad_scheme *s,
 	w->chips = NULL;
 	w->pin_numbers = NULL;
 	w->endpoints_number = 0;
+	w->number = s->connections.number_of_wires - 1;
 
 	for (char *pos = buffer; *pos != 0; pos++)
 	{
