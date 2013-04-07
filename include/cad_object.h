@@ -69,7 +69,7 @@ struct cad_wire
 
 	uint32_t *pin_numbers;		
 	cad_chip **chips;
-
+	uint32_t number;
 };
 
 // describe all connections on the scheme
@@ -165,20 +165,17 @@ struct cad_route_map
 // values for cad_route_map::map
 
 #define MAP_EMPTY				0x00000000
-#define MAP_PIN					0x01000000		// MAP_PIN | wire_number
-#define MAP_WIRE_HORISINTAL		0x02000000
-#define MAP_WIRE_VERTICAL		0x03000000
-#define MAP_WIRE_CROSS			0x04000000
-#define MAP_WIRE_CORNER_UL		0x05000000
-#define MAP_WIRE_CORNER_UR		0x06000000
-#define MAP_WIRE_CORNER_DL		0x07000000
-#define MAP_WIRE_CORNER_DR		0x08000000
-#define MAP_ARROW_LEFT			0x09000000
-#define MAP_ARROW_RIGHT			0x0A000000
-#define MAP_ARROW_UP			0x0B000000
-#define MAP_ARROW_DOWN			0x0C000000
-#define MAP_UNUSED				0x0D000000
-#define MAP_NUMBER				0x10000000		// MAP_NUMBER | number
+#define MAP_WIRE_UP				0x01000000
+#define MAP_WIRE_DOWN			0x02000000
+#define MAP_WIRE_LEFT			0x04000000
+#define MAP_WIRE_RIGHT			0x08000000
+#define MAP_ARROW_LEFT			0x10000000
+#define MAP_ARROW_RIGHT			0x20000000
+#define MAP_ARROW_UP			0x30000000
+#define MAP_ARROW_DOWN			0x40000000
+#define MAP_UNUSED				0x50000000
+#define MAP_PIN					0x60000000		// MAP_PIN | wire_number
+#define MAP_NUMBER				0x80000000		// MAP_NUMBER | number
 
 #define CODE_MASK				0xFF000000
 #define NUMBER_MASK				0x00FFFFFF
