@@ -3,7 +3,8 @@ using System.Collections.Generic;
 ﻿using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
-using MediatorLib;
+﻿using System.Threading;
+﻿using MediatorLib;
 ﻿using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace WPF_GUI
@@ -18,23 +19,20 @@ namespace WPF_GUI
 
     public class StaticLoader
     {
-        public static App Application;
+        public static App Appl;
 
-        // call forom native code
+        // call from native code
         public static int Exec(string arg)
         {
-            // если убрать этот месседж бокс, то и окно не появится
-            // наверно он что-то там инициализирует, надо разобраться.
-//            MessageBox.Show("hello, " + arg + "!");
-            Application = new App();
-            Application.Run();
+            Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+            Appl = new App();
+            Appl.Run();
             return 0;
         }
 
-        // call forom native code
+        // call from native code
         public static int UpdatePictureEvent(string arg)
         {
-//            MainWindow.UpdatePictureEvent();
             return 0;
         }
 
@@ -83,7 +81,6 @@ namespace WPF_GUI
 
         public static int CoreMessage(string msg)
         {
-            MessageBox.Show(msg);
             return msg.Length;
         }
     }

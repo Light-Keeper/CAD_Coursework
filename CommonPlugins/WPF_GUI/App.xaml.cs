@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading;
+using System.Windows;
 using MediatorLib;
 using WPF_GUI.ViewModels;
 
@@ -11,12 +12,6 @@ namespace WPF_GUI
             {
                 DataContext = new LogWindowViewModel()
             };
-
-//        private static readonly Mediator _mediator = new Mediator();
-//        public Mediator Mediator
-//        {
-//            get { return _mediator; }
-//        }
 
         protected override void OnStartup(StartupEventArgs e)
         {

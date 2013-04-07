@@ -323,15 +323,15 @@ namespace WPF_GUI.ViewModels
 
         private void OnShowConsole(object o)
         {
-            if (StaticLoader.Application.LogViewer.Visibility == Visibility.Visible)
+            if (StaticLoader.Appl.LogViewer.Visibility == Visibility.Visible)
             {
-                StaticLoader.Application.LogViewer.Hide();
+                StaticLoader.Appl.LogViewer.Hide();
                 this.ConsoleButtonText = "Показать консоль";
             }
             else
             {
-                StaticLoader.Application.LogViewer.Show();
-                StaticLoader.Application.LogViewer.WindowState = WindowState.Normal;
+                StaticLoader.Appl.LogViewer.Show();
+                StaticLoader.Appl.LogViewer.WindowState = WindowState.Normal;
                 this.ConsoleButtonText = "Скрыть консоль";
             }
         }
