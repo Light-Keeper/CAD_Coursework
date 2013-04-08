@@ -1,10 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 
 namespace WPF_GUI
 {
@@ -87,6 +83,7 @@ namespace WPF_GUI
                     }
                 }
             }
+
             // Change Image Size
             if (Keyboard.Modifiers == ModifierKeys.Control &&
                 Keyboard.Modifiers != ModifierKeys.Shift &&

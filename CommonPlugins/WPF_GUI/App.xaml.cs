@@ -1,31 +1,23 @@
-﻿using System.Threading;
-using System.Windows;
-using MediatorLib;
+﻿using System.Windows;
 using WPF_GUI.ViewModels;
 
 namespace WPF_GUI
 {
     public partial class App : Application
     {
-        public LogWindow LogViewer =
-            new LogWindow
-            {
-                DataContext = new LogWindowViewModel()
-            };
+        public LogWindow LogViewer = new LogWindow();
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
-            var mainWindow = new MainWindow();
-
-            mainWindow.Show();
+            this.MainWindow = new MainWindow();
+            this.MainWindow.Show();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            base.OnExit(e);
             this.LogViewer.Close();
+            base.OnExit(e);
         }
     }
 }

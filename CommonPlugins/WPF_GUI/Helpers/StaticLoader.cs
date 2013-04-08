@@ -4,6 +4,8 @@ using System.Collections.Generic;
 ﻿using System.Text;
 using System.Runtime.InteropServices;
 ﻿using System.Threading;
+﻿using MediatorLib;
+﻿using WPF_GUI.Helpers;
 
 namespace WPF_GUI
 {
@@ -15,20 +17,23 @@ namespace WPF_GUI
         public UIntPtr Data;
     };
 
-    public class StaticLoader
+    public static class StaticLoader
     {
-        public static App Appl;
+        public static App Application;
+        public static Mediator Mediator;
 
-        // call from native code
-        public static int Exec(string arg)
+        // Call from native code
+        public static int Exec(string msg)
         {
             Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-            Appl = new App();
-            Appl.Run();
+            Mediator = new Mediator();
+            Application = new App();
+            CoreMessage(msg);
+            Application.Run();
             return 0;
         }
 
-        // call from native code
+        // Call from native code
         public static int UpdatePictureEvent(string arg)
         {
             return 0;
@@ -79,6 +84,7 @@ namespace WPF_GUI
 
         public static int CoreMessage(string msg)
         {
+            Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
             return msg.Length;
         }
     }

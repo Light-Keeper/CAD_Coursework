@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using MediatorLib;
 using WPF_GUI.Helpers;
 using WPF_GUI.Models;
 
@@ -12,20 +9,6 @@ namespace WPF_GUI.ViewModels
 {
     public class LogWindowViewModel : BaseViewModel
     {
-        public LogWindowViewModel()
-        {
-            LogCollection = new ObservableCollection<Log>();
-
-            for (var i = 0; i < 20; i++)
-            {
-                this.AddLog(new Log
-                    {
-                        CreateTime = DateTime.Now,
-                        Message = "Тестовое сообщение " + (i+1)
-                    });
-            }
-        }
-
         #region Properties
 
         #region LogCollection
@@ -63,7 +46,7 @@ namespace WPF_GUI.ViewModels
                 if (_isLogVisible == value) return;
                 _isLogVisible = value;
                 RaisePropertyChanged(() => IsLogVisible);
-                if (_isLogVisible == Visibility.Hidden) Mediator.NotifyColleagues(MediatorMessages.LogWindowClosed, true);
+                if (_isLogVisible == Visibility.Hidden) StaticLoader.Mediator.NotifyColleagues(MediatorMessages.LogWindowClosed, true);
             }
         }
         #endregion
@@ -71,10 +54,28 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region Public Methods
-        public void AddLog(Log log)
+
+        #region Constructor
+        public LogWindowViewModel()
         {
-            _logCollection.Add(log);
+            LogCollection = new ObservableCollection<Log>();
+            StaticLoader.Mediator.Register(MediatorMessages.NewLog, (Action<string>)this.AddLog);
         }
+        #endregion
+
+        #region AddLog
+        public void AddLog(string msg)
+        {
+            _logCollection.Add(
+                new Log
+                    {
+                        CreateTime = DateTime.Now,
+                        Message = msg
+                    });
+            RaisePropertyChanged(() => LogCollection);
+        }
+        #endregion
+
         #endregion
     }
 }

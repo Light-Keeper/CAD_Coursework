@@ -3,19 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        xmlns:viewModel="clr-namespace:WPF_GUI.ViewModels"
         mc:Ignorable="d"
         Width="600" Height="300" MinHeight="60"
         Title="CAD Course Work - Log Viewer"
         WindowStartupLocation="CenterScreen"
         Icon="../Recources/Images/pcb.ico"
         Visibility="{Binding Path=IsLogVisible, Mode=OneWayToSource}">
-    <Window.DataContext>
-        <viewModel:LogWindowViewModel/>
-    </Window.DataContext>
     <ScrollViewer>
-    <TextBox Name="LogViewer" Background="Black" Foreground="Azure" IsReadOnly="True"
+    <TextBox Name="LogViewer" Background="Black" Foreground="Azure"
              TextWrapping="Wrap" BorderThickness="0"
+             PreviewTextInput="LogViewer_OnPreviewTextInput"
              Text="{Binding Path=AllLogMessages, Mode=OneWay}"/>
     </ScrollViewer>
 </Window>

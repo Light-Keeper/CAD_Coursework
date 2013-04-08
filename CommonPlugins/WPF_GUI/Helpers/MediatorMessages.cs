@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace WPF_GUI.Helpers
+﻿namespace WPF_GUI.Helpers
 {
     public static class MediatorMessages
     {

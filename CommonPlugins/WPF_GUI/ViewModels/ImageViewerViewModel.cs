@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using MediatorLib;
 using WPF_GUI.Helpers;
-using WPF_GUI.Models;
 
 namespace WPF_GUI.ViewModels
 {
@@ -13,7 +7,7 @@ namespace WPF_GUI.ViewModels
     {
         public ImageViewerViewModel()
         {
-            Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>) this.ChangeImageZoom);
+            StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>)this.ChangeImageZoom);
         }
 
         #region ImageZoom
@@ -47,7 +41,6 @@ namespace WPF_GUI.ViewModels
         public void ChangeImageZoom(int zoom)
         {
             this.ImageZoom = zoom;
-//            this.ImageHeight = (SystemParameters.WorkArea.Height - 80.0) * zoom / 100;
             this.ImageHeight = 10*zoom;
         }
     }

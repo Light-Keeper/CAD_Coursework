@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
+﻿using System.Collections.Generic;
 using WPF_GUI.Helpers;
-using WPF_GUI.Models;
 
 namespace WPF_GUI.ViewModels
 {
@@ -20,31 +15,6 @@ namespace WPF_GUI.ViewModels
         private const int MAX_IMAGE_ZOOM = 200;
 
         private readonly List<StateInfo> _stateInfo = new List<StateInfo>();
-
-        public StatusBarViewModel()
-        {
-            _stateInfo.Add(new StateInfo
-                {
-                    ImagePath = "../Recources/Images/ok.png",
-                    Description = "Всё в порядке, программа готова к работе"
-                });
-
-            _stateInfo.Add(new StateInfo
-                {
-                    ImagePath = "../Recources/Images/loading.png",
-                    Description = "Программа выполняет какие-то действия"
-                });
-
-            _stateInfo.Add(new StateInfo
-                {
-                    ImagePath = "../Recources/Images/error.png",
-                    Description = "Произошла ошибка в ходе работы программы"
-                });
-
-            this.InfoMessage = "Что-то там случилось";
-            this.ImageZoom = 100;
-            _currentState = 1;
-        }
 
         #region Properties
 
@@ -85,14 +55,14 @@ namespace WPF_GUI.ViewModels
                 }
 
                 RaisePropertyChanged(() => ImageZoom);
-                Mediator.NotifyColleagues(MediatorMessages.ZoomChanged, _imageZoom);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ZoomChanged, _imageZoom);
             }
         }
 
         #endregion
 
         #region CurrentState
-        private int _currentState;
+        private readonly int _currentState;
         #endregion
 
         #region ImageStatePath
@@ -119,7 +89,30 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region Public Methods
+        public StatusBarViewModel()
+        {
+            _stateInfo.Add(new StateInfo
+            {
+                ImagePath = "../Recources/Images/ok.png",
+                Description = "Программа готова к работе"
+            });
 
+            _stateInfo.Add(new StateInfo
+            {
+                ImagePath = "../Recources/Images/loading.png",
+                Description = "Программа выполняет действия"
+            });
+
+            _stateInfo.Add(new StateInfo
+            {
+                ImagePath = "../Recources/Images/error.png",
+                Description = "Произошла ошибка в ходе работы программы"
+            });
+
+            this.InfoMessage = "Что-то там случилось";
+            this.ImageZoom = 100;
+            _currentState = 1;
+        }
         #endregion
     }
 }

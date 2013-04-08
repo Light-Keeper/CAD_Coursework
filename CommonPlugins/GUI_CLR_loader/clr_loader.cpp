@@ -64,7 +64,7 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	kernel->PrintDebug = my_printf;
 	kernel->PrintInfo = my_printf; 
 	self = gui;
-	kernel->PrintInfo("%d asdasd %s",10,"asd");
+	kernel->PrintInfo("Message from core %d %s", 10, "asd");
 	return gui;
 }
 
@@ -84,7 +84,7 @@ uint32_t gui_Exec(cad_GUI *self)
 {
 	DWORD dwRetCode;
  	HRESULT  hr = self->sys->pClrRuntimeHost->ExecuteInDefaultAppDomain(L"plugins\\WPF_GUI.dll", 
-        L"WPF_GUI.StaticLoader", L"Exec", L"dd", &dwRetCode);
+        L"WPF_GUI.StaticLoader", L"Exec", L"Called Exec method in WPF_GUI", &dwRetCode);
     if (FAILED(hr)) {
         self->sys->kernel->PrintDebug("Failed to call StaticLoader::Exec\n" );
 		return 0;

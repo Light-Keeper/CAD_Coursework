@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using WPF_GUI.Helpers;
 using WPF_GUI.Models;
 using WPF_GUI.Views;
-using MessageBox = System.Windows.MessageBox;
 
 namespace WPF_GUI.ViewModels
 {
@@ -45,7 +42,7 @@ namespace WPF_GUI.ViewModels
             this.IsPlaceMethodEnabled = true;
             this.IsTraceMethodEnabled = false;
 
-            Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>) this.ConsoleWasClosed);
+            StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>) this.ConsoleWasClosed);
         }
 
         #region Properties
@@ -323,15 +320,15 @@ namespace WPF_GUI.ViewModels
 
         private void OnShowConsole(object o)
         {
-            if (StaticLoader.Appl.LogViewer.Visibility == Visibility.Visible)
+            if (StaticLoader.Application.LogViewer.Visibility == Visibility.Visible)
             {
-                StaticLoader.Appl.LogViewer.Hide();
+                StaticLoader.Application.LogViewer.Hide();
                 this.ConsoleButtonText = "Показать консоль";
             }
             else
             {
-                StaticLoader.Appl.LogViewer.Show();
-                StaticLoader.Appl.LogViewer.WindowState = WindowState.Normal;
+                StaticLoader.Application.LogViewer.Show();
+                StaticLoader.Application.LogViewer.WindowState = WindowState.Normal;
                 this.ConsoleButtonText = "Скрыть консоль";
             }
         }
