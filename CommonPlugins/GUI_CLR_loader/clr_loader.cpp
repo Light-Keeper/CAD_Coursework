@@ -64,7 +64,6 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	kernel->PrintDebug = my_printf;
 	kernel->PrintInfo = my_printf; 
 	self = gui;
-	kernel->PrintInfo("Message from core %d %s", 10, "asd");
 	return gui;
 }
 
