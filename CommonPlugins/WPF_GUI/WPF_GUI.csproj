@@ -52,7 +52,7 @@
     </Compile>
     <Compile Include="Helpers\Defines.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
-    <Compile Include="ViewModels\InfoBarMessages.cs" />
+    <Compile Include="Helpers\InfoBarMessages.cs" />
     <Compile Include="Helpers\MediatorMessages.cs" />
     <Compile Include="Helpers\NotificationObject.cs" />
     <Compile Include="Models\Log.cs" />
