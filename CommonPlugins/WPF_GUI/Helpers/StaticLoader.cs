@@ -37,6 +37,9 @@ namespace WPF_GUI
             Mediator = new Mediator();
             Application = new App();
             CoreMessage(msg);
+            SetPictureSize(
+                Convert.ToUInt32(SystemParameters.WorkArea.Width),
+                Convert.ToUInt32(SystemParameters.WorkArea.Height));
             Application.Run();
             return 0;
         }
@@ -72,6 +75,9 @@ namespace WPF_GUI
         [DllImport("GUI_CLR_loader.dll")]
         private static extern void FreePicture(IntPtr picture);
 
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern void SetPictureSize(UInt32 width, UInt32 height);
+
         public static BitmapSource GetPicture(bool forceDrawLayer, int forceDrawLayerNumber)
         {
             var data = RenderPicture(forceDrawLayer, forceDrawLayerNumber);
@@ -85,8 +91,6 @@ namespace WPF_GUI
             }
 
             var imgLength = Picture.Height * Picture.Width * sizeof(Int32);
-
-            var inStream = new MemoryStream();
 
             var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format32bppRgb);
 
@@ -106,6 +110,8 @@ namespace WPF_GUI
             bitmap.UnlockBits(dst);
             FreePicture(Picture.UnmanagedStruct);
 
+            var inStream = new MemoryStream();
+            
             bitmap.Save(inStream, ImageFormat.Png);
 
             var image = new BitmapImage();
@@ -115,11 +121,6 @@ namespace WPF_GUI
             image.EndInit();
 
             return image;
-        }
-
-        public static void FreePicture(Picture picture)
-        {
-            FreePicture(picture.UnmanagedStruct);
         }
 
         public static int CoreMessage(string msg)
