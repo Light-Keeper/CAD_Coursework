@@ -265,6 +265,7 @@ struct cad_kernel
 	uint32_t (* RunToEnd)( cad_kernel *self) ;
 	void ( *StopCurrentModule)( cad_kernel *self);
 	bool (* CloseCurrentFile)( cad_kernel *self);
+	cad_render_module *(* GetRenderModule)( cad_kernel *self);
 
 	cad_picture * (*RenderPicture)(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
 };
