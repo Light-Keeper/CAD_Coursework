@@ -80,10 +80,8 @@ namespace WPF_GUI
                 Picture.Data = (IntPtr) (*((int*) (data.ToPointer()) + 3));
             }
 
-            var imgLength = Picture.Height * Picture.Width * 4;
+            var imgLength = Picture.Height * Picture.Width * sizeof(Int32);
             var imgArray = new byte[imgLength];
-
-            MessageBox.Show("Width:" + Picture.Width + " Height: " + Picture.Height);
 
             Marshal.Copy(Picture.Data, imgArray, 0, imgLength);
 
@@ -103,24 +101,13 @@ namespace WPF_GUI
                 }
             }
 
-//            var test = new Bitmap("C:\\test.bmp");
-//
-            bitmap.Save(inStream, ImageFormat.Bmp);
-
-//            MessageBox.Show(inStream.GetBuffer()[0].ToString());
+            bitmap.Save(inStream, ImageFormat.Png);
 
             var image = new BitmapImage();
 
-            try
-            {
-                image.BeginInit();
-                image.StreamSource = inStream;
-                image.EndInit();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
+            image.BeginInit();
+            image.StreamSource = inStream;
+            image.EndInit();
 
             return image;
         }

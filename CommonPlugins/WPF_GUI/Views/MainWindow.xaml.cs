@@ -19,7 +19,6 @@ namespace WPF_GUI
             _cursorGrabbing = ((TextBlock) this.Resources["CursorGrabbing"]).Cursor;
             DisplayedImage.Cursor = _cursorGrab;
             _isDragging = false;
-            MessageBox.Show("Stop");
             DisplayedImage.Source = StaticLoader.GetPicture(false, 0);
         }
 
