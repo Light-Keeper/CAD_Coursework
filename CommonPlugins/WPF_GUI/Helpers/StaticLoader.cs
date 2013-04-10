@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 ﻿using System.Windows.Media.Imaging;
 ﻿using MediatorLib;
 ﻿using WPF_GUI.Helpers;
+﻿using Point = System.Drawing.Point;
 
 namespace WPF_GUI
 {
@@ -84,16 +85,24 @@ namespace WPF_GUI
             }
 
             var imgLength = Picture.Height * Picture.Width * sizeof(Int32);
-            var imgArray = new byte[imgLength];
-
-            Marshal.Copy(Picture.Data, imgArray, 0, imgLength);
 
             var inStream = new MemoryStream();
 
             var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format32bppRgb);
 
-            var dst = bitmap.LockBits(new Rectangle(System.Drawing.Point.Empty, bitmap.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
-            Marshal.Copy(imgArray, 0, dst.Scan0, imgLength);
+            var dst = bitmap.LockBits(
+                new Rectangle(Point.Empty, bitmap.Size),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format32bppRgb);
+            
+            unsafe
+            {
+                for (int i = 0; i < imgLength; i++)
+                {
+                    ((byte*) dst.Scan0)[i] = ((byte *)Picture.Data)[i];
+                }
+            }
+
             bitmap.UnlockBits(dst);
             FreePicture(Picture.UnmanagedStruct);
 
