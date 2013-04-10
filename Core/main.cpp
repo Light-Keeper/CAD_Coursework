@@ -1,9 +1,14 @@
 #include <cad_object.h>
 
 // CAD entry point 
-int main(int argc, char * argv[])
+int __stdcall WinMain(
+  uint32_t hInstance,
+  uint32_t hPrevInstance,
+  uint32_t lpCmdLine,
+  uint32_t nCmdShow
+)
 {
-	cad_kernel *kernel = cad_kernel_New(argc, argv);
+	cad_kernel *kernel = cad_kernel_New();
 	kernel->Exec( kernel );
 	kernel->Delete( kernel );
 	return 0;

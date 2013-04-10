@@ -317,7 +317,7 @@ cad_render_module *kernel_GetRenderModule(cad_kernel *self)
 }
 
 
-cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
+cad_kernel * cad_kernel_New()
 {
 	cad_kernel *kernel = (cad_kernel *)malloc( sizeof(cad_kernel) ); 
 	kernel->sys = (cad_kernel_private *)malloc( sizeof(cad_kernel_private) );

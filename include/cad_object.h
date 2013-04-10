@@ -270,7 +270,7 @@ struct cad_kernel
 	cad_picture * (*RenderPicture)(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
 };
 
-cad_kernel * cad_kernel_New(uint32_t argv, char *argc[]);
+cad_kernel * cad_kernel_New();
 
 
 #define KERNEL_STATE_EMPTY			0x00000000
