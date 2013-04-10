@@ -207,7 +207,7 @@ extern "C" __declspec( dllexport ) uint32_t RunToEnd();
 extern "C" __declspec( dllexport ) uint32_t NextStep( bool inDemoMode );
 
 extern "C" __declspec( dllexport ) bool CloseCurrentFile();
-extern "C" __declspec( dllexport ) cad_picture * RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNunber );
+extern "C" __declspec( dllexport ) cad_picture * RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNumber );
 extern "C" __declspec( dllexport ) void FreePicture( cad_picture *p );
 
 uint32_t  GetCurrentState()
@@ -223,9 +223,9 @@ int GetModuleList(int bufferSize, char *buffer)
 
 	for (uint32_t i = 0; i < count; i++)
 	{
-//		if (mod[i].module_capability != CAP_PLACEMENT || 
-//			mod[i].module_capability != CAP_TRACEROUTE) 	continue;
-
+		if (mod[i].module_capability != CAP_PLACEMENT &&
+			mod[i].module_capability != CAP_TRACEROUTE)
+			continue;
 		int l = strlen( mod[i].module_name ) + 2;
 		if (pos + l >= buffer + bufferSize) return -1;
 		sprintf(pos, "%c%s\n", mod[i].module_capability == CAP_PLACEMENT ? 'P' : 'T', mod[i].module_name);
@@ -264,15 +264,18 @@ bool CloseCurrentFile()
 	return self->sys->kernel->CloseCurrentFile( self->sys->kernel );
 }
 
-cad_picture * RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNunber)
+cad_picture * RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNumber)
 {
 	// temporary stuff for testing
 	cad_picture* p = (cad_picture *)malloc( sizeof(cad_picture));
-	p->height = 100;
-	p->width = 200;
+	p->height = 1200;
+	p->width = 1600;
 	p->sys = NULL;
 	p->data = (uint32_t *)malloc(sizeof(uint32_t) * p->height * p->width);
-	p->data[0] = 0xFFAFFFFF;
+	for (int i = 0; i < p->height * p->width; i++)
+	{
+		p->data[i] = rand() * rand() * rand();
+	}
 	p->Delete = NULL;
 	return p;
 

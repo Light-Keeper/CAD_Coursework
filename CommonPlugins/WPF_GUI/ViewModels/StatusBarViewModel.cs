@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using WPF_GUI.Helpers;
 
 namespace WPF_GUI.ViewModels
@@ -62,7 +63,16 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region CurrentState
-        private readonly int _currentState;
+        private int _currentState;
+        public int CurrentState {
+            get { return _currentState; }
+            set
+            {
+                if (value == _currentState) return;
+                _currentState = value;
+                RaisePropertyChanged(() => ImageStatePath);
+                RaisePropertyChanged(() => ImageStateToolTip);
+            }}
         #endregion
 
         #region ImageStatePath
@@ -89,18 +99,20 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region Public Methods
+
+        #region Constructor
         public StatusBarViewModel()
         {
             _stateInfo.Add(new StateInfo
             {
                 ImagePath = "../Recources/Images/ok.png",
-                Description = "Программа готова к работе"
+                Description = "Всё в порядке, программа готова к работе"
             });
 
             _stateInfo.Add(new StateInfo
             {
                 ImagePath = "../Recources/Images/loading.png",
-                Description = "Программа выполняет действия"
+                Description = "Программа выполняет указанные действия"
             });
 
             _stateInfo.Add(new StateInfo
@@ -109,10 +121,29 @@ namespace WPF_GUI.ViewModels
                 Description = "Произошла ошибка в ходе работы программы"
             });
 
-            this.InfoMessage = "Что-то там случилось";
+            this.InfoMessage = "Загрузка модулей программы прошла успешно";
             this.ImageZoom = 100;
-            _currentState = 1;
+            _currentState = Defines.ProgramStateGood;
+
+            StaticLoader.Mediator.Register(MediatorMessages.SetInfoMessage, (Action<string>) this.SetInfoMessage);
+            StaticLoader.Mediator.Register(MediatorMessages.SetProgramState, (Action<int>) this.SetProgramState);
         }
+        #endregion
+
+        #region SetInfoMessage
+        public void SetInfoMessage(string msg)
+        {
+            this.InfoMessage = msg;
+        }
+        #endregion
+
+        #region SetProgramState
+        public void SetProgramState(int state)
+        {
+            this.CurrentState = state;
+        }
+        #endregion
+
         #endregion
     }
 }

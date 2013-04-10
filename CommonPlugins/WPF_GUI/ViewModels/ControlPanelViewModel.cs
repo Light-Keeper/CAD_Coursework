@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -16,21 +17,30 @@ namespace WPF_GUI.ViewModels
         {
             this.PlaceMethodCollection = new ObservableCollection<Place>();
             this.RouteMethodCollection = new ObservableCollection<Route>();
-            for (var i = 0; i < 5; i++) // Must be deleted in realese
-            {
-                PlaceMethodCollection.Add(
-                    new Place
-                    {
-                        Name = "Метод компановки " + (i + 1),
-                        Command = SelectPlaceMethod
-                    });
 
-                RouteMethodCollection.Add(
-                    new Route
-                    {
-                        Name = "Метод трассировки " + (i + 1),
-                        Command = SelectRouteMethod
-                    });
+            // Initialize Place and Route Collection
+            foreach (var module in StaticLoader.GetModuleList())
+            {
+                var name = module.Remove(0, 1);
+                switch (module[0])
+                {
+                    case 'P': // Place Method
+                        PlaceMethodCollection.Add(
+                            new Place
+                                {
+                                    Name = name,
+                                    Command = SelectPlaceMethod
+                                });
+                        break;
+                    case 'T': // Trace Method
+                        RouteMethodCollection.Add(
+                            new Route
+                                {
+                                    Name = name,
+                                    Command = SelectRouteMethod
+                                });
+                        break;
+                }
             }
 
             this.IsDemoMode = true;
@@ -348,6 +358,17 @@ namespace WPF_GUI.ViewModels
             }
 
             this.InputFile = dialog.FileName;
+
+            if ( StaticLoader.LoadFile(new StringBuilder(this.InputFile)) )
+            {
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.FileLoadSuccessful);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateGood);
+            }
+            else
+            {
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.FileLoadUnsuccessful);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateError);
+            }
         }
 
         private void OnSelectPlaceMethod(object o)

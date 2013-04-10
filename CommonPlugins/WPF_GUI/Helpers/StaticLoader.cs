@@ -1,31 +1,38 @@
 ﻿﻿using System;
 using System.Collections.Generic;
+﻿using System.Drawing;
+﻿using System.Drawing.Imaging;
+﻿using System.IO;
 ﻿using System.Linq;
 ﻿using System.Text;
 using System.Runtime.InteropServices;
 ﻿using System.Threading;
+﻿using System.Windows;
+﻿using System.Windows.Media.Imaging;
 ﻿using MediatorLib;
 ﻿using WPF_GUI.Helpers;
 
 namespace WPF_GUI
 {
-    public unsafe struct Picture
+    public struct Picture
     {
         public IntPtr UnmanagedStruct;
         public int Width;
         public int Height;
-        public UIntPtr Data;
+        public IntPtr Data;
     };
 
     public static class StaticLoader
     {
         public static App Application;
         public static Mediator Mediator;
+        public static Picture Picture;
 
         // Call from native code
         public static int Exec(string msg)
         {
             Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+            Picture = new Picture();
             Mediator = new Mediator();
             Application = new App();
             CoreMessage(msg);
@@ -40,7 +47,10 @@ namespace WPF_GUI
         }
 
         [DllImport("GUI_CLR_loader.dll")]
-        private static extern int GetModuleList(int bufferSize, StringBuilder b);
+        public static extern bool LoadFile(StringBuilder path);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
 
         public static List<string> GetModuleList()
         {
@@ -56,22 +66,63 @@ namespace WPF_GUI
         public static extern bool StartPlaceMoule(string moduleName, bool inDemoMode);
 
         [DllImport("GUI_CLR_loader.dll")]
-        private static extern IntPtr RenderPicture(float posX, float posY, float sizeX, float sizeY);
+        private static extern IntPtr RenderPicture(Boolean forceDrawLayer, Int32 forceDrawLayerNumber);
 
-        public static Picture GetPicture(float posX, float posY, float sizeX, float sizeY)
-        { 
-            var p = new Picture();
+        public static BitmapSource GetPicture(bool forceDrawLayer, int forceDrawLayerNumber)
+        {
+            var data = RenderPicture(forceDrawLayer, forceDrawLayerNumber);
 
-            var data = RenderPicture(posX, posY, sizeX, sizeY);
-            unsafe 
+            unsafe
             {
-                p.UnmanagedStruct = data;
-                p.Height = *((int*)(data.ToPointer()) + 1);
-                p.Width = *((int*)(data.ToPointer()) + 2);
-                p.Data = (UIntPtr)((int*)(data.ToPointer()) + 3);
+                Picture.UnmanagedStruct = data;
+                Picture.Height = *((int*) (data.ToPointer()) + 1);
+                Picture.Width = *((int*) (data.ToPointer()) + 2);
+                Picture.Data = (IntPtr) (*((int*) (data.ToPointer()) + 3));
             }
 
-            return p;
+            var imgLength = Picture.Height * Picture.Width * 4;
+            var imgArray = new byte[imgLength];
+
+            MessageBox.Show("Width:" + Picture.Width + " Height: " + Picture.Height);
+
+            Marshal.Copy(Picture.Data, imgArray, 0, imgLength);
+
+            var inStream = new MemoryStream();
+
+            var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format24bppRgb);
+
+            for (int i = 0; i < Picture.Width; i++)
+            {
+                for (int j = 0; j < Picture.Height; j++)
+                {
+                    var color = Color.FromArgb(imgArray[i * j * 4],
+                        imgArray[i * j * 4 + 1],
+                        imgArray[i * j * 4 + 2],
+                        imgArray[i * j * 4 + 3]);
+                    bitmap.SetPixel(i, j, color);
+                }
+            }
+
+//            var test = new Bitmap("C:\\test.bmp");
+//
+            bitmap.Save(inStream, ImageFormat.Bmp);
+
+//            MessageBox.Show(inStream.GetBuffer()[0].ToString());
+
+            var image = new BitmapImage();
+
+            try
+            {
+                image.BeginInit();
+                image.StreamSource = inStream;
+                image.EndInit();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            return image;
         }
 
         [DllImport("GUI_CLR_loader.dll")]
@@ -84,7 +135,11 @@ namespace WPF_GUI
 
         public static int CoreMessage(string msg)
         {
-            Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
+            if (Mediator != null)
+            {
+                Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
+            }
+
             return msg.Length;
         }
     }
