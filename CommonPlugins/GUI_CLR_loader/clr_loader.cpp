@@ -268,8 +268,8 @@ cad_picture * RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNumber)
 {
 	// temporary stuff for testing
 	cad_picture* p = (cad_picture *)malloc( sizeof(cad_picture));
-	p->height = 100;
-	p->width = 200;
+	p->height = 1200;
+	p->width = 1600;
 	p->sys = NULL;
 	p->data = (uint32_t *)malloc(sizeof(uint32_t) * p->height * p->width);
 	for (int i = 0; i < p->height * p->width; i++)

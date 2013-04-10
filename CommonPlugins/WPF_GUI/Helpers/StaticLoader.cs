@@ -68,6 +68,9 @@ namespace WPF_GUI
         [DllImport("GUI_CLR_loader.dll")]
         private static extern IntPtr RenderPicture(Boolean forceDrawLayer, Int32 forceDrawLayerNumber);
 
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern void FreePicture(IntPtr picture);
+
         public static BitmapSource GetPicture(bool forceDrawLayer, int forceDrawLayerNumber)
         {
             var data = RenderPicture(forceDrawLayer, forceDrawLayerNumber);
@@ -87,19 +90,12 @@ namespace WPF_GUI
 
             var inStream = new MemoryStream();
 
-            var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format24bppRgb);
+            var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format32bppRgb);
 
-            for (int i = 0; i < Picture.Width; i++)
-            {
-                for (int j = 0; j < Picture.Height; j++)
-                {
-                    var color = Color.FromArgb(imgArray[i * j * 4],
-                        imgArray[i * j * 4 + 1],
-                        imgArray[i * j * 4 + 2],
-                        imgArray[i * j * 4 + 3]);
-                    bitmap.SetPixel(i, j, color);
-                }
-            }
+            var dst = bitmap.LockBits(new Rectangle(System.Drawing.Point.Empty, bitmap.Size), ImageLockMode.WriteOnly, PixelFormat.Format32bppRgb);
+            Marshal.Copy(imgArray, 0, dst.Scan0, imgLength);
+            bitmap.UnlockBits(dst);
+            FreePicture(Picture.UnmanagedStruct);
 
             bitmap.Save(inStream, ImageFormat.Png);
 
@@ -111,9 +107,6 @@ namespace WPF_GUI
 
             return image;
         }
-
-        [DllImport("GUI_CLR_loader.dll")]
-        private static extern void FreePicture(IntPtr picture);
 
         public static void FreePicture(Picture picture)
         {
