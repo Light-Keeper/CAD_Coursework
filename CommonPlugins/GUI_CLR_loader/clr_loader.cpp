@@ -267,19 +267,19 @@ cad_picture * RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNumber)
 {
 	// temporary stuff for testing
 	cad_picture* p = (cad_picture *)malloc( sizeof(cad_picture));
-	p->height = 100;
-	p->width = 200;
-	p->sys = NULL;
-	p->data = (uint32_t *)malloc(sizeof(uint32_t) * p->height * p->width);
-	for (int i = 0; i < p->height * p->width; i++)
-	{
-		p->data[i] = rand() * rand() * rand();
-	}
-	p->Delete = NULL;
-	return p;
+	//p->height = 100;
+	//p->width = 200;
+	//p->sys = NULL;
+	//p->data = (uint32_t *)malloc(sizeof(uint32_t) * p->height * p->width);
+	//for (int i = 0; i < p->height * p->width; i++)
+	//{
+	//	p->data[i] = rand() * rand() * rand();
+	//}
+	//p->Delete = NULL;
+	//return p;
 
 	// normal code. use it!
-//	return self->sys->kernel->RenderPicture(self->sys->kernel, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
+	return self->sys->kernel->RenderPicture(self->sys->kernel, forceDrawLayer, forceDrawLayerNumber);
 }
 
 void FreePicture( cad_picture *p )

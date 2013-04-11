@@ -290,8 +290,8 @@ cad_picture * kernel_RenderPicture(cad_kernel *self, bool forceDrawLayer, uint32
 		self->sys->current_state == KERNEL_STATE_PLACING )
 		return self->sys->render->RenderSchme(self->sys->render, self->sys->current_sheme );
 
-	if (self->sys->current_state == KERNEL_STATE_TRACE || 
-		self->sys->current_state == KERNEL_STATE_TRACING )
+//	if (self->sys->current_state == KERNEL_STATE_TRACE || 
+//		self->sys->current_state == KERNEL_STATE_TRACING )
 		return self->sys->render->RenderMap(self->sys->render, self->sys->current_route, forceDrawLayer,  forceDrawLayerNunber);
 
 	return NULL;

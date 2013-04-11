@@ -74,5 +74,12 @@ cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme)
 
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
-	return allocate_picture(self);
+	auto picture = allocate_picture(self);
+	memset(picture->data, 0, picture->width * picture->height * sizeof( uint32_t ));
+
+	picture->data[picture->width * 10 + 10] = 0x00FFFFFF;
+
+
+	return picture;
+
 }
