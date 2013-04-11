@@ -9,5 +9,6 @@ namespace WPF_GUI.Helpers
     {
         public const string FileLoadUnsuccessful = "Не удалось загрузить файл с исходными данными";
         public const string FileLoadSuccessful = "Файл с исходными данными был успешно загружен";
+        public const string ModulesLoadSuccessful = "Загрузка модулей программы прошла успешно";
     }
 }

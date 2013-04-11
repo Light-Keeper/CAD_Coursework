@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Windows;
+using System.Windows.Forms;
 using WPF_GUI.Helpers;
 
 namespace WPF_GUI.ViewModels
@@ -9,20 +11,6 @@ namespace WPF_GUI.ViewModels
         {
             StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>)this.ChangeImageZoom);
         }
-
-        #region ImageZoom
-        private int _imageZoom = 100;
-        public int ImageZoom
-        {
-            get { return _imageZoom; }
-            set
-            {
-                if (_imageZoom == value) return;
-                _imageZoom = value;
-                RaisePropertyChanged(() => ImageZoom);
-            }
-        }
-        #endregion
 
         #region ImageHeight
         private double _imageHeight;
@@ -40,8 +28,7 @@ namespace WPF_GUI.ViewModels
 
         public void ChangeImageZoom(int zoom)
         {
-            this.ImageZoom = zoom;
-            this.ImageHeight = 10*zoom;
+            this.ImageHeight = SystemParameters.WorkArea.Height * zoom / 100;
         }
     }
 }

@@ -299,7 +299,9 @@
                 <!-- Вывод информации о текущем состоянии программы -->
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <Slider Minimum="10" Maximum="200" Width="100" TickPlacement="BottomRight"
+                <Slider Minimum="{Binding Path=ImageMinZoom, Mode=OneWay}"
+                        Maximum="{Binding Path=ImageMaxZoom, Mode=OneWay}"
+                        Width="100" TickPlacement="BottomRight"
                         Value="{Binding ImageZoom, Mode=TwoWay}"
                         IsSnapToTickEnabled="True" Name="ImageZoom">
                     <Slider.ToolTip>

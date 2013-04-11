@@ -90,7 +90,7 @@ namespace WPF_GUI
                 Picture.Data = (IntPtr) (*((int*) (data.ToPointer()) + 3));
             }
 
-            var imgLength = Picture.Height * Picture.Width * sizeof(Int32);
+            var imgLength = Picture.Height * Picture.Width;
 
             var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format32bppRgb);
 
@@ -103,7 +103,7 @@ namespace WPF_GUI
             {
                 for (int i = 0; i < imgLength; i++)
                 {
-                    ((byte*) dst.Scan0)[i] = ((byte *)Picture.Data)[i];
+                    ((Int32 *) dst.Scan0)[i] = ((Int32 *)Picture.Data)[i];
                 }
             }
 

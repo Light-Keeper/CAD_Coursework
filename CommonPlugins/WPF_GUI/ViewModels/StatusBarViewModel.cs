@@ -12,9 +12,6 @@ namespace WPF_GUI.ViewModels
             public string Description;
         }
 
-        private const int MIN_IMAGE_ZOOM = 10;
-        private const int MAX_IMAGE_ZOOM = 200;
-
         private readonly List<StateInfo> _stateInfo = new List<StateInfo>();
 
         #region Properties
@@ -42,13 +39,13 @@ namespace WPF_GUI.ViewModels
             {
                 if (_imageZoom == value) return;
 
-                if (value < MIN_IMAGE_ZOOM)
+                if (value < this.ImageMinZoom)
                 {
-                    _imageZoom = MIN_IMAGE_ZOOM;
+                    _imageZoom = this.ImageMinZoom;
                 }
-                else if (value > MAX_IMAGE_ZOOM)
+                else if (value > this.ImageMaxZoom)
                 {
-                    _imageZoom = MAX_IMAGE_ZOOM;
+                    _imageZoom = this.ImageMaxZoom;
                 }
                 else
                 {
@@ -60,6 +57,34 @@ namespace WPF_GUI.ViewModels
             }
         }
 
+        #endregion
+
+        #region ImageMinZoom
+        private int _imageMinZoom;
+        public int ImageMinZoom
+        {
+            get { return _imageMinZoom; }
+            private set
+            {
+                if (_imageMinZoom == value) return;
+                _imageMinZoom = value;
+                RaisePropertyChanged(() => ImageMinZoom);
+            }
+        }
+        #endregion
+
+        #region ImageMaxZoom
+        private int _imageMaxZoom;
+        public int ImageMaxZoom
+        {
+            get { return _imageMaxZoom; }
+            private set
+            {
+                if (_imageMaxZoom == value) return;
+                _imageMaxZoom = value;
+                RaisePropertyChanged(() => ImageMaxZoom);
+            }
+        }
         #endregion
 
         #region CurrentState
@@ -121,7 +146,9 @@ namespace WPF_GUI.ViewModels
                 Description = "Произошла ошибка в ходе работы программы"
             });
 
-            this.InfoMessage = "Загрузка модулей программы прошла успешно";
+            this.InfoMessage = InfoBarMessages.ModulesLoadSuccessful;
+            this.ImageMinZoom = 10;
+            this.ImageMaxZoom = 1000;
             this.ImageZoom = 100;
             _currentState = Defines.ProgramStateGood;
 
