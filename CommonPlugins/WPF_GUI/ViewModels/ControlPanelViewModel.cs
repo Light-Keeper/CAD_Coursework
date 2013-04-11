@@ -7,7 +7,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using WPF_GUI.Helpers;
 using WPF_GUI.Models;
-using WPF_GUI.Views;
 
 namespace WPF_GUI.ViewModels
 {
@@ -324,8 +323,7 @@ namespace WPF_GUI.ViewModels
 
         private void OnShowInformation(object o)
         {
-            var infoWindow = new AboutWindow();
-            infoWindow.ShowDialog();
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ShowAboutPopup, true);
         }
 
         private void OnShowConsole(object o)
