@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 ﻿using System.Windows.Media.Imaging;
 ﻿using MediatorLib;
 ﻿using WPF_GUI.Helpers;
+﻿using Point = System.Drawing.Point;
 
 namespace WPF_GUI
 {
@@ -36,6 +37,9 @@ namespace WPF_GUI
             Mediator = new Mediator();
             Application = new App();
             CoreMessage(msg);
+            SetPictureSize(
+                Convert.ToUInt32(SystemParameters.WorkArea.Width),
+                Convert.ToUInt32(SystemParameters.WorkArea.Height));
             Application.Run();
             return 0;
         }
@@ -68,6 +72,12 @@ namespace WPF_GUI
         [DllImport("GUI_CLR_loader.dll")]
         private static extern IntPtr RenderPicture(Boolean forceDrawLayer, Int32 forceDrawLayerNumber);
 
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern void FreePicture(IntPtr picture);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern void SetPictureSize(UInt32 width, UInt32 height);
+
         public static BitmapSource GetPicture(bool forceDrawLayer, int forceDrawLayerNumber)
         {
             var data = RenderPicture(forceDrawLayer, forceDrawLayerNumber);
@@ -81,26 +91,27 @@ namespace WPF_GUI
             }
 
             var imgLength = Picture.Height * Picture.Width * sizeof(Int32);
-            var imgArray = new byte[imgLength];
 
-            Marshal.Copy(Picture.Data, imgArray, 0, imgLength);
+            var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format32bppRgb);
 
-            var inStream = new MemoryStream();
-
-            var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format24bppRgb);
-
-            for (int i = 0; i < Picture.Width; i++)
+            var dst = bitmap.LockBits(
+                new Rectangle(Point.Empty, bitmap.Size),
+                ImageLockMode.WriteOnly,
+                PixelFormat.Format32bppRgb);
+            
+            unsafe
             {
-                for (int j = 0; j < Picture.Height; j++)
+                for (int i = 0; i < imgLength; i++)
                 {
-                    var color = Color.FromArgb(imgArray[i * j * 4],
-                        imgArray[i * j * 4 + 1],
-                        imgArray[i * j * 4 + 2],
-                        imgArray[i * j * 4 + 3]);
-                    bitmap.SetPixel(i, j, color);
+                    ((byte*) dst.Scan0)[i] = ((byte *)Picture.Data)[i];
                 }
             }
 
+            bitmap.UnlockBits(dst);
+            FreePicture(Picture.UnmanagedStruct);
+
+            var inStream = new MemoryStream();
+            
             bitmap.Save(inStream, ImageFormat.Png);
 
             var image = new BitmapImage();
@@ -110,14 +121,6 @@ namespace WPF_GUI
             image.EndInit();
 
             return image;
-        }
-
-        [DllImport("GUI_CLR_loader.dll")]
-        private static extern void FreePicture(IntPtr picture);
-
-        public static void FreePicture(Picture picture)
-        {
-            FreePicture(picture.UnmanagedStruct);
         }
 
         public static int CoreMessage(string msg)

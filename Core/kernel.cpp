@@ -311,7 +311,13 @@ void kernel_StopCurrentModule( cad_kernel *self )
 	}
 }
 
-cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
+cad_render_module *kernel_GetRenderModule(cad_kernel *self)
+{
+	return self->sys->render;
+}
+
+
+cad_kernel * cad_kernel_New()
 {
 	cad_kernel *kernel = (cad_kernel *)malloc( sizeof(cad_kernel) ); 
 	kernel->sys = (cad_kernel_private *)malloc( sizeof(cad_kernel_private) );
@@ -332,6 +338,7 @@ cad_kernel * cad_kernel_New(uint32_t argc, char *argv[])
 	kernel->StartTraceModule	= kernel_StartTraceModule;
 	kernel->RenderPicture		= kernel_RenderPicture;
 	kernel->StopCurrentModule	= kernel_StopCurrentModule;
+	kernel->GetRenderModule		= kernel_GetRenderModule;
 	return kernel;
 }
 

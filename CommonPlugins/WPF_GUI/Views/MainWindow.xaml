@@ -6,6 +6,7 @@
         Title="CAD Course Work"
         MinWidth="800" MinHeight="600"
         Width="800" Height="600"
+        WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Icon="../Recources/Images/pcb.ico"
         MouseUp="MainWindow_OnMouseUp"

@@ -208,6 +208,7 @@ extern "C" __declspec( dllexport ) uint32_t NextStep( bool inDemoMode );
 extern "C" __declspec( dllexport ) bool CloseCurrentFile();
 extern "C" __declspec( dllexport ) cad_picture * RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNumber );
 extern "C" __declspec( dllexport ) void FreePicture( cad_picture *p );
+extern "C" __declspec( dllexport ) void SetPictureSize( uint32_t width, uint32_t height );
 
 uint32_t  GetCurrentState()
 {
@@ -286,4 +287,11 @@ void FreePicture( cad_picture *p )
 {
 	if (p->Delete)
 		p->Delete( p );
+}
+
+void SetPictureSize( uint32_t width, uint32_t height )
+{
+	[=](cad_render_module *x ) {
+		x->SetPitcureSize(x, width, height);
+	} ( self->sys->kernel->GetRenderModule( self->sys->kernel ) );		
 }

@@ -265,11 +265,12 @@ struct cad_kernel
 	uint32_t (* RunToEnd)( cad_kernel *self) ;
 	void ( *StopCurrentModule)( cad_kernel *self);
 	bool (* CloseCurrentFile)( cad_kernel *self);
+	cad_render_module *(* GetRenderModule)( cad_kernel *self);
 
 	cad_picture * (*RenderPicture)(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
 };
 
-cad_kernel * cad_kernel_New(uint32_t argv, char *argc[]);
+cad_kernel * cad_kernel_New();
 
 
 #define KERNEL_STATE_EMPTY			0x00000000
