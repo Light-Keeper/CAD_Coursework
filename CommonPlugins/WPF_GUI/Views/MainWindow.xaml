@@ -29,6 +29,45 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <Popup Name="AboutPopup"
+               StaysOpen="False"
+               IsOpen="{Binding Path=ShowAbout, Mode=TwoWay}"
+               PopupAnimation="Fade"
+               AllowsTransparency="True"
+               Placement="Center">
+            <Popup.DataContext>
+                <viewModel:AboutPopupViewModel/>
+            </Popup.DataContext>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="70"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Rectangle RadiusX="25" RadiusY="25"
+                           Width="480" Height="300"
+                           Grid.RowSpan="2">
+                    <Rectangle.Fill>
+                        <ImageBrush ImageSource="../Recources/Images/about3.png"/>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <ScrollViewer Width="360" Height="180" Margin="30"
+                              Grid.Row="1" VerticalAlignment="Top"
+                              HorizontalAlignment="Right">
+                    <TextBox IsReadOnly="True"
+                             Background="Transparent"
+                             Foreground="Chartreuse"
+                             FontSize="20"
+                             AutoWordSelection="False"
+                             TextWrapping="Wrap"
+                             Text="А здесь будет описание тех, кто произвёл это чудо на свет"/>
+                </ScrollViewer>
+                <Button Content="Close"
+                        Command="{Binding Path=CloseAbout}"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Right"
+                        Margin="20"/>
+            </Grid>
+        </Popup>
         <ScrollViewer Name="ImageViewer" Grid.Column="0" Grid.Row="0" Background="MintCream"
                       HorizontalScrollBarVisibility="Visible"
                       BorderThickness="3" BorderBrush="DarkGray"
@@ -38,10 +77,12 @@
                 <viewModel:ImageViewerViewModel/>
             </ScrollViewer.DataContext>
             <Border Padding="10">
-            <Image Source="../Recources/Images/background.jpg" Stretch="Uniform"
-                   Height="{Binding Path=ImageHeight, Mode=OneWay}" Name="DisplayedImage"
+            <Image Stretch="Uniform"
+                   Height="{Binding Path=ImageHeight, Mode=OneWay}"
+                   Name="DisplayedImage"
                    MouseDown="DisplayedImage_OnMouseDown"
-                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"/>
             </Border>
         </ScrollViewer>
         <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
@@ -299,7 +340,9 @@
                 <!-- Вывод информации о текущем состоянии программы -->
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
-                <Slider Minimum="10" Maximum="200" Width="100" TickPlacement="BottomRight"
+                <Slider Minimum="{Binding Path=ImageMinZoom, Mode=OneWay}"
+                        Maximum="{Binding Path=ImageMaxZoom, Mode=OneWay}"
+                        Width="100" TickPlacement="BottomRight"
                         Value="{Binding ImageZoom, Mode=TwoWay}"
                         IsSnapToTickEnabled="True" Name="ImageZoom">
                     <Slider.ToolTip>

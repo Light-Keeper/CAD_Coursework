@@ -7,5 +7,6 @@
         public const string LogWindowClosed = "LogWindowClosed";
         public const string SetInfoMessage = "SetInfoMessage";
         public const string SetProgramState = "SetProgramState";
+        public const string ShowAboutPopup = "ShowAboutPopup";
     }
 }
