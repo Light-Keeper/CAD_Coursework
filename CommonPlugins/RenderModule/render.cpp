@@ -1,6 +1,7 @@
 #include <cad_module.h>
 #include <cad_object.h>
 #include <cstdio>
+#include <math.h>
 
 cad_render_module * Open(cad_kernel *, void *);
 void *Close(cad_kernel* kernel, cad_render_module *self);
@@ -31,8 +32,8 @@ cad_render_module * Open(cad_kernel *, void *)
 	m->RenderMap = RenderMap;
 	m->RenderSchme = RenderSchme;
 	// default values
-	m->sys->height = 786;
-	m->sys->width = 1024;
+	m->sys->height = 0;
+	m->sys->width = 0;
 	return m;
 }
 
@@ -74,12 +75,28 @@ cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme)
 
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
+	int w = 70; 
+	int h = 60; 
+	SetPitcureSize(self, ceil((double)self->sys->width/w)*w+w, ceil((double)self->sys->width/w)*h+h);
 	auto picture = allocate_picture(self);
-	memset(picture->data, 0, picture->width * picture->height * sizeof( uint32_t ));
+	int size_square=picture->width/w; 
+	memset(picture->data, 220, picture->width * picture->height * sizeof( uint32_t ));
+	
 
-	picture->data[picture->width * 10 + 10] = 0x00FFFFFF;
-
-
+	for (int y=size_square-1; y < picture->height; y++) // horizontal lines
+		{
+			for (int i=0; i<picture->width; i++)
+			picture->data[picture->width * y + i] = 0xeeeeee; 
+			y+=(size_square-1);
+		}
+	
+	for (int z=size_square-1; z < picture->width; z++) //vertical lines
+		{
+			for (int i=0; i<picture->height; i++)
+			picture->data[picture->width*i+z] = 0xeeeeee; 
+			z+=(size_square-1);
+		}
+	//int n = MapElement3D(map, 0,0,map->currerntLayer);	
 	return picture;
 
 }
