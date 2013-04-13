@@ -197,25 +197,26 @@ int my_printf(const char * format, ... )
 
 // .NET assembly interface 
 
-extern "C" __declspec( dllexport ) uint32_t  GetCurrentState();
-extern "C" __declspec( dllexport ) int GetModuleList(int bufferSize, char *buffer);
-extern "C" __declspec( dllexport ) bool LoadFile( const char *path );
-extern "C" __declspec( dllexport ) bool StartPlaceMoule( char *name, bool inDemoMode );
-extern "C" __declspec( dllexport ) bool StartTraceModule(char *name, bool inDemoMode );
-extern "C" __declspec( dllexport ) uint32_t RunToEnd();
-extern "C" __declspec( dllexport ) uint32_t NextStep( bool inDemoMode );
+extern "C" __declspec( dllexport ) uint32_t	__stdcall GetCurrentState();
+extern "C" __declspec( dllexport ) int		__stdcall GetModuleList(int bufferSize, char *buffer);
+extern "C" __declspec( dllexport ) bool		__stdcall LoadFile( const char *path );
+extern "C" __declspec( dllexport ) bool		__stdcall StartPlaceMoule( char *name, bool inDemoMode );
+extern "C" __declspec( dllexport ) bool		__stdcall StartTraceModule(char *name, bool inDemoMode );
+extern "C" __declspec( dllexport ) uint32_t __stdcall RunToEnd();
+extern "C" __declspec( dllexport ) uint32_t __stdcall NextStep( bool inDemoMode );
 
-extern "C" __declspec( dllexport ) bool CloseCurrentFile();
-extern "C" __declspec( dllexport ) cad_picture * RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNumber );
-extern "C" __declspec( dllexport ) void FreePicture( cad_picture *p );
-extern "C" __declspec( dllexport ) void SetPictureSize( uint32_t width, uint32_t height );
+extern "C" __declspec( dllexport ) bool		__stdcall CloseCurrentFile();
+extern "C" __declspec( dllexport ) void		__stdcall FreePicture( cad_picture *p );
+extern "C" __declspec( dllexport ) void		__stdcall SetPictureSize( uint32_t width, uint32_t height );
+extern "C" __declspec( dllexport ) cad_picture * __stdcall RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNumber );
 
-uint32_t  GetCurrentState()
+
+uint32_t __stdcall GetCurrentState()
 {
 	return self->sys->kernel->GetCurrentState( self->sys->kernel );
 }
 
-int GetModuleList(int bufferSize, char *buffer)
+int __stdcall GetModuleList(int bufferSize, char *buffer)
 {
 	cad_module_info *mod;
 	uint32_t count = self->sys->kernel->GetModuleList( self->sys->kernel, &mod);
@@ -234,62 +235,48 @@ int GetModuleList(int bufferSize, char *buffer)
 	return pos - buffer;
 }
 
-bool LoadFile( const char *path )
+bool __stdcall LoadFile( const char *path )
 {
 	return self->sys->kernel->LoadFile( self->sys->kernel, path );
 }
 
-bool StartPlaceMoule( char *name, bool inDemoMode )
+bool __stdcall StartPlaceMoule( char *name, bool inDemoMode )
 {
 	return self->sys->kernel->StartPlaceMoule( self->sys->kernel, name, inDemoMode );
 }
 
-bool StartTraceModule( char *name, bool inDemoMode )
+bool __stdcall StartTraceModule( char *name, bool inDemoMode )
 {
 	return self->sys->kernel->StartTraceModule( self->sys->kernel, name, inDemoMode );
 }
 
-uint32_t RunToEnd()
+uint32_t __stdcall RunToEnd()
 {
 	return self->sys->kernel->RunToEnd( self->sys->kernel );
 }
 
-uint32_t NextStep( bool inDemoMode )
+uint32_t __stdcall NextStep( bool inDemoMode )
 {
 	return self->sys->kernel->NextStep( self->sys->kernel, inDemoMode);
 }
 
-bool CloseCurrentFile()
+bool __stdcall CloseCurrentFile()
 {
 	return self->sys->kernel->CloseCurrentFile( self->sys->kernel );
 }
 
-cad_picture * RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNumber)
+cad_picture * __stdcall RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNumber)
 {
-	// temporary stuff for testing
-	cad_picture* p = (cad_picture *)malloc( sizeof(cad_picture));
-	//p->height = 100;
-	//p->width = 200;
-	//p->sys = NULL;
-	//p->data = (uint32_t *)malloc(sizeof(uint32_t) * p->height * p->width);
-	//for (int i = 0; i < p->height * p->width; i++)
-	//{
-	//	p->data[i] = rand() * rand() * rand();
-	//}
-	//p->Delete = NULL;
-	//return p;
-
-	// normal code. use it!
 	return self->sys->kernel->RenderPicture(self->sys->kernel, forceDrawLayer, forceDrawLayerNumber);
 }
 
-void FreePicture( cad_picture *p )
+void __stdcall FreePicture( cad_picture *p )
 {
 	if (p->Delete)
 		p->Delete( p );
 }
 
-void SetPictureSize( uint32_t width, uint32_t height )
+void __stdcall SetPictureSize( uint32_t width, uint32_t height )
 {
 	[=](cad_render_module *x ) {
 		x->SetPitcureSize(x, width, height);
