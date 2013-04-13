@@ -75,9 +75,20 @@ cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme)
 
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
-	int w = 70; 
-	int h = 60; 
-	SetPitcureSize(self, ceil((double)self->sys->width/w)*w+w, ceil((double)self->sys->width/w)*h+h);
+	int w = 140; 
+	int h = 110; 
+	int width, height;
+	if (ceil((double)self->sys->width/w)<20)
+	{
+		width = 20*w+w; 
+		height = 20*h+h;
+	}
+	else 
+	{
+		width = ceil((double)self->sys->width/w)*w+w;
+		height = ceil((double)self->sys->width/w)*h+h;
+	}
+	SetPitcureSize(self, width, height);
 	auto picture = allocate_picture(self);
 	int size_square=picture->width/w; 
 	memset(picture->data, 220, picture->width * picture->height * sizeof( uint32_t ));
