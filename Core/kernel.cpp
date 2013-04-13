@@ -50,6 +50,19 @@ cad_module_info *internal_find_module_by_name(cad_kernel *self, const char *forc
 	return module;
 }
 
+uint32_t cad_routemap_MakeStep(cad_route_map * self,  bool demo_mode)
+{
+	if (demo_mode) return self->MakeStepInDemoMode( self );
+	uint32_t result;
+	do
+	{
+		result = self->MakeStepInDemoMode( self );
+	} 
+	while( result == MORE_ACTIONS_IN_DEMO_MODE );
+	
+	return result;
+}
+
 void kernel_Exec(cad_kernel *self)
 {
 	WIN32_FIND_DATAA find ;
@@ -210,7 +223,7 @@ uint32_t kernel_NextStep( cad_kernel *self,  bool demo_mode)
 {
 	if (self->sys->current_state == KERNEL_STATE_PLACING)
 	{
-		uint32_t result = self->sys->current_sheme->MakeStep( self->sys->current_sheme, demo_mode );
+		uint32_t result = self->sys->current_sheme->MakeStepInDemoMode( self->sys->current_sheme );
 		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_PLACE;
 		self->sys->gui->UpdatePictureEvent( self->sys->gui );
 		return result;
@@ -277,6 +290,7 @@ bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bo
 		&self->sys->current_route)) return false;
 
 	self->sys->current_state = KERNEL_STATE_TRACING;
+	self->sys->current_route->MakeStep = cad_routemap_MakeStep;
 	self->sys->gui->UpdatePictureEvent( self->sys->gui );
 	return true;	
 }

@@ -100,7 +100,7 @@ struct	cad_scheme
 	// PLACEMENT module must initialize these methods :
 	uint32_t ( * MakeStepInDemoMode)(cad_scheme *self);
 
-	uint32_t ( * MakeStep)(cad_scheme *self,  bool demo_mode);	// find place for 1 element and ruturn.
+//	uint32_t ( * MakeStep)(cad_scheme *self,  bool demo_mode);	// find place for 1 element and ruturn.
 								// return MORE_ACTIONS if next MakeStep can be performed
 								// return LAST_ACTION_OK if all is done.
 								// return LAST_ACTION_ERROR if an error occured ( height * width < chip_number, etc. )
