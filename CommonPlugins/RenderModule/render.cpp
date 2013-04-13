@@ -69,45 +69,112 @@ cad_picture *allocate_picture(cad_render_module *self)
 }
 
 cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme)
-{
+{	
 	return allocate_picture(self);
 }
 
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
-	int w = 140; 
-	int h = 110; 
-	int width, height;
-	if (ceil((double)self->sys->width/w)<20)
+	int w = 100; 
+	int h = 50; 
+	int width, height, value, xcoord, ycoord, coord,addw, addh;
+	long map_test[100][50]; 
+		map_test[0][0] = 0x00000000; 
+		map_test[0][1] = 0x01000000; 
+		map_test[0][2] = 0x02000000; 
+		map_test[0][3] = 0x03000000; 
+		map_test[0][4] = 0x04000000; 
+		map_test[0][5] = 0x05000000; 
+		map_test[0][6] = 0x06000000; 
+		map_test[0][7] = 0x07000000; 
+		map_test[0][8] = 0x08000000; 
+		map_test[0][9] = 0x09000000; 
+		map_test[0][10] = 0x0A000000; 
+		map_test[0][11] = 0x0B000000; 
+		map_test[0][12] = 0x0C000000; 
+		map_test[0][13] = 0x0D000000;
+		map_test[0][14] = 0x0E000000;
+		map_test[0][15] = 0x0F000000;
+	if (ceil((double)self->sys->width/w)<21) //standartization if field is too little
 	{
-		width = 20*w+w; 
-		height = 20*h+h;
+		width = 21*w+w-1; 
+		height = 21*h+h-1;
 	}
 	else 
 	{
-		width = ceil((double)self->sys->width/w)*w+w;
-		height = ceil((double)self->sys->width/w)*h+h;
+		if (((int)ceil((double)self->sys->width/w)%2)==0)
+			{addw=w*2;
+		addh=h*2;}
+		else
+		{	addw=w;
+		addh=h;}
+		width = (int)ceil((double)self->sys->width/w)*w+addw-1;
+		height = (int)ceil((double)self->sys->width/w)*h+addh-1; 
 	}
+
 	SetPitcureSize(self, width, height);
 	auto picture = allocate_picture(self);
-	int size_square=picture->width/w; 
+	int size_square=(picture->width-w+1)/w; 
 	memset(picture->data, 220, picture->width * picture->height * sizeof( uint32_t ));
 	
 
-	for (int y=size_square-1; y < picture->height; y++) // horizontal lines
+	for (int y=size_square; y < (int)picture->height; ) // horizontal lines
 		{
-			for (int i=0; i<picture->width; i++)
-			picture->data[picture->width * y + i] = 0xeeeeee; 
-			y+=(size_square-1);
+			for (int i=0;  i<(int)picture->width; i++)
+				picture->data[(int)picture->width * y + i] = 0xeeeeee; 
+			y+=(size_square+1);
 		}
 	
-	for (int z=size_square-1; z < picture->width; z++) //vertical lines
+	for (int z=size_square; z < (int)picture->width;) //vertical lines
 		{
-			for (int i=0; i<picture->height; i++)
-			picture->data[picture->width*i+z] = 0xeeeeee; 
-			z+=(size_square-1);
+			for (int i=0; i<(int)picture->height; i++)
+			picture->data[(int)picture->width*i+z] = 0xeeeeee; 
+			z+=(size_square+1);
 		}
 	//int n = MapElement3D(map, 0,0,map->currerntLayer);	
+
+		int sqs = ((int)picture->width-2*w+1)/w+1;
+		int sqs_div2 = (sqs-1)/2;
+	for (int r1 =0 ; r1<w; r1 ++ )
+		for (int r2=0; r2<h; r2++)
+		{
+			value = map_test[r1][r2];
+			xcoord = sqs*(r2+1)+r2-(sqs_div2);
+			ycoord = sqs*(r1+1)+r1-(sqs_div2);
+			coord = picture->width*(ycoord)+xcoord;
+		if ((value & 0xF1000000) == 0x01000000)	
+			for (int j=0; j<=sqs_div2; j++)
+			{ 
+				for (int i = 0; i<3; i++)
+				picture->data[coord-1+i] = 0xFF4500; 
+				coord = coord - picture->width;
+			}
+			coord = picture->width*(ycoord)+xcoord;
+		if ((value & 0xF2000000) == 0x02000000)	
+			for (int j=0; j<=sqs_div2; j++)
+			{ 
+				for (int i = 0; i<3; i++)
+				picture->data[coord-1+i] = 0xFF4500; 
+				coord = coord + picture->width;
+			}
+			coord = picture->width*(ycoord)+xcoord;
+		if ((value & 0xF4000000) == 0x04000000)	
+			for (int j=0; j<=sqs_div2; j++)
+			{ 
+				for (int i = 0; i<3; i++)
+				picture->data[coord-picture->width+picture->width*i] = 0xFF4500; 
+				coord = coord - 1;
+			}
+			coord = picture->width*(ycoord)+xcoord;
+		if ((value & 0xF8000000) == 0x08000000)	
+			for (int j=0; j<=sqs_div2; j++)
+			{ 
+				for (int i = 0; i<3; i++)
+				picture->data[coord-picture->width+picture->width*i] = 0xFF4500; 
+				coord = coord + 1;
+			}
+		else continue;
+		} 
 	return picture;
 
 }
