@@ -221,17 +221,26 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
-        #region InputFile
-        private string _inputFile;
-        public string InputFile
+        #region InputFilePath
+        private string _inputFilePath;
+        public string InputFilePath
         {
-            get { return _inputFile; }
+            get { return _inputFilePath; }
             set
             {
-                if (_inputFile == value) return;
-                _inputFile = value;
-                RaisePropertyChanged(() => InputFile);
+                if (_inputFilePath == value) return;
+                _inputFilePath = value;
+                RaisePropertyChanged(() => InputFilePath);
+                RaisePropertyChanged(() => InputFileName);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.AddFileNameToTitle, InputFilePath);
             }
+        }
+        #endregion
+
+        #region InputFileName
+        public string InputFileName
+        {
+            get { return _inputFilePath.Split(new char[] {'\\'}, StringSplitOptions.RemoveEmptyEntries).LastOrDefault(); }
         }
         #endregion
 
@@ -355,9 +364,9 @@ namespace WPF_GUI.ViewModels
                 return;
             }
 
-            this.InputFile = dialog.FileName;
+            this.InputFilePath = dialog.FileName;
 
-            if ( StaticLoader.LoadFile(new StringBuilder(this.InputFile)) )
+            if ( StaticLoader.LoadFile(new StringBuilder(this.InputFilePath)) )
             {
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.FileLoadSuccessful);
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateGood);

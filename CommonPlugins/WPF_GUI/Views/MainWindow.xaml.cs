@@ -1,6 +1,8 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using WPF_GUI.Helpers;
 
 namespace WPF_GUI
 {
@@ -15,11 +17,23 @@ namespace WPF_GUI
         public MainWindow()
         {
             InitializeComponent();
+
+            this.Title = Defines.ProgramName;
+
             _cursorGrab = ((TextBlock) this.Resources["CursorGrab"]).Cursor;
             _cursorGrabbing = ((TextBlock) this.Resources["CursorGrabbing"]).Cursor;
+
             DisplayedImage.Cursor = _cursorGrab;
             _isDragging = false;
+
             DisplayedImage.Source = StaticLoader.GetPicture(false, 0);
+
+            StaticLoader.Mediator.Register(MediatorMessages.AddFileNameToTitle, (Action<string>) this.AddFileNameToTitle);
+        }
+
+        private void AddFileNameToTitle(string fileName)
+        {
+            this.Title = fileName + " - " + Defines.ProgramName;
         }
 
         private void DisplayedImage_OnMouseDown(object sender, MouseButtonEventArgs e)

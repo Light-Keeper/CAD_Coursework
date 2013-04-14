@@ -30,7 +30,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Popup Name="AboutPopup"
-               StaysOpen="False"
+               StaysOpen="True"
                IsOpen="{Binding Path=ShowAbout, Mode=TwoWay}"
                PopupAnimation="Fade"
                AllowsTransparency="True"
@@ -62,7 +62,7 @@
                              Text="А здесь будет описание тех, кто произвёл это чудо на свет"/>
                 </ScrollViewer>
                 <Button Content="Close"
-                        Command="{Binding Path=CloseAbout}"
+                        Command="{Binding Path=Close}"
                         VerticalAlignment="Top"
                         HorizontalAlignment="Right"
                         Margin="20"/>
@@ -262,9 +262,9 @@
                             <Label Content="Входной файл:" Grid.Row="0" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
                             <TextBox Grid.Row="1" IsReadOnly="True" VerticalAlignment="Center"
                                      Margin="0,0,3,0" Width="140" Height="22"
-                                     Text="{Binding Path=InputFile, Mode=OneWay}">
+                                     Text="{Binding Path=InputFileName, Mode=OneWay}">
                                 <TextBox.ToolTip>
-                                    <Label Content="{Binding Path=InputFile, Mode=OneWay}"/>
+                                    <Label Content="{Binding Path=InputFilePath, Mode=OneWay}"/>
                                 </TextBox.ToolTip>
                             </TextBox>
                             <Button Grid.Row="1" Grid.Column="1" Content="Открыть" Padding="1"

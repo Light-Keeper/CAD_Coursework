@@ -10,5 +10,7 @@ namespace WPF_GUI.Helpers
         public const int ProgramStateGood = 0;
         public const int ProgramStateBusy = 1;
         public const int ProgramStateError = 2;
+
+        public const string ProgramName = "Program name";
     }
 }
