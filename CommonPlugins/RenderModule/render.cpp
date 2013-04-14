@@ -99,6 +99,8 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 		map_test[0][17] = 0x40000000;
 		map_test[0][18] = 0x10000000;
 		map_test[0][19] = 0x20000000;
+		map_test[0][20] = 0x60000000;
+
 	if (ceil((double)self->sys->width/w)<21) //standartization if field is too little
 	{
 		width = 21*w+w-1; 
@@ -153,7 +155,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 //=====================================================
 			//WIRE_UP
 //=====================================================
-		if ((value & 0xF1000000) == 0x01000000)	
+		if ((value & MAP_WIRE_UP) == MAP_WIRE_UP)	
 			for (int j=0; j<=sqs_div2+1; j++)
 			{ 
 				for (int i = 0; i<3; i++)
@@ -164,7 +166,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 //=====================================================
 			//WIRE_DOWN
 //=====================================================
-		if ((value & 0xF2000000) == 0x02000000)	
+		if ((value & MAP_WIRE_DOWN) == MAP_WIRE_DOWN)	
 			for (int j=0; j<=sqs_div2; j++)
 			{ 
 				for (int i = 0; i<3; i++)
@@ -175,7 +177,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 //=====================================================
 			//WIRE_LEFT
 //=====================================================
-		if ((value & 0xF4000000) == 0x04000000)	
+		if ((value & 0xF4000000) == MAP_WIRE_LEFT)	
 			for (int j=0; j<=sqs_div2+1; j++)
 			{ 
 				for (int i = 0; i<3; i++)
@@ -186,7 +188,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 //=====================================================
 			//WIRE_RIGHT
 //=====================================================
-		if ((value & 0xF8000000) == 0x08000000)	
+		if ((value & 0xF8000000) == MAP_WIRE_RIGHT)	
 			for (int j=0; j<=sqs_div2; j++)
 			{ 
 				for (int i = 0; i<3; i++)
@@ -198,7 +200,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 //=====================================================
 			//ARROW_UP
 //=====================================================
-			if ((value & 0xF0000000) == 0x30000000)	
+			if ((value & CODE_MASK) == MAP_ARROW_UP)	
 			{for (int j=0; j<=sqs_div2; j++)
 			{ 
 				for (int i = 0; i<h; i++)
@@ -220,7 +222,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 //=====================================================
 			h = (sqs+1)/2;
 			
-			if ((value & 0xF0000000) == 0x40000000)	
+			if ((value & CODE_MASK) == MAP_ARROW_DOWN)	
 			{for (int j=0; j<=sqs_div2; j++)
 			{ 
 				for (int i = 0; i<h; i++)
@@ -242,7 +244,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 //=====================================================
 			h = (sqs+1)/2;
 			
-			if ((value & 0xF0000000) == 0x10000000)	
+			if ((value & CODE_MASK) == MAP_ARROW_LEFT)	
 			{
 				for (int j=0; j<=sqs_div2; j++)
 				{ 
@@ -267,12 +269,12 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 //=====================================================
 			h = (sqs+1)/2;
 			
-			if ((value & 0xF0000000) == 0x20000000)	
+			if ((value & CODE_MASK) == MAP_ARROW_RIGHT)	
 			{
 				for (int j=0; j<=sqs_div2; j++)
 				{ 
 					for (int i = 0; i<h; i++)
-					picture->data[coord - (h/2) * picture-> width + i * picture->width] = 0x000000;
+					picture->data[coord - (h/2) * picture-> width + i * picture->width] =0x000000;
 					coord = coord + 1;
 					h-=2;
 				}
@@ -285,8 +287,29 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 			}
 			coord = picture->width*(ycoord)+xcoord;
 			}
+
+			h = (sqs_div2);
+			if ((value & CODE_MASK) == MAP_PIN)	
+			{for (int j=0; j<=sqs_div2; j++)
+			{ 
+				for (int i = 0; i<h; i++)
+				picture->data[coord - h/2 +i] = 0xFFD700; 
+				coord = coord - picture->width;
+				h-=2;
+			}
+			h = (sqs_div2);
+			coord = picture->width*(ycoord)+xcoord;
+			for (int j=0; j<=sqs_div2; j++)
+			{ 
+				for (int i = 0; i<h; i++)
+				picture->data[coord - h/2 +i] = 0xDAA520; 
+				coord = coord + picture->width;
+				h-=2;
+			}
+			}
+		
 		else continue;
-		} 
+		}  
 	return picture;
 
 }
