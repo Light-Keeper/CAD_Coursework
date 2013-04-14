@@ -271,13 +271,13 @@
                                     Margin="2,0,0,0" Command="{Binding Path=OpenSourceFile}"/>
                             
                             <Label Content="Метод компановки:" Grid.Row="2" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
-                            <ComboBox Grid.Row="3" Grid.ColumnSpan="2"
+                            <ComboBox Grid.Row="3" Grid.ColumnSpan="2" Width="195"
                                       ItemsSource="{Binding Path=PlaceMethodCollection, Mode=OneWay}"
                                       DisplayMemberPath="Name"
                                       SelectedItem="{Binding Path=SelectedPlaceMethod, Mode=TwoWay}"/>
                             
                             <Label Content="Метод трассировки:" Grid.Row="4" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
-                            <ComboBox Grid.Row="5" Grid.ColumnSpan="2"
+                            <ComboBox Grid.Row="5" Grid.ColumnSpan="2" Width="195"
                                       ItemsSource="{Binding Path=RouteMethodCollection, Mode=OneWay}"
                                       DisplayMemberPath="Name"
                                       SelectedItem="{Binding Path=SelectedRouteMethod, Mode=TwoWay}"/>
