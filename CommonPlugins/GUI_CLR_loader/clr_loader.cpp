@@ -197,11 +197,11 @@ int my_printf(const char * format, ... )
 
 // .NET assembly interface 
 
-extern "C" __declspec( dllexport ) uint32_t	__stdcall GetCurrentState();
-extern "C" __declspec( dllexport ) int		__stdcall GetModuleList(int bufferSize, char *buffer);
+extern "C" __declspec( dllexport ) uint32_t	__stdcall GetKernelState();
+extern "C" __declspec( dllexport ) int32_t	__stdcall GetModuleList( uint32_t bufferSize, char *buffer );
 extern "C" __declspec( dllexport ) bool		__stdcall LoadFile( const char *path );
 extern "C" __declspec( dllexport ) bool		__stdcall StartPlaceMoule( char *name, bool inDemoMode );
-extern "C" __declspec( dllexport ) bool		__stdcall StartTraceModule(char *name, bool inDemoMode );
+extern "C" __declspec( dllexport ) bool		__stdcall StartTraceModule( char *name, bool inDemoMode );
 extern "C" __declspec( dllexport ) uint32_t __stdcall RunToEnd();
 extern "C" __declspec( dllexport ) uint32_t __stdcall NextStep( bool inDemoMode );
 
@@ -211,12 +211,12 @@ extern "C" __declspec( dllexport ) void		__stdcall SetPictureSize( uint32_t widt
 extern "C" __declspec( dllexport ) cad_picture * __stdcall RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNumber );
 
 
-uint32_t __stdcall GetCurrentState()
+uint32_t __stdcall GetKerneltState()
 {
 	return self->sys->kernel->GetCurrentState( self->sys->kernel );
 }
 
-int __stdcall GetModuleList(int bufferSize, char *buffer)
+int32_t __stdcall GetModuleList( uint32_t bufferSize, char *buffer )
 {
 	cad_module_info *mod;
 	uint32_t count = self->sys->kernel->GetModuleList( self->sys->kernel, &mod);
@@ -227,7 +227,7 @@ int __stdcall GetModuleList(int bufferSize, char *buffer)
 		if (mod[i].module_capability != CAP_PLACEMENT &&
 			mod[i].module_capability != CAP_TRACEROUTE)
 			continue;
-		int l = strlen( mod[i].module_name ) + 2;
+		uint32_t l = strlen( mod[i].module_name ) + 2;
 		if (pos + l >= buffer + bufferSize) return -1;
 		sprintf(pos, "%c%s\n", mod[i].module_capability == CAP_PLACEMENT ? 'P' : 'T', mod[i].module_name);
 		pos += l;

@@ -142,7 +142,7 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Метод трассировки"
-                                          ItemsSource="{Binding Path=RouteMethodCollection}"
+                                          ItemsSource="{Binding Path=TraceMethodCollection}"
                                           DisplayMemberPath="Name">
                                     <MenuItem.ItemContainerStyle>
                                         <Style TargetType="MenuItem" BasedOn="{StaticResource RadioMenuItemStyle}">
@@ -291,9 +291,9 @@
                             
                             <Label Content="Метод трассировки:" Grid.Row="4" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
                             <ComboBox Grid.Row="5" Grid.ColumnSpan="2" Width="195"
-                                      ItemsSource="{Binding Path=RouteMethodCollection, Mode=OneWay}"
+                                      ItemsSource="{Binding Path=TraceMethodCollection, Mode=OneWay}"
                                       DisplayMemberPath="Name"
-                                      SelectedItem="{Binding Path=SelectedRouteMethod, Mode=TwoWay}"/>
+                                      SelectedItem="{Binding Path=SelectedTraceMethod, Mode=TwoWay}"/>
                         </Grid>
                     </GroupBox>
                     <GroupBox Grid.Row="2" Header="Режим работы" Margin="2" Padding="2"
