@@ -2,6 +2,7 @@
 #include <cad_object.h>
 #include <cstdio>
 #include <math.h>
+#include <string>
 
 cad_render_module * Open(cad_kernel *, void *);
 void *Close(cad_kernel* kernel, cad_render_module *self);
@@ -73,11 +74,55 @@ cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme)
 	return allocate_picture(self);
 }
 
+int DrawLine(cad_picture * picture, int coord, int coordinf, int datainfo, int cycleinfobig, int cycleinfosmall, int iparam, int sqs_div2, int xcoord, int ycoord, uint32_t color, int cis, int active)
+			{
+				if (active == 1)
+				{
+			for (int j=0; j<=sqs_div2+cycleinfobig; j++)
+			{ 
+				for (int i = 0; i<cycleinfosmall; i++)
+				picture->data[coord+datainfo+i*iparam] = color; 
+				coord = coord + coordinf;
+			}
+			coord = picture->width*(ycoord)+xcoord;
+			cycleinfosmall = cycleinfosmall - cis;
+				}
+			return coord;			
+}
+
+int DrawErrow(cad_picture * picture, int coord, int coordinf, int cycleinfobig, int cycleinfosmall, int iparam, int sqs_div2, int xcoord, int ycoord, uint32_t color, int cis, int par)
+			{
+			for (int j=0; j<=sqs_div2+cycleinfobig; j++)
+			{ 
+				for (int i = 0; i<cycleinfosmall; i++)
+				picture->data[coord-cycleinfosmall/2*par+i*iparam] = color; 
+				coord = coord + coordinf;
+				cycleinfosmall = cycleinfosmall - cis;
+			}
+			coord = picture->width*(ycoord)+xcoord;
+			return coord;			
+}
+
+void DrawSym(cad_picture * picture, int coord, int sqs_div2, int xcoord, int ycoord, uint32_t colour, int lu, int ld, int ru, int rd, int m, int u, int d, int su, int sd)
+		{	int h = sqs_div2;
+		DrawLine(picture, coord, -int(picture->width), -h/2, -1, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, lu); // | left up
+		DrawLine(picture, coord, picture->width, -h/2, -1, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, ld); // | left down
+		DrawLine(picture, coord, -int(picture->width), h/2-2, -1, 3, -1, sqs_div2, xcoord, ycoord, colour, 0, ru); // | right up	
+		DrawLine(picture, coord, picture->width, h/2-2, -1, 3, -1, sqs_div2, xcoord, ycoord, colour, 0, rd); // right down
+		DrawLine(picture, coord, 1, -int(picture->width)-h/2, -2, 3, picture->width, sqs_div2, xcoord, ycoord, colour, 0 ,m); // mid
+		DrawLine(picture, coord, 1, -int(picture->width)*(h-1)-h/2, -2, 3, picture->width, sqs_div2, xcoord, ycoord, colour, 0, u);// up
+		DrawLine(picture, coord, 1, picture->width*(h-3)-h/2, -2, 3, picture->width, sqs_div2, xcoord, ycoord, colour, 0, d);//down
+		DrawLine(picture, coord, 1-int(picture->width), -int(picture->width)-h/2, -4, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, su);// \up
+		DrawLine(picture, coord, 1-int(picture->width), -int(picture->width)+picture->width*(h-2)-h/2-1, -3, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, sd); // \down
+		}
+
+
+
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
 	int w = 80; 
 	int h = 60; 
-	int width, height, value, xcoord, ycoord, coord,addw, addh;
+	int width, height; uint32_t value; int xcoord, ycoord, coord,addw, addh;
 	long map_test[80][60]; 
 		map_test[0][0] = 0x00000000; 
 		map_test[0][1] = 0x01000000; 
@@ -100,11 +145,17 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 		map_test[0][18] = 0x10000000;
 		map_test[0][19] = 0x20000000;
 		map_test[0][20] = 0x60000000;
+		map_test[0][21] = 0x80000020;
+		uint32_t NUM = 0x80000000;
+		for (int i=0; i<80; i++, NUM++)
+			map_test[1][i] = NUM;
+		for (int i=0; i<80; i++, NUM++)
+			map_test[4][i] = NUM+100;
 
-	if (ceil((double)self->sys->width/w)<21) //standartization if field is too little
+	if (ceil((double)self->sys->width/w)<25) //standartization if field is too little
 	{
-		width = 21*w+w-1; 
-		height = 21*h+h-1;
+		width = 25*w+w-1; 
+		height = 25*h+h-1;
 	}
 	else 
 	{
@@ -144,170 +195,142 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 	//int n = MapElement3D(map, 0,0,map->currerntLayer);	
 
 		int sqs = ((int)picture->width-2*w+1)/w+1;
-		int sqs_div2 = (sqs-1)/2;
 	for (int r1 =0 ; r1<w; r1 ++ )
 		for (int r2=0; r2<h; r2++)
 		{
+			int sqs_div2 = (sqs-1)/2;
 			value = map_test[r1][r2];
 			xcoord = sqs*(r2+1)+r2-(sqs_div2);
 			ycoord = sqs*(r1+1)+r1-(sqs_div2);
 			coord = picture->width*(ycoord)+xcoord;
+	
 //=====================================================
 			//WIRE_UP
 //=====================================================
-		if ((value & MAP_WIRE_UP) == MAP_WIRE_UP)	
-			for (int j=0; j<=sqs_div2+1; j++)
-			{ 
-				for (int i = 0; i<3; i++)
-				picture->data[coord-1+i] = 0xFF4500; 
-				coord = coord - picture->width;
-			}
-			coord = picture->width*(ycoord)+xcoord;
+if ((value & MAP_WIRE_UP) == MAP_WIRE_UP)			
+coord = DrawLine(picture, coord, -int(picture->width), -1, 1, 3, 1, sqs_div2, xcoord, ycoord, 0xFF4500, 0,1); 	
 //=====================================================
 			//WIRE_DOWN
 //=====================================================
-		if ((value & MAP_WIRE_DOWN) == MAP_WIRE_DOWN)	
-			for (int j=0; j<=sqs_div2; j++)
-			{ 
-				for (int i = 0; i<3; i++)
-				picture->data[coord-1+i] = 0xFF4500; 
-				coord = coord + picture->width;
-			}
-			coord = picture->width*(ycoord)+xcoord;
+if ((value & MAP_WIRE_DOWN) == MAP_WIRE_DOWN)	
+coord = DrawLine(picture, coord, picture->width, -1, 0, 3, 1, sqs_div2, xcoord, ycoord, 0xFF4500, 0,1); 			
 //=====================================================
 			//WIRE_LEFT
 //=====================================================
-		if ((value & 0xF4000000) == MAP_WIRE_LEFT)	
-			for (int j=0; j<=sqs_div2+1; j++)
-			{ 
-				for (int i = 0; i<3; i++)
-				picture->data[coord-picture->width+picture->width*i] = 0xFF4500; 
-				coord = coord - 1;
-			}
-			coord = picture->width*(ycoord)+xcoord;
+if ((value & 0xF4000000) == MAP_WIRE_LEFT)	
+coord = DrawLine(picture, coord, -1, -int(picture->width), 1, 3, picture->width, sqs_div2, xcoord, ycoord, 0xFF4500, 0,1);			
 //=====================================================
 			//WIRE_RIGHT
 //=====================================================
-		if ((value & 0xF8000000) == MAP_WIRE_RIGHT)	
-			for (int j=0; j<=sqs_div2; j++)
-			{ 
-				for (int i = 0; i<3; i++)
-				picture->data[coord-picture->width+picture->width*i] = 0xFF4500; 
-				coord = coord + 1;
-			}
-			coord = picture->width*(ycoord)+xcoord;
-			int h = (sqs+1)/2;
+if ((value & 0xF8000000) == MAP_WIRE_RIGHT)	
+coord = DrawLine(picture, coord, 1, -int(picture->width), 0, 3, picture->width, sqs_div2, xcoord, ycoord, 0xFF4500, 0,1);			
 //=====================================================
 			//ARROW_UP
 //=====================================================
-			if ((value & CODE_MASK) == MAP_ARROW_UP)	
-			{for (int j=0; j<=sqs_div2; j++)
-			{ 
-				for (int i = 0; i<h; i++)
-				picture->data[coord - h/2 +i] = 0x000000; 
-				coord = coord - picture->width;
-				h-=2;
-			}
-			coord = picture->width*(ycoord)+xcoord;
-			for (int j=0; j<=sqs_div2-sqs_div2/2; j++)
-			{ 
-				for (int i = 0; i<3; i++)
-				picture->data[coord-1+i] = 0x000000; 
-				coord = coord + picture->width;
-			}
-			}
-			coord = picture->width*(ycoord)+xcoord;
+int h = (sqs+1)/2;
+if ((value & CODE_MASK) == MAP_ARROW_UP)	
+{
+	coord = DrawErrow(picture, coord, -int(picture->width), 0, h, 1, sqs_div2, xcoord, ycoord, 0x000000, 2, 1);			
+	coord = DrawLine(picture, coord, picture->width, -1, -sqs_div2/2, 3, 1, sqs_div2, xcoord, ycoord, 0x000000, 0,1);
+}
 //=====================================================
 			//ARROW_DOWN
 //=====================================================
-			h = (sqs+1)/2;
-			
-			if ((value & CODE_MASK) == MAP_ARROW_DOWN)	
-			{for (int j=0; j<=sqs_div2; j++)
-			{ 
-				for (int i = 0; i<h; i++)
-				picture->data[coord - h/2 +i] = 0x000000; 
-				coord = coord + picture->width;
-				h-=2;
-			}
-			coord = picture->width*(ycoord)+xcoord;
-			for (int j=0; j<=sqs_div2-sqs_div2/2; j++)
-			{ 
-				for (int i = 0; i<3; i++)
-				picture->data[coord-1+i] = 0x000000; 
-				coord = coord - picture->width;
-			}
-			}
-			coord = picture->width*(ycoord)+xcoord;
+if ((value & CODE_MASK) == MAP_ARROW_DOWN)	
+{
+	coord = DrawErrow(picture, coord, picture->width, 0, h, 1, sqs_div2, xcoord, ycoord, 0x000000, 2, 1);	
+	coord = DrawLine(picture, coord, -int(picture->width), -1, -sqs_div2/2, 3, 1, sqs_div2, xcoord, ycoord, 0x000000, 0,1);			
+}
 //=====================================================
 			//ARROW_LEFT
 //=====================================================
-			h = (sqs+1)/2;
-			
-			if ((value & CODE_MASK) == MAP_ARROW_LEFT)	
-			{
-				for (int j=0; j<=sqs_div2; j++)
-				{ 
-					for (int i = 0; i<h; i++)
-					picture->data[coord - (h/2) * picture-> width + i * picture->width] = 0x000000; 
-					coord = coord - 1;
-					h-=2;
-				}
-				coord = picture->width*(ycoord)+xcoord;
-				for (int j=0; j<=sqs_div2-sqs_div2/2; j++)
-			{ 
-				for (int i = 0; i<3; i++)
-				picture->data[coord-picture->width+picture->width*i] = 0x000000; 
-				coord = coord + 1;
-			}
-			coord = picture->width*(ycoord)+xcoord;
-			}
-			
-			//coord = picture->width*(ycoord)+xcoord;
+if ((value & CODE_MASK) == MAP_ARROW_LEFT)	
+{
+	coord = DrawErrow(picture, coord, -1, 0, h, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 2, picture->width);	
+	coord = DrawLine(picture, coord, 1, -int(picture->width), -sqs_div2/2, 3, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 0,1);
+}
 //=====================================================
 			//ARROW_RIGHT
 //=====================================================
-			h = (sqs+1)/2;
+if ((value & CODE_MASK) == MAP_ARROW_RIGHT)	
+{
+	coord = DrawErrow(picture, coord, 1, 0, h, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 2, picture->width);	
+	coord = DrawLine(picture, coord, -1, -int(picture->width), -sqs_div2/2, 3, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 0,1);
+}
+//=====================================================
+			//PIN
+//=====================================================
+h = (sqs_div2);
+if ((value & CODE_MASK) == MAP_PIN)	
+{
+	coord = DrawErrow(picture, coord, -int(picture->width), 0, h, 1, sqs_div2, xcoord, ycoord, 0xFFD700, 2, 1);	
+	coord = DrawErrow(picture, coord, picture->width, 0, h, 1, sqs_div2, xcoord, ycoord, 0xDAA520, 2, 1);	
+}		
+//=====================================================
+			//NUMBER
+//=====================================================
+h = (sqs_div2);
 			
-			if ((value & CODE_MASK) == MAP_ARROW_RIGHT)	
-			{
-				for (int j=0; j<=sqs_div2; j++)
-				{ 
-					for (int i = 0; i<h; i++)
-					picture->data[coord - (h/2) * picture-> width + i * picture->width] =0x000000;
-					coord = coord + 1;
-					h-=2;
-				}
-			coord = picture->width*(ycoord)+xcoord;
-				for (int j=0; j<=sqs_div2-sqs_div2/2; j++)
-			{ 
-				for (int i = 0; i<3; i++)
-				picture->data[coord-picture->width+picture->width*i] = 0x000000; 
-				coord = coord - 1;
-			}
-			coord = picture->width*(ycoord)+xcoord;
-			}
-
-			h = (sqs_div2);
-			if ((value & CODE_MASK) == MAP_PIN)	
-			{for (int j=0; j<=sqs_div2; j++)
-			{ 
-				for (int i = 0; i<h; i++)
-				picture->data[coord - h/2 +i] = 0xFFD700; 
-				coord = coord - picture->width;
-				h-=2;
-			}
-			h = (sqs_div2);
-			coord = picture->width*(ycoord)+xcoord;
-			for (int j=0; j<=sqs_div2; j++)
-			{ 
-				for (int i = 0; i<h; i++)
-				picture->data[coord - h/2 +i] = 0xDAA520; 
-				coord = coord + picture->width;
-				h-=2;
-			}
-			}
 		
+	if ((value & CODE_MASK) == MAP_NUMBER)				
+	{	
+		char arr[]="   "; int cd; int n;
+		uint32_t colour = 0x0011AA;
+		int num = NUMBER_MASK & value;
+		_itoa_s(num, arr,10);
+		int col = strlen(arr);
+		if (col==2)
+		{
+			cd = coord-h/2; 
+			n = h;
+		colour = 0x0077AA;}
+		else if
+			(col==3)
+		{
+			cd = coord-h+h/3; 
+			n = sqs/3; 
+			colour = 0xAA0011;
+			sqs_div2-=sqs_div2/3;
+		} 
+		else {
+			cd = coord; 
+			n = 0;
+			colour = 0x11AA11;
+		}
+		for (int i=0; i<col; i++)
+		{
+		 if (arr[i]=='0')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 1, 1,1,0,1,1,0,0);
+		 else
+		if (arr[i]=='1')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 1,1,0,0,0,1,0);
+		 else
+			 if (arr[i]=='2')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 1,0,1,1,1,0,0);
+		 else
+			 if (arr[i]=='3')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 0,1,1,1,1,1,0);
+		 else
+			 if (arr[i]=='4')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 1,1,1,0,0,1,0);
+		 else
+			 if (arr[i]=='5')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 0, 0,0,1,1,0,0,1);
+		 else
+			 if (arr[i]=='6')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 0,1,1,0,1,1,0);
+		 else
+			 if (arr[i]=='7')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 0,0,0,1,0,1,0);
+		 else
+			 if (arr[i]=='8')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 1, 1,1,1,1,1,0,0);
+		 else
+			 if (arr[i]=='9')
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 0, 1,0,1,1,0,0,1);
+		 cd+=n;
+		}
+		}
 		else continue;
 		}  
 	return picture;
