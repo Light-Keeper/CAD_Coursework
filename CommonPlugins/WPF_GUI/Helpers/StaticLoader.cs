@@ -56,15 +56,22 @@ namespace WPF_GUI
         // Call from native code
         public static int Exec(string msg)
         {
-            Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
-            Picture = new Picture();
-            Mediator = new Mediator();
-            Application = new App();
-            CoreMessage(msg);
-            SetPictureSize(
-                Convert.ToUInt32(SystemParameters.WorkArea.Width),
-                Convert.ToUInt32(SystemParameters.WorkArea.Height));
-            Application.Run();
+            try
+            {
+                Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+                Picture = new Picture();
+                Mediator = new Mediator();
+                Application = new App();
+                CoreMessage(msg);
+                SetPictureSize(
+                    Convert.ToUInt32(SystemParameters.WorkArea.Width),
+                    Convert.ToUInt32(SystemParameters.WorkArea.Height));
+                Application.Run();
+            }
+            catch (Exception x)
+            {
+                MessageBox.Show(x.Message);
+            }
             return 0;
         }
 

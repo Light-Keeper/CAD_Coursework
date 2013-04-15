@@ -211,7 +211,7 @@ extern "C" __declspec( dllexport ) void		__stdcall SetPictureSize( uint32_t widt
 extern "C" __declspec( dllexport ) cad_picture * __stdcall RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNumber );
 
 
-uint32_t __stdcall GetKerneltState()
+uint32_t __stdcall GetKernelState()
 {
 	return self->sys->kernel->GetCurrentState( self->sys->kernel );
 }
