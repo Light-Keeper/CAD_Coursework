@@ -113,7 +113,7 @@ void DrawSym(cad_picture * picture, int coord, int sqs_div2, int xcoord, int yco
 		DrawLine(picture, coord, 1, -int(picture->width)*(h-1)-h/2, -2, 3, picture->width, sqs_div2, xcoord, ycoord, colour, 0, u);// up
 		DrawLine(picture, coord, 1, picture->width*(h-3)-h/2, -2, 3, picture->width, sqs_div2, xcoord, ycoord, colour, 0, d);//down
 		DrawLine(picture, coord, 1-int(picture->width), -int(picture->width)-h/2, -4, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, su);// \up
-		DrawLine(picture, coord, 1-int(picture->width), -int(picture->width)+picture->width*(h-2)-h/2-1, -3, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, sd); // \down
+		DrawLine(picture, coord, 1-int(picture->width), -int(picture->width)+picture->width*h-h/2-1, -3, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, sd); // \down
 		}
 
 
@@ -275,7 +275,7 @@ h = (sqs_div2);
 	if ((value & CODE_MASK) == MAP_NUMBER)				
 	{	
 		char arr[]="   "; int cd; int n;
-		uint32_t colour = 0x0011AA;
+		uint32_t colour = 0x993344;
 		int num = NUMBER_MASK & value;
 		_itoa_s(num, arr,10);
 		int col = strlen(arr);
@@ -284,19 +284,17 @@ h = (sqs_div2);
 			cd = coord-h/2; 
 			sqs_div2-=sqs_div2/3;
 			n = h-h/3;
-		colour = 0x0077AA;}
+		}
 		else if
 			(col==3)
 		{
 			cd = coord-h+h/3; 
 			n = sqs/3; 
-			colour = 0xAA0011;
 			sqs_div2-=sqs_div2/3;
 		} 
 		else {
 			cd = coord; 
 			n = 0;
-			colour = 0x11AA11;
 			sqs_div2-=sqs_div2/3;
 		}
 		for (int i=0; i<col; i++)
