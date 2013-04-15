@@ -33,13 +33,16 @@ namespace WPF_GUI
         public static extern bool LoadFile(StringBuilder path);
 
         [DllImport("GUI_CLR_loader.dll")]
+        public static extern bool StartPlaceModule(string moduleName, bool inDemoMode);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern bool StartTraceModule(string moduleName, bool inDemoMode);
+        
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern UInt32 NextStep(bool inDemoMode);
+
+        [DllImport("GUI_CLR_loader.dll")]
         private static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
-
-        [DllImport("GUI_CLR_loader.dll")]
-        public static extern bool StartPlaceMoule(string moduleName, bool inDemoMode);
-
-        [DllImport("GUI_CLR_loader.dll")]
-        public static extern bool StartTraceMoule(string moduleName, bool inDemoMode);
 
         [DllImport("GUI_CLR_loader.dll")]
         private static extern IntPtr RenderPicture(Boolean forceDrawLayer, Int32 forceDrawLayerNumber);

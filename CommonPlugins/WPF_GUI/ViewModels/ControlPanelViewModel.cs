@@ -310,9 +310,9 @@ namespace WPF_GUI.ViewModels
 //            this.IsStartButtonEnabled = false;
 //            this.IsStopButtonEnabled = true;
 
-            var kernelState = StaticLoader.GetKernelState();
+            var currentKernelState = StaticLoader.GetKernelState();
 
-            switch (kernelState)
+            switch (currentKernelState)
             {
                 case Defines.KernelStatePlace:
                     if (this.PlaceMethodCollection.Count == 0)
@@ -335,7 +335,7 @@ namespace WPF_GUI.ViewModels
                         return;
                     }
 
-                    StaticLoader.StartPlaceMoule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
+                    StaticLoader.StartPlaceModule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
                     break;
 
                 case Defines.KernelStateTrace:
@@ -352,7 +352,7 @@ namespace WPF_GUI.ViewModels
                             return;
                         }
 
-                        if (string.IsNullOrEmpty(this.SelectedTraceMethod.Name))
+                        if (this.SelectedTraceMethod == null)
                         {
                             MessageBox.Show("Метод трассировки не выбран!\nВыберите метод и попробуйте снова.",
                                 "Предупреждение",
@@ -361,8 +361,18 @@ namespace WPF_GUI.ViewModels
                             return;
                         }
 
-                        StaticLoader.StartTraceMoule(this.SelectedTraceMethod.Name, this.IsDemoMode);
+                        var isOk = StaticLoader.StartTraceModule(this.SelectedTraceMethod.Name, this.IsDemoMode);
+
+                        if (!isOk)
+                        {
+                            MessageBox.Show("Не удалось запустить трассировку.",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        return;
                     }
+
                     if (this.IsPlaceMethodChecked)
                     {
                         if (this.PlaceMethodCollection.Count == 0)
@@ -376,7 +386,7 @@ namespace WPF_GUI.ViewModels
                             return;
                         }
 
-                        if (string.IsNullOrEmpty(this.SelectedPlaceMethod.Name))
+                        if (this.SelectedPlaceMethod == null)
                         {
                             MessageBox.Show("Метод компановки не выбран!\nВыберите метод и попробуйте снова.",
                                 "Предупреждение",
@@ -385,8 +395,29 @@ namespace WPF_GUI.ViewModels
                             return;
                         }
 
-                        StaticLoader.StartPlaceMoule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
+                        var isOk = StaticLoader.StartPlaceModule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
+                        
+                        if (!isOk)
+                        {
+                            MessageBox.Show("Не удалось запустить компановку.",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                        }
+                        return;
                     }
+                    break;
+
+                case Defines.KernelStatePlacing:
+                case Defines.KernelStateTracing:
+                    StaticLoader.NextStep(this.IsDemoMode);
+                    break;
+
+                case Defines.KernelStateEmpty:
+                    MessageBox.Show("Входной файл не выбран!\nОткройте файл с данными и повторите попытку.",
+                        "Предупреждение",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
                     break;
             }
         }
@@ -433,7 +464,9 @@ namespace WPF_GUI.ViewModels
 
             this.InputFilePath = dialog.FileName;
 
-            if ( StaticLoader.LoadFile(new StringBuilder(this.InputFilePath)) )
+            var result = StaticLoader.LoadFile(new StringBuilder(this.InputFilePath));
+
+            if ( result )
             {
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.FileLoadSuccessful);
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateGood);
