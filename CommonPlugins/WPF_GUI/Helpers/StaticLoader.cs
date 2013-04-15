@@ -25,6 +25,30 @@ namespace WPF_GUI
 
     public static class StaticLoader
     {
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern UInt32 GetKernelState();
+
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern bool LoadFile(StringBuilder path);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern bool StartPlaceMoule(string moduleName, bool inDemoMode);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern bool StartTraceMoule(string moduleName, bool inDemoMode);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern IntPtr RenderPicture(Boolean forceDrawLayer, Int32 forceDrawLayerNumber);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern void FreePicture(IntPtr picture);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        private static extern void SetPictureSize(UInt32 width, UInt32 height);
+
         public static App Application;
         public static Mediator Mediator;
         public static Picture Picture;
@@ -50,12 +74,6 @@ namespace WPF_GUI
             return 0;
         }
 
-        [DllImport("GUI_CLR_loader.dll")]
-        public static extern bool LoadFile(StringBuilder path);
-
-        [DllImport("GUI_CLR_loader.dll")]
-        private static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
-
         public static List<string> GetModuleList()
         {
             const int bufferSize = 10000;
@@ -65,18 +83,6 @@ namespace WPF_GUI
                 new List<string>() :
                 str.ToString().Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
-
-        [DllImport("GUI_CLR_loader.dll")]
-        public static extern bool StartPlaceMoule(string moduleName, bool inDemoMode);
-
-        [DllImport("GUI_CLR_loader.dll")]
-        private static extern IntPtr RenderPicture(Boolean forceDrawLayer, Int32 forceDrawLayerNumber);
-
-        [DllImport("GUI_CLR_loader.dll")]
-        private static extern void FreePicture(IntPtr picture);
-
-        [DllImport("GUI_CLR_loader.dll")]
-        private static extern void SetPictureSize(UInt32 width, UInt32 height);
 
         public static BitmapSource GetPicture(bool forceDrawLayer, int forceDrawLayerNumber)
         {

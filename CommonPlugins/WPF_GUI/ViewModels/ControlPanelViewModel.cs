@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using WPF_GUI.Helpers;
 using WPF_GUI.Models;
+using MessageBox = System.Windows.MessageBox;
 
 namespace WPF_GUI.ViewModels
 {
@@ -15,7 +16,7 @@ namespace WPF_GUI.ViewModels
         public ControlPanelViewModel()
         {
             this.PlaceMethodCollection = new ObservableCollection<Place>();
-            this.RouteMethodCollection = new ObservableCollection<Route>();
+            this.TraceMethodCollection = new ObservableCollection<Route>();
 
             // Initialize Place and Route Collection
             foreach (var module in StaticLoader.GetModuleList())
@@ -32,7 +33,7 @@ namespace WPF_GUI.ViewModels
                                 });
                         break;
                     case 'T': // Trace Method
-                        RouteMethodCollection.Add(
+                        TraceMethodCollection.Add(
                             new Route
                                 {
                                     Name = name,
@@ -42,7 +43,7 @@ namespace WPF_GUI.ViewModels
                 }
             }
 
-            this.IsDemoMode = true;
+            this.IsNormalMode = true;
             this.IsAutoExec = true;
 
             this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
@@ -129,25 +130,25 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
-        #region RouteMethodCollection
-        public ObservableCollection<Route> RouteMethodCollection { get; private set; }
+        #region TraceMethodCollection
+        public ObservableCollection<Route> TraceMethodCollection { get; private set; }
         #endregion
 
         #region PlaceMethodCollection
         public ObservableCollection<Place> PlaceMethodCollection { get; private set; }
         #endregion
 
-        #region SelectedRouteMethod
-        private Route _selectedRouteMethod;
-        public Route SelectedRouteMethod
+        #region SelectedTraceMethod
+        private Route _selectedTraceMethod;
+        public Route SelectedTraceMethod
         {
-            get { return _selectedRouteMethod; }
+            get { return _selectedTraceMethod; }
             set
             {
-                if (_selectedRouteMethod == value) return;
-                _selectedRouteMethod = value;
-                RouteMethodCollection.First(x => x.Name == value.Name).IsChecked = true;
-                RaisePropertyChanged(() => SelectedRouteMethod);
+                if (_selectedTraceMethod == value) return;
+                _selectedTraceMethod = value;
+                TraceMethodCollection.First(x => x.Name == value.Name).IsChecked = true;
+                RaisePropertyChanged(() => SelectedTraceMethod);
             }
         }
         #endregion
@@ -306,16 +307,94 @@ namespace WPF_GUI.ViewModels
 
         private void OnStartModeling(object o)
         {
-            this.IsStartButtonEnabled = false;
-            this.IsStopButtonEnabled = true;
+//            this.IsStartButtonEnabled = false;
+//            this.IsStopButtonEnabled = true;
 
-            
+            var kernelState = StaticLoader.GetKernelState();
+
+            switch (kernelState)
+            {
+                case Defines.KernelStatePlace:
+                    if (this.PlaceMethodCollection.Count == 0)
+                    {
+                        MessageBox.Show("Методы компановки не загружены!\n" +
+                            "Чтобы выполнить компановку добавьте dll файл(ы) " +
+                            "с методами компановки в папку plugins.",
+                            "Предупреждение",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    if (string.IsNullOrEmpty(this.SelectedPlaceMethod.Name))
+                    {
+                        MessageBox.Show("Метод компановки не выбран!\nВыберите метод и попробуйте снова.",
+                            "Предупреждение",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Warning);
+                        return;
+                    }
+
+                    StaticLoader.StartPlaceMoule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
+                    break;
+
+                case Defines.KernelStateTrace:
+                    if (this.IsTraceMethodChecked)
+                    {
+                        if (this.TraceMethodCollection.Count == 0)
+                        {
+                            MessageBox.Show("Методы трассировки не загружены!\n" +
+                                "Чтобы выполнить трассировку добавьте dll файл(ы) " +
+                                "с методами трассировки в папку plugins.",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        if (string.IsNullOrEmpty(this.SelectedTraceMethod.Name))
+                        {
+                            MessageBox.Show("Метод трассировки не выбран!\nВыберите метод и попробуйте снова.",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        StaticLoader.StartTraceMoule(this.SelectedTraceMethod.Name, this.IsDemoMode);
+                    }
+                    if (this.IsPlaceMethodChecked)
+                    {
+                        if (this.PlaceMethodCollection.Count == 0)
+                        {
+                            MessageBox.Show("Методы компановки не загружены!\n" +
+                                "Чтобы выполнить компановку добавьте dll файл(ы) " +
+                                "с методами компановки в папку plugins.",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        if (string.IsNullOrEmpty(this.SelectedPlaceMethod.Name))
+                        {
+                            MessageBox.Show("Метод компановки не выбран!\nВыберите метод и попробуйте снова.",
+                                "Предупреждение",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                            return;
+                        }
+
+                        StaticLoader.StartPlaceMoule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
+                    }
+                    break;
+            }
         }
 
         private void OnStopModeling(object o)
         {
-            this.IsStartButtonEnabled = true;
-            this.IsStopButtonEnabled = false;
+//            this.IsStartButtonEnabled = true;
+//            this.IsStopButtonEnabled = false;
         }
 
         private void OnShowInformation(object o)
@@ -387,11 +466,11 @@ namespace WPF_GUI.ViewModels
         {
             if (o == null) return;
 
-            foreach (var route in RouteMethodCollection)
+            foreach (var route in TraceMethodCollection)
             {
                 if (route.Name == (o as String))
                 {
-                    this.SelectedRouteMethod = route;
+                    this.SelectedTraceMethod = route;
                 }
                 else
                 {
