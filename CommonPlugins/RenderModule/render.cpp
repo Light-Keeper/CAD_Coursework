@@ -112,8 +112,8 @@ void DrawSym(cad_picture * picture, int coord, int sqs_div2, int xcoord, int yco
 		DrawLine(picture, coord, 1, -int(picture->width)-h/2, -2, 3, picture->width, sqs_div2, xcoord, ycoord, colour, 0 ,m); // mid
 		DrawLine(picture, coord, 1, -int(picture->width)*(h-1)-h/2, -2, 3, picture->width, sqs_div2, xcoord, ycoord, colour, 0, u);// up
 		DrawLine(picture, coord, 1, picture->width*(h-3)-h/2, -2, 3, picture->width, sqs_div2, xcoord, ycoord, colour, 0, d);//down
-		DrawLine(picture, coord, 1-int(picture->width), -picture->width-h/2, -4, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, su);// \up
-		DrawLine(picture, coord, 1-int(picture->width), -picture->width+picture->width*(h-2)-h/2-1, -3, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, sd); // \down
+		DrawLine(picture, coord, 1-int(picture->width), -int(picture->width)-h/2, -4, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, su);// \up
+		DrawLine(picture, coord, 1-int(picture->width), -int(picture->width)+picture->width*(h-2)-h/2-1, -3, 3, 1, sqs_div2, xcoord, ycoord, colour, 0, sd); // \down
 		}
 
 
@@ -277,7 +277,7 @@ h = (sqs_div2);
 		char arr[]="   "; int cd; int n;
 		uint32_t colour = 0x0011AA;
 		int num = NUMBER_MASK & value;
-		_itoa(num, arr,10);
+		_itoa_s(num, arr,10);
 		int col = strlen(arr);
 		if (col==2)
 		{
