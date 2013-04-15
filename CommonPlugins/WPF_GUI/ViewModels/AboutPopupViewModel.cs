@@ -14,9 +14,9 @@ namespace WPF_GUI.ViewModels
             StaticLoader.Mediator.Register(MediatorMessages.ShowAboutPopup, (Action<bool>) this.Show);
         }
 
-        public ICommand CloseAbout { get { return new DelegateCommand(OnCloseAbout); } }
+        public ICommand Close { get { return new DelegateCommand(OnClose); } }
 
-        private void OnCloseAbout(object o)
+        private void OnClose(object o)
         {
             this.ShowAbout = false;
         }

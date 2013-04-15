@@ -43,13 +43,16 @@ namespace WPF_GUI.ViewModels
             }
 
             this.IsDemoMode = true;
-            this.ConsoleButtonText = "Показать консоль";
+            this.IsAutoExec = true;
+
+            this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
+
             this.IsStartButtonEnabled = true;
             this.IsStopButtonEnabled = false;
-            this.IsAllElementsEnabled = true;
+
             this.IsPlaceMethodChecked = true;
             this.IsPlaceMethodEnabled = true;
-            this.IsTraceMethodEnabled = false;
+            this.IsTraceMethodEnabled = true;
 
             StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>) this.ConsoleWasClosed);
         }
@@ -70,6 +73,20 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
+        #region IsNormalMode
+        private bool _isNormalMode;
+        public bool IsNormalMode
+        {
+            get { return _isNormalMode; }
+            set
+            {
+                if (_isNormalMode == value) return;
+                _isNormalMode = value;
+                RaisePropertyChanged(() => IsNormalMode);
+            }
+        }
+        #endregion
+
         #region IsDemoMode
         private bool _isDemoMode;
         public bool IsDemoMode
@@ -79,50 +96,35 @@ namespace WPF_GUI.ViewModels
             {
                 if (_isDemoMode == value) return;
                 _isDemoMode = value;
-                if (_isDemoMode)
-                {
-                    this.StartButtonName = "Показать";
-                    this.IsAutoMode = this.IsStepMode = false;
-                }
                 RaisePropertyChanged(() => IsDemoMode);
             }
         }
         #endregion
 
-        #region IsAutoMode
-        private bool _isAutoMode;
-        public bool IsAutoMode
+        #region IsStepExec
+        private bool _isStepExec;
+        public bool IsStepExec
         {
-            get { return _isAutoMode; }
+            get { return _isStepExec; }
             set
             {
-                if (_isAutoMode == value) return;
-                _isAutoMode = value;
-                if (_isAutoMode)
-                {
-                    this.StartButtonName = "Запустить";
-                    this.IsDemoMode = this.IsStepMode = false;
-                }
-                RaisePropertyChanged(() => IsAutoMode);
+                if (_isStepExec == value) return;
+                _isStepExec = value;
+                RaisePropertyChanged(() => IsStepExec);
             }
         }
         #endregion
 
-        #region IsStepMode
-        private bool _isStepMode;
-        public bool IsStepMode
+        #region IsAutoExec
+        private bool _isAutoExec;
+        public bool IsAutoExec
         {
-            get { return _isStepMode; }
+            get { return _isAutoExec; }
             set
             {
-                if (_isStepMode == value) return;
-                _isStepMode = value;
-                if (_isStepMode)
-                {
-                    this.StartButtonName = "Шаг";
-                    this.IsAutoMode = this.IsDemoMode = false;
-                }
-                RaisePropertyChanged(() => IsStepMode);
+                if (_isAutoExec == value) return;
+                _isAutoExec = value;
+                RaisePropertyChanged(() => IsAutoExec);
             }
         }
         #endregion
@@ -203,20 +205,6 @@ namespace WPF_GUI.ViewModels
                 if (_consoleButtonText == value) return;
                 _consoleButtonText = value;
                 RaisePropertyChanged(() => ConsoleButtonText);
-            }
-        }
-        #endregion
-
-        #region IsAllElementsEnabled
-        private bool _isAllElementsEnabled;
-        public bool IsAllElementsEnabled
-        {
-            get { return _isAllElementsEnabled; }
-            set
-            {
-                if (_isAllElementsEnabled == value) return;
-                _isAllElementsEnabled = value;
-                RaisePropertyChanged(() => IsAllElementsEnabled);
             }
         }
         #endregion
@@ -320,14 +308,14 @@ namespace WPF_GUI.ViewModels
         {
             this.IsStartButtonEnabled = false;
             this.IsStopButtonEnabled = true;
-            this.IsAllElementsEnabled = false;
+
+            
         }
 
         private void OnStopModeling(object o)
         {
             this.IsStartButtonEnabled = true;
             this.IsStopButtonEnabled = false;
-            this.IsAllElementsEnabled = true;
         }
 
         private void OnShowInformation(object o)
@@ -340,13 +328,13 @@ namespace WPF_GUI.ViewModels
             if (StaticLoader.Application.LogViewer.Visibility == Visibility.Visible)
             {
                 StaticLoader.Application.LogViewer.Hide();
-                this.ConsoleButtonText = "Показать консоль";
+                this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
             }
             else
             {
                 StaticLoader.Application.LogViewer.Show();
                 StaticLoader.Application.LogViewer.WindowState = WindowState.Normal;
-                this.ConsoleButtonText = "Скрыть консоль";
+                this.ConsoleButtonText = Defines.ConsoleButtonNameWhenOpened;
             }
         }
 
