@@ -29,6 +29,7 @@ namespace WPF_GUI
         public static extern UInt32 GetKernelState();
 
         [DllImport("GUI_CLR_loader.dll")]
+        [return: MarshalAs(UnmanagedType.I1)]
         public static extern bool LoadFile(StringBuilder path);
 
         [DllImport("GUI_CLR_loader.dll")]
