@@ -282,7 +282,8 @@ h = (sqs_div2);
 		if (col==2)
 		{
 			cd = coord-h/2; 
-			n = h;
+			sqs_div2-=sqs_div2/3;
+			n = h-h/3;
 		colour = 0x0077AA;}
 		else if
 			(col==3)
@@ -296,6 +297,7 @@ h = (sqs_div2);
 			cd = coord; 
 			n = 0;
 			colour = 0x11AA11;
+			sqs_div2-=sqs_div2/3;
 		}
 		for (int i=0; i<col; i++)
 		{
