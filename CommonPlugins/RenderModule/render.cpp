@@ -315,7 +315,7 @@ h = (sqs_div2);
 			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 1,1,1,0,0,1,0);
 		 else
 			 if (arr[i]=='5')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 0, 0,0,1,1,0,0,1);
+			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 0, 0,1,1,1,1,0,0);
 		 else
 			 if (arr[i]=='6')
 			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 0,1,1,0,1,1,0);
