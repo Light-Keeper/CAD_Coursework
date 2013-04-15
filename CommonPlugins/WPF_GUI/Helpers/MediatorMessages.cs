@@ -8,5 +8,6 @@
         public const string SetInfoMessage = "SetInfoMessage";
         public const string SetProgramState = "SetProgramState";
         public const string ShowAboutPopup = "ShowAboutPopup";
+        public const string AddFileNameToTitle = "AddFileNameToTitle";
     }
 }
