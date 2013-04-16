@@ -3,6 +3,8 @@
 #include <cstdio>
 #include <math.h>
 #include <string>
+#define S1 400
+#define S2 328
 
 cad_render_module * Open(cad_kernel *, void *);
 void *Close(cad_kernel* kernel, cad_render_module *self);
@@ -120,10 +122,10 @@ void DrawSym(cad_picture * picture, int coord, int sqs_div2, int xcoord, int yco
 
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
-	int w = 80; 
-	int h = 60; 
+	int w = S1; 
+	int h = S2; 
 	int width, height; uint32_t value; int xcoord, ycoord, coord,addw, addh;
-	long map_test[80][60]; 
+	long map_test[S1][S2]; 
 		map_test[0][0] = 0x00000000; 
 		map_test[0][1] = 0x01000000; 
 		map_test[0][2] = 0x02000000; 
