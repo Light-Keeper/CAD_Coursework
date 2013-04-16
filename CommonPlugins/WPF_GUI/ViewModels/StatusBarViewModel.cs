@@ -95,6 +95,7 @@ namespace WPF_GUI.ViewModels
             {
                 if (value == _currentState) return;
                 _currentState = value;
+                StaticLoader.Application.ProgramState = value;
                 RaisePropertyChanged(() => ImageStatePath);
                 RaisePropertyChanged(() => ImageStateToolTip);
             }}

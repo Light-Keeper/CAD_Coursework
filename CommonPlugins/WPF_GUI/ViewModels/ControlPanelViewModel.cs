@@ -310,9 +310,9 @@ namespace WPF_GUI.ViewModels
 //            this.IsStartButtonEnabled = false;
 //            this.IsStopButtonEnabled = true;
 
-            var currentKernelState = StaticLoader.GetKernelState();
+            var kernelState = StaticLoader.GetKernelState();
 
-            switch (currentKernelState)
+            switch (kernelState)
             {
                 case Defines.KernelStatePlace:
                     if (this.PlaceMethodCollection.Count == 0)
@@ -345,7 +345,7 @@ namespace WPF_GUI.ViewModels
                         {
                             MessageBox.Show("Методы трассировки не загружены!\n" +
                                 "Чтобы выполнить трассировку добавьте dll файл(ы) " +
-                                "с методами трассировки в папку plugins.",
+                                "с методами трассировки в папку plugins и перезапустите приложение.",
                                 "Предупреждение",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
@@ -365,11 +365,15 @@ namespace WPF_GUI.ViewModels
 
                         if (!isOk)
                         {
+                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
+                                "Не удалось запустить трассировку.");
                             MessageBox.Show("Не удалось запустить трассировку.",
                                 "Предупреждение",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
                         }
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
+                                "Начался процесс моделирования трассировки.");
                         return;
                     }
 
@@ -379,7 +383,7 @@ namespace WPF_GUI.ViewModels
                         {
                             MessageBox.Show("Методы компановки не загружены!\n" +
                                 "Чтобы выполнить компановку добавьте dll файл(ы) " +
-                                "с методами компановки в папку plugins.",
+                                "с методами компановки в папку plugins и перезапустите приложение.",
                                 "Предупреждение",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
@@ -399,11 +403,15 @@ namespace WPF_GUI.ViewModels
                         
                         if (!isOk)
                         {
+                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
+                                "Не удалось запустить компановку.");
                             MessageBox.Show("Не удалось запустить компановку.",
                                 "Предупреждение",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
                         }
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
+                                "Начался процесс моделирования компановки.");
                         return;
                     }
                     break;
@@ -411,13 +419,41 @@ namespace WPF_GUI.ViewModels
                 case Defines.KernelStatePlacing:
                 case Defines.KernelStateTracing:
                     StaticLoader.NextStep(this.IsDemoMode);
+                    switch (StaticLoader.GetKernelState())
+                    {
+                        case Defines.KernelStateEmpty:
+                        case Defines.KernelStatePlace:
+                        case Defines.KernelStateTrace:
+                            var msg = kernelState == Defines.KernelStatePlacing ?
+                                "Компановка успешно завершена!" :
+                                "Трассировка успешно завершена!";
+
+                            MessageBox.Show(msg, "Информация",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Information);
+
+                            if (kernelState == Defines.KernelStatePlacing)
+                            {
+                                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
+                                    kernelState == Defines.KernelStatePlacing ?
+                                    "Компановка успешно завершена!" :
+                                    "Трассировка успешно завершена!");
+                            }
+
+                            break;
+                    }
                     break;
 
                 case Defines.KernelStateEmpty:
-                    MessageBox.Show("Входной файл не выбран!\nОткройте файл с данными и повторите попытку.",
+                    MessageBox.Show(
+                        StaticLoader.Application.ProgramState == Defines.ProgramStateGood
+                            ? "Входной файл не выбран!\nОткройте файл с данными и повторите попытку."
+                            : "Выбранный файл не содержит данных для моделирования!\nОткройте файл " +
+                              "с корректными данными и повторите попытку.",
                         "Предупреждение",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
+
                     break;
             }
         }
@@ -516,7 +552,7 @@ namespace WPF_GUI.ViewModels
 
         public void ConsoleWasClosed(bool state)
         {
-            this.ConsoleButtonText = "Показать консоль";
+            this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
         }
     }
 }

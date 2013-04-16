@@ -72,7 +72,7 @@ namespace WPF_GUI.ViewModels
                         CreateTime = DateTime.Now,
                         Message = msg
                     });
-            RaisePropertyChanged(() => LogCollection);
+            RaisePropertyChanged(() => AllLogMessages);
         }
         #endregion
 
