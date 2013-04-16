@@ -29,6 +29,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+        <!-- About window -->
         <Popup Name="AboutPopup"
                StaysOpen="True"
                IsOpen="{Binding Path=ShowAbout, Mode=TwoWay}"
@@ -38,19 +39,20 @@
             <Popup.DataContext>
                 <viewModel:AboutPopupViewModel/>
             </Popup.DataContext>
+            <Border Background="GhostWhite" BorderThickness="4" BorderBrush="DarkSlateGray" CornerRadius="10">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="70"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Rectangle RadiusX="25" RadiusY="25"
-                           Width="480" Height="300"
-                           Grid.RowSpan="2">
-                    <Rectangle.Fill>
-                        <ImageBrush ImageSource="../Recources/Images/about3.png"/>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <ScrollViewer Width="360" Height="180" Margin="30"
+<!--                <Rectangle RadiusX="25" RadiusY="25"-->
+<!--                           Width="480" Height="300"-->
+<!--                           Grid.RowSpan="2">-->
+<!--                    <Rectangle.Fill>-->
+<!--                        <ImageBrush ImageSource="../Recources/Images/about3.png"/>-->
+<!--                    </Rectangle.Fill>-->
+<!--                </Rectangle>-->
+                <ScrollViewer Width="360" Height="180"
                               Grid.Row="1" VerticalAlignment="Top"
                               HorizontalAlignment="Right">
                     <TextBox IsReadOnly="True"
@@ -67,6 +69,7 @@
                         HorizontalAlignment="Right"
                         Margin="20"/>
             </Grid>
+            </Border>
         </Popup>
         <ScrollViewer Name="ImageViewer" Grid.Column="0" Grid.Row="0" Background="MintCream"
                       HorizontalScrollBarVisibility="Visible"

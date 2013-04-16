@@ -200,7 +200,7 @@ int my_printf(const char * format, ... )
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetKernelState();
 extern "C" __declspec( dllexport ) int32_t	__stdcall GetModuleList( uint32_t bufferSize, char *buffer );
 extern "C" __declspec( dllexport ) bool		__stdcall LoadFile( const char *path );
-extern "C" __declspec( dllexport ) bool		__stdcall StartPlaceMoule( char *name, bool inDemoMode );
+extern "C" __declspec( dllexport ) bool		__stdcall StartPlaceModule( char *name, bool inDemoMode );
 extern "C" __declspec( dllexport ) bool		__stdcall StartTraceModule( char *name, bool inDemoMode );
 extern "C" __declspec( dllexport ) uint32_t __stdcall RunToEnd();
 extern "C" __declspec( dllexport ) uint32_t __stdcall NextStep( bool inDemoMode );
@@ -240,7 +240,7 @@ bool __stdcall LoadFile( const char *path )
 	return self->sys->kernel->LoadFile( self->sys->kernel, path );
 }
 
-bool __stdcall StartPlaceMoule( char *name, bool inDemoMode )
+bool __stdcall StartPlaceModule( char *name, bool inDemoMode )
 {
 	return self->sys->kernel->StartPlaceMoule( self->sys->kernel, name, inDemoMode );
 }
