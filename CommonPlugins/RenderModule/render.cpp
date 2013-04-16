@@ -3,8 +3,8 @@
 #include <cstdio>
 #include <math.h>
 #include <string>
-#define S1 400
-#define S2 328
+#define S1 200
+#define S2 100
 
 cad_render_module * Open(cad_kernel *, void *);
 void *Close(cad_kernel* kernel, cad_render_module *self);
