@@ -25,6 +25,9 @@ namespace WPF_GUI
 
     public static class StaticLoader
     {
+        [DllImport("kernel32.dll")]
+        private static extern void CopyMemory(IntPtr destination, IntPtr source, UInt32 length);
+
         [DllImport("GUI_CLR_loader.dll")]
         public static extern UInt32 GetKernelState();
 
@@ -107,7 +110,7 @@ namespace WPF_GUI
                 Picture.Data = (IntPtr) (*((int*) (data.ToPointer()) + 3));
             }
 
-            var imgLength = Picture.Height * Picture.Width;
+            var imgLength = (uint) (Picture.Height * Picture.Width * sizeof(UInt32));
 
             var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format32bppRgb);
 
@@ -116,13 +119,7 @@ namespace WPF_GUI
                 ImageLockMode.WriteOnly,
                 PixelFormat.Format32bppRgb);
             
-            unsafe
-            {
-                for (int i = 0; i < imgLength; i++)
-                {
-                    ((Int32 *) dst.Scan0)[i] = ((Int32 *)Picture.Data)[i];
-                }
-            }
+            CopyMemory(dst.Scan0, Picture.Data, imgLength);
 
             bitmap.UnlockBits(dst);
             FreePicture(Picture.UnmanagedStruct);
