@@ -4,7 +4,7 @@
 #include <math.h>
 #include <string>
 #define S1 400
-#define S2 330
+#define S2 328
 
 cad_render_module * Open(cad_kernel *, void *);
 void *Close(cad_kernel* kernel, cad_render_module *self);
