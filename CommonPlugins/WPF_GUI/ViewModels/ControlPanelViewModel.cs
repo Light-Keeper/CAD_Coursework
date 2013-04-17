@@ -18,7 +18,7 @@ namespace WPF_GUI.ViewModels
             this.PlaceMethodCollection = new ObservableCollection<Place>();
             this.TraceMethodCollection = new ObservableCollection<Route>();
 
-            // Initialize Place and Route Collection
+            // Initialize Place and Route Collections
             foreach (var module in StaticLoader.GetModuleList())
             {
                 var name = module.Remove(0, 1);
@@ -43,17 +43,18 @@ namespace WPF_GUI.ViewModels
                 }
             }
 
-            this.IsNormalMode = true;
-            this.IsAutoExec = true;
-
-            this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
+            this.IsDemoMode = true;
+            this.IsStepExec = true;
 
             this.IsStartButtonEnabled = true;
             this.IsStopButtonEnabled = false;
 
-            this.IsPlaceMethodChecked = true;
+            this.IsTraceMethodChecked = true;
+
             this.IsPlaceMethodEnabled = true;
             this.IsTraceMethodEnabled = true;
+
+            this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
 
             StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>) this.ConsoleWasClosed);
         }
@@ -425,20 +426,13 @@ namespace WPF_GUI.ViewModels
                         case Defines.KernelStatePlace:
                         case Defines.KernelStateTrace:
                             var msg = kernelState == Defines.KernelStatePlacing ?
-                                "Компановка успешно завершена!" :
-                                "Трассировка успешно завершена!";
+                                "Компановка успешно завершена" :
+                                "Трассировка успешно завершена";
 
-                            MessageBox.Show(msg, "Информация",
-                                    MessageBoxButton.OK,
-                                    MessageBoxImage.Information);
+                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
+                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, msg);
 
-                            if (kernelState == Defines.KernelStatePlacing)
-                            {
-                                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
-                                    kernelState == Defines.KernelStatePlacing ?
-                                    "Компановка успешно завершена!" :
-                                    "Трассировка успешно завершена!");
-                            }
+                            MessageBox.Show(msg, "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
 
                             break;
                     }

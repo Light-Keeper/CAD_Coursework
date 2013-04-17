@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using WPF_GUI.Helpers;
 
 namespace WPF_GUI
@@ -27,6 +28,7 @@ namespace WPF_GUI
 
             DisplayedImage.Cursor = _cursorGrab;
             _isDragging = false;
+
             StaticLoader.Mediator.Register(MediatorMessages.AddFileNameToTitle, (Action<string>) this.AddFileNameToTitle);
             StaticLoader.Mediator.Register(MediatorMessages.RefreshImage, (Action<BitmapSource>) this.RefreshImage);
             StaticLoader.UpdatePictureEvent(null);
@@ -165,6 +167,12 @@ namespace WPF_GUI
 
         private void OptionsButton_OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
+            e.Handled = true;
+        }
+
+        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.AbsoluteUri);
             e.Handled = true;
         }
     }
