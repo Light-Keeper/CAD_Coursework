@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using WPF_GUI.Helpers;
 
 namespace WPF_GUI
@@ -25,10 +27,14 @@ namespace WPF_GUI
 
             DisplayedImage.Cursor = _cursorGrab;
             _isDragging = false;
-
-            DisplayedImage.Source = StaticLoader.GetPicture(false, 0);
-
             StaticLoader.Mediator.Register(MediatorMessages.AddFileNameToTitle, (Action<string>) this.AddFileNameToTitle);
+            StaticLoader.Mediator.Register(MediatorMessages.RefreshImage, (Action<BitmapSource>) this.RefreshImage);
+            StaticLoader.UpdatePictureEvent(null);
+        }
+
+        private void RefreshImage(BitmapSource bitmapSource)
+        {
+            DisplayedImage.Source = bitmapSource;
         }
 
         private void AddFileNameToTitle(string fileName)
