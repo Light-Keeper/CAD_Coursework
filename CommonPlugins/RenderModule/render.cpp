@@ -119,13 +119,22 @@ void DrawSym(cad_picture * picture, int coord, int sqs_div2, int xcoord, int yco
 		}
 
 
+cad_picture * draw_Nothing(cad_render_module *self)
+{
+	return  allocate_picture(self);
+}
 
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
-	int w = S1; 
-	int h = S2; 
+	if (map == NULL) 
+	{
+		return draw_Nothing( self );
+	}
+
+	int w = map->width; 
+	int h = map->height; 
 	int width, height; uint32_t value; int xcoord, ycoord, coord,addw, addh;
-	long map_test[S1][S2]; 
+	/*long map_test[S1][S2]; 
 		map_test[0][0] = 0x00000000; 
 		map_test[0][1] = 0x01000000; 
 		map_test[0][2] = 0x02000000; 
@@ -152,7 +161,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 		for (int i=0; i<80; i++, NUM++)
 			map_test[1][i] = NUM;
 		for (int i=0; i<80; i++, NUM++)
-			map_test[4][i] = NUM+100;
+			map_test[4][i] = NUM+100;*/
 
 	if (ceil((double)self->sys->width/w)<25) //standartization if field is too little
 	{
@@ -201,7 +210,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 		for (int r2=0; r2<h; r2++)
 		{
 			int sqs_div2 = (sqs-1)/2;
-			value = map_test[r1][r2];
+			value = MapElement3D(map, r1, r2, map->currerntLayer);
 			xcoord = sqs*(r2+1)+r2-(sqs_div2);
 			ycoord = sqs*(r1+1)+r1-(sqs_div2);
 			coord = picture->width*(ycoord)+xcoord;
