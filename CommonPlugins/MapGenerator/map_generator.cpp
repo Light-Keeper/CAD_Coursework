@@ -20,6 +20,7 @@ struct cad_map_generator_private
 {
 	cad_kernel *kernel;
 	std::map<uint32_t, uint32_t> *Wires;
+	uint32_t free_net_id;
 };
 
 bool validate_place(cad_map_generator *self, cad_route_map *map, uint32_t r, uint32_t c, uint32_t rr, uint32_t cc)
@@ -50,9 +51,10 @@ bool generator_PlaceChip_Right(cad_map_generator *self, cad_route_map *map, cad_
 	{
 		auto f = [&](uint32_t px, uint32_t row )
 		{
-			int code = MAP_UNUSED;
+			int code = MAP_PIN | self->sys->free_net_id;
 			auto x = self->sys->Wires->find( (chip->num << 16) |  px );
 			if (x != self->sys->Wires->end()) code = MAP_PIN | x->second;
+			else self->sys->free_net_id--;
 			for (uint32_t j = 0; j < map->depth; j++)
 				MapElement3D(map, row, i, j) = code;
 		};
@@ -77,9 +79,11 @@ bool generator_PlaceSocket(cad_map_generator *self, cad_route_map *map, cad_chip
 
 	for(uint32_t i = chip->top_border; i < chip->top_border + (chip->package_type & NUMBER_MASK) * 2; i += 2 )
 	{
-		int code = MAP_UNUSED;
+		int code = MAP_PIN | self->sys->free_net_id;
 		auto x = self->sys->Wires->find( (chip->num << 16) |  px );
 		if (x != self->sys->Wires->end()) code = MAP_PIN | x->second;
+		else self->sys->free_net_id--;
+
 		for (uint32_t j = 0; j < map->depth; j++)
 			MapElement3D(map, i, chip->left_border + (i / 2) % 2 , j) = code;
 	
@@ -96,6 +100,7 @@ bool generator_FillMap(cad_map_generator *self, cad_route_map *map)
 			for(uint32_t z = 0; z < map->depth; z++)
 				MapElement3D(map, i, j, z) = MAP_EMPTY;
 
+	self->sys->free_net_id = 0x00FFFFFF;
 	self->sys->Wires->clear();
 	for (uint32_t i = 0; i < map->sheme->connections.number_of_wires; i++)
 	{

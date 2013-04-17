@@ -192,6 +192,7 @@ bool kernel_LoadFile(cad_kernel *self, const char *path)
 
 		self->sys->current_sheme = scheme;
 		self->sys->current_route = map;
+		self->sys->gui->UpdatePictureEvent( self->sys->gui );
 		return true;
 	}
 	return false;
