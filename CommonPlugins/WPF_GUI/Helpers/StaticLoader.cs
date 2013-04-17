@@ -86,6 +86,7 @@ namespace WPF_GUI
         public static int UpdatePictureEvent(string arg)
         {
             Mediator.NotifyColleagues(MediatorMessages.RefreshImage, GetPicture(false, 0));
+            System.GC.Collect();
             return 0;
         }
 
@@ -122,6 +123,7 @@ namespace WPF_GUI
                 Picture.Data = (IntPtr) (*((int*) (data.ToPointer()) + 3));
             }
 
+
             var imgLength = (uint) (Picture.Height * Picture.Width * sizeof(UInt32));
 
             var bitmap = new Bitmap(Picture.Width, Picture.Height, PixelFormat.Format32bppRgb);
@@ -134,12 +136,13 @@ namespace WPF_GUI
             CopyMemory(dst.Scan0, Picture.Data, imgLength);
 
             bitmap.UnlockBits(dst);
-
+            
             FreePicture(Picture.UnmanagedStruct);
 
             var inStream = new MemoryStream();
-            
-            bitmap.Save(inStream, ImageFormat.Png);
+
+            bitmap.Save(inStream, ImageFormat.Bmp);
+            bitmap.Dispose();
 
             var image = new BitmapImage();
 

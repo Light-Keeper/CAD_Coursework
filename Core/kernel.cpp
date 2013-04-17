@@ -225,7 +225,8 @@ uint32_t kernel_NextStep( cad_kernel *self,  bool demo_mode)
 	if (self->sys->current_state == KERNEL_STATE_PLACING)
 	{
 		uint32_t result = self->sys->current_sheme->MakeStepInDemoMode( self->sys->current_sheme );
-		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_PLACE;
+		if ( result != MORE_ACTIONS &&  result != MORE_ACTIONS_IN_DEMO_MODE)
+			self->sys->current_state = KERNEL_STATE_PLACE;
 		self->sys->gui->UpdatePictureEvent( self->sys->gui );
 		return result;
 	} 
@@ -233,7 +234,8 @@ uint32_t kernel_NextStep( cad_kernel *self,  bool demo_mode)
 	if (self->sys->current_state == KERNEL_STATE_TRACING)
 	{
 		uint32_t result = self->sys->current_route->MakeStep( self->sys->current_route, demo_mode );
-		if ( result != MORE_ACTIONS ) self->sys->current_state = KERNEL_STATE_TRACE;
+		if ( result != MORE_ACTIONS &&  result != MORE_ACTIONS_IN_DEMO_MODE)
+			self->sys->current_state = KERNEL_STATE_TRACE;
 		self->sys->gui->UpdatePictureEvent( self->sys->gui );
 		return result;
 	} 

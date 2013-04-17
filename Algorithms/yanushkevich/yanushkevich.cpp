@@ -91,7 +91,7 @@ uint32_t MakeStepInDemoMode( cad_route_map *self)
 	// если достигнута конечная точка, и при этом был проложен провод, и есть еще не проложенные провода
 	// вернуть MORE_ACTIONS
 	// если оказалось, что делать больше нечего, вернуь LAST_ACTION_OK
-//	return MakeStepInDemoModeImplementation( self );
+	return MakeStepInDemoModeImplementation( self );
 	return LAST_ACTION_OK;
 }
 
@@ -102,6 +102,7 @@ uint32_t MakeStepInDemoMode( cad_route_map *self)
 cad_route_map *Open(cad_kernel *c, cad_route_map *m)
 {
 	m->sys = new cad_route_map_private;
+	m->sys->kernel = c;
 	m->AboutToDestroy = AboutToDestroy;
 	m->MakeStepInDemoMode = MakeStepInDemoMode; 
 	m->Clear = Clear;
@@ -143,11 +144,12 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowTy
 uint32_t ContinueWave( cad_route_map *self )
 {
 	uint32_t queuesize = self->sys->queue.size();
-	
+
 	for (uint32_t _t = 0; _t < queuesize; _t++)
 	{
 		uint32_t i = (uint32_t)(self->sys->queue.front() >> 32);
 		uint32_t j = self->sys->queue.front() &  ((1LL << 32) - 1);
+		self->sys->queue.pop_front();
 
 		uint32_t result ;
 		result = SetPoint(self, i + 0, j + 1, MAP_ARROW_LEFT	); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;

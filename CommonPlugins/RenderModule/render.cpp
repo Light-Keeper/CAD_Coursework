@@ -57,6 +57,7 @@ void SetPitcureSize(cad_render_module *self, uint32_t width, uint32_t height)
 void DeletePicture(cad_picture *p)
 {
 	if (p->sys) free(p->sys );
+	if (p->data) free(p->data);
 	free( p );
 }
 
