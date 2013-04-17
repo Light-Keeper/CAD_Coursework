@@ -9,5 +9,6 @@
         public const string SetProgramState = "SetProgramState";
         public const string ShowAboutPopup = "ShowAboutPopup";
         public const string AddFileNameToTitle = "AddFileNameToTitle";
+        public const string RefreshImage = "RefreshImage";
     }
 }

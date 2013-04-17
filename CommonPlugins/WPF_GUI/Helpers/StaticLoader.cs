@@ -70,7 +70,7 @@ namespace WPF_GUI
                 Mediator = new Mediator();
                 Application = new App();
                 CoreMessage(msg);
-                SetPictureSize(
+                SetPictureSize(// It's only recommendation
                     Convert.ToUInt32(SystemParameters.WorkArea.Width),
                     Convert.ToUInt32(SystemParameters.WorkArea.Height));
                 Application.Run();
@@ -85,7 +85,19 @@ namespace WPF_GUI
         // Call from native code
         public static int UpdatePictureEvent(string arg)
         {
+            Mediator.NotifyColleagues(MediatorMessages.RefreshImage, GetPicture(false, 0));
             return 0;
+        }
+
+        // Call from native code
+        public static int CoreMessage(string msg)
+        {
+            if (Mediator != null)
+            {
+                Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
+            }
+
+            return msg.Length;
         }
 
         public static List<string> GetModuleList()
@@ -98,7 +110,7 @@ namespace WPF_GUI
                 str.ToString().Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
-        public static BitmapSource GetPicture(bool forceDrawLayer, int forceDrawLayerNumber)
+        private static BitmapSource GetPicture(bool forceDrawLayer, int forceDrawLayerNumber)
         {
             var data = RenderPicture(forceDrawLayer, forceDrawLayerNumber);
 
@@ -122,6 +134,7 @@ namespace WPF_GUI
             CopyMemory(dst.Scan0, Picture.Data, imgLength);
 
             bitmap.UnlockBits(dst);
+
             FreePicture(Picture.UnmanagedStruct);
 
             var inStream = new MemoryStream();
@@ -135,16 +148,6 @@ namespace WPF_GUI
             image.EndInit();
 
             return image;
-        }
-
-        public static int CoreMessage(string msg)
-        {
-            if (Mediator != null)
-            {
-                Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
-            }
-
-            return msg.Length;
         }
     }
 }
