@@ -291,6 +291,12 @@ bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bo
 
 	self->sys->current_state = KERNEL_STATE_TRACING;
 	self->sys->current_route->MakeStep = cad_routemap_MakeStep;
+	
+	cad_module_info *module = internal_find_module_by_name(self, force_module_name, CAP_TRACEROUTE);
+	if (module == NULL) return false;
+	module->Open( self, self->sys->current_route );
+	self->sys->current_route->Clear( self->sys->current_route );
+	
 	self->sys->gui->UpdatePictureEvent( self->sys->gui );
 	return true;	
 }
