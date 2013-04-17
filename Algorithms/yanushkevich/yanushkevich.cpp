@@ -91,7 +91,8 @@ uint32_t MakeStepInDemoMode( cad_route_map *self)
 	// если достигнута конечная точка, и при этом был проложен провод, и есть еще не проложенные провода
 	// вернуть MORE_ACTIONS
 	// если оказалось, что делать больше нечего, вернуь LAST_ACTION_OK
-	return MakeStepInDemoModeImplementation( self );
+//	return MakeStepInDemoModeImplementation( self );
+	return LAST_ACTION_OK;
 }
 
 

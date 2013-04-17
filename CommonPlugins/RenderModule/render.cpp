@@ -206,8 +206,8 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 	//int n = MapElement3D(map, 0,0,map->currerntLayer);	
 
 		int sqs = ((int)picture->width-2*w+1)/w+1;
-	for (int r1 =0 ; r1<w; r1 ++ )
-		for (int r2=0; r2<h; r2++)
+	for (int r1 =0 ; r1<h; r1 ++ )
+		for (int r2=0; r2<w; r2++)
 		{
 			int sqs_div2 = (sqs-1)/2;
 			value = MapElement3D(map, r1, r2, map->currerntLayer);
@@ -283,7 +283,7 @@ if ((value & CODE_MASK) == MAP_PIN)
 h = (sqs_div2);
 			
 		
-	if ((value & CODE_MASK) == MAP_NUMBER)				
+	if ((value & MAP_NUMBER) == MAP_NUMBER)				
 	{	
 		char arr[]="   "; int cd; int n;
 		uint32_t colour = 0x993344;
@@ -310,40 +310,40 @@ h = (sqs_div2);
 		}
 		for (int i=0; i<col; i++)
 		{
-		 if (arr[i]=='0')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 1, 1,1,0,1,1,0,0);
-		 else
-		if (arr[i]=='1')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 1,1,0,0,0,1,0);
-		 else
-			 if (arr[i]=='2')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 1,0,1,1,1,0,0);
-		 else
-			 if (arr[i]=='3')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 0,1,1,1,1,1,0);
-		 else
-			 if (arr[i]=='4')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 1,1,1,0,0,1,0);
-		 else
-			 if (arr[i]=='5')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 0, 0,1,1,1,1,0,0);
-		 else
-			 if (arr[i]=='6')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 0,1,1,0,1,1,0);
-		 else
-			 if (arr[i]=='7')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 0,0,0,1,0,1,0);
-		 else
-			 if (arr[i]=='8')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 1, 1,1,1,1,1,0,0);
-		 else
-			 if (arr[i]=='9')
-			DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 0, 1,0,1,1,0,0,1);
-		 cd+=n;
+			 if (arr[i]=='0')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 1, 1,1,0,1,1,0,0);
+			 else
+			if (arr[i]=='1')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 1,1,0,0,0,1,0);
+			 else
+				 if (arr[i]=='2')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 1,0,1,1,1,0,0);
+			 else
+				 if (arr[i]=='3')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 0,1,1,1,1,1,0);
+			 else
+				 if (arr[i]=='4')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 0, 1,1,1,0,0,1,0);
+			 else
+				 if (arr[i]=='5')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 0, 0,1,1,1,1,0,0);
+			 else
+				 if (arr[i]=='6')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 0,1,1,0,1,1,0);
+			 else
+				 if (arr[i]=='7')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 0, 1, 0,0,0,1,0,1,0);
+			 else
+				 if (arr[i]=='8')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 1, 1,1,1,1,1,0,0);
+			 else
+				 if (arr[i]=='9')
+				DrawSym(picture, cd, sqs_div2, xcoord, ycoord, colour, 1, 0, 1,0,1,1,0,0,1);
+			 cd+=n;
 		}
-		}
+	}
 		else continue;
-		}  
+}  
 	return picture;
 
 }
