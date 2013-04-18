@@ -11,5 +11,7 @@ int __stdcall WinMain(
 	cad_kernel *kernel = cad_kernel_New();
 	kernel->Exec( kernel );
 	kernel->Delete( kernel );
+	_CrtDumpMemoryLeaks();
 	return 0;
+
 }

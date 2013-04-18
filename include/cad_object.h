@@ -1,5 +1,8 @@
 // this file defines common structures for data exchange 
 #pragma once
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 #include <stdint.h>
 #include <memory>
