@@ -26,6 +26,8 @@ struct cad_route_map_private
 
 	std::set<uint64_t> EndPoints;
 
+	uint32_t current_start_x;
+	uint32_t current_start_y;
 };
 
 // удалить привытные данные, закрыть все используемые модулем ресурсы.
@@ -92,7 +94,6 @@ uint32_t MakeStepInDemoMode( cad_route_map *self)
 	// вернуть MORE_ACTIONS
 	// если оказалось, что делать больше нечего, вернуь LAST_ACTION_OK
 	return MakeStepInDemoModeImplementation( self );
-	return LAST_ACTION_OK;
 }
 
 
@@ -120,17 +121,81 @@ cad_route_map *Close(cad_kernel *c, cad_route_map *m)
 //--------------реализация моего алгоритма (Метод путевых координат)----------------//
 //----------------------------------------------------------------------------------//
 
+// предварительное объявление
+uint32_t FindWireToTrace( cad_route_map *self );
+
+// заменят строеочки на провода
+bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t x, uint32_t y)
+{
+	uint32_t &val1 = MapElement3D(self, i, j, self->currerntLayer);
+	uint32_t &val2 = MapElement3D(self, x, y, self->currerntLayer);
+	self->sys->EndPoints.insert(((0LL + i) << 32) | j);
+	self->sys->EndPoints.insert(((0LL + x) << 32) | y);
+
+	if (val1 == MAP_ARROW_DOWN  ||	val1 == MAP_ARROW_RIGHT  ||
+			val1 == MAP_ARROW_LEFT  ||	val1 == MAP_ARROW_UP	)	val1 = MAP_EMPTY;
+	if (val2 == MAP_ARROW_DOWN  ||	val2 == MAP_ARROW_RIGHT  ||
+			val2 == MAP_ARROW_LEFT  ||	val2 == MAP_ARROW_UP	)	val2 = MAP_EMPTY;
+
+	if ( i < x ) val2 |= MAP_WIRE_UP	, val1 |= MAP_WIRE_DOWN	; else
+	if ( x < i ) val2 |= MAP_WIRE_DOWN	, val1 |= MAP_WIRE_UP	; else 
+	if ( j < y ) val2 |= MAP_WIRE_LEFT	, val1 |= MAP_WIRE_RIGHT; else
+	if ( y < j ) val2 |= MAP_WIRE_RIGHT	, val1 |= MAP_WIRE_LEFT	;
+
+	i = x;
+	j = y;
+	return true;
+}
+
+// определяет коордианы нужной соседней клетики по направлению стрелочки
+bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t &ArrowType)
+{
+	if (ArrowType == MAP_ARROW_DOWN)	
+		return ArrowType = MapElement3D(self, i+1, j, self->currerntLayer), SetHalfLine(self, i, j, i+1, j   );
+	if (ArrowType == MAP_ARROW_UP)		
+		return ArrowType = MapElement3D(self, i-1, j, self->currerntLayer), SetHalfLine(self, i, j, i-1, j   );
+	if (ArrowType == MAP_ARROW_LEFT)	
+		return ArrowType = MapElement3D(self, i, j-1, self->currerntLayer), SetHalfLine(self, i, j, i  , j-1 );
+	if (ArrowType == MAP_ARROW_RIGHT)	
+		return ArrowType = MapElement3D(self, i, j+1, self->currerntLayer), SetHalfLine(self, i, j, i  , j+1 );
+	return false;
+}
+
+// провести провод между 2 точками на плате (по стрелочкам)
+void BuildLine(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowType)
+{
+
+	SetHalfLine(self, i, j, ArraowType);
+
+	while ( SetHalfLine(self, i, j, ArraowType) );
+
+	for(uint32_t i = 0; i < self->height; i++)
+		for(uint32_t j = 0; j < self->width; j++)
+		{
+			uint32_t &val = MapElement3D(self, i, j, self->currerntLayer);
+
+			if (val == MAP_ARROW_DOWN  ||	val == MAP_ARROW_RIGHT  ||
+				val == MAP_ARROW_LEFT  ||	val == MAP_ARROW_UP	) val = MAP_EMPTY;	
+		}
+}
+
 // поставить стрелочку в точке i j 
 uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowType)
 {
 	if (i < 0 || j < 0 || i >= self->height || j >= self->width) return MORE_ACTIONS_IN_DEMO_MODE;
+	if (i == self->sys->current_start_x && j == self->sys->current_start_y) return MORE_ACTIONS_IN_DEMO_MODE;
 
 	if ( self->sys->EndPoints.empty() && 
 		(MapElement3D(self, i, j, self->currerntLayer) == (MAP_PIN | (*self->sys->CurrentWire)->number)) ||
 		self->sys->EndPoints.find(((0LL + i) << 32) | j) != self->sys->EndPoints.end())
 	{
 		// конец волны. исходныая позиция подключается к конечной в точке i j
-		//TODO: implement
+		int x = (MapElement3D(self, i, j, self->currerntLayer));	
+		bool c = self->sys->EndPoints.empty() && 
+		(MapElement3D(self, i, j, self->currerntLayer) == (MAP_PIN | (*self->sys->CurrentWire)->number));
+		BuildLine(self, i,j, ArraowType);
+		self->sys->queue.clear();
+		return FindWireToTrace( self );
 	}
 
 	if (MapElement3D(self, i, j, self->currerntLayer) != MAP_EMPTY) return MORE_ACTIONS_IN_DEMO_MODE;
@@ -179,9 +244,12 @@ uint32_t FindWireToTrace( cad_route_map *self )
 			// мы здесь. а это значит, что с точки i j можно начать обход в ширину
 
 			self->sys->queue.push_back(((0LL + i) << 32) | j);
+			self->sys->current_start_x = i;
+			self->sys->current_start_y = j;
+
 			self->sys->kernel->PrintInfo("Для трассировки выбран провод №%d, позиция (%d %d)",
 				(*self->sys->CurrentWire)->number, i, j );
-			return MORE_ACTIONS_IN_DEMO_MODE;
+			return MORE_ACTIONS;
 		}
 	
 	// тут, похоже что текущий провод полностью оттрассирован. переходим к следующему проводу.
@@ -189,7 +257,7 @@ uint32_t FindWireToTrace( cad_route_map *self )
 	auto tmp = self->sys->CurrentWire;
 	self->sys->CurrentWire++;
 	self->sys->NewWires.erase( tmp );
-	
+
 	if (self->sys->NewWires.empty()) 
 	{
 		self->sys->kernel->PrintInfo("Трассировка закончена");

@@ -229,12 +229,12 @@ coord = DrawLine(picture, coord, picture->width, -1, 0, 3, 1, sqs_div2, xcoord, 
 //=====================================================
 			//WIRE_LEFT
 //=====================================================
-if ((value & 0xF4000000) == MAP_WIRE_LEFT)	
+if ((value & MAP_WIRE_LEFT) == MAP_WIRE_LEFT)	
 coord = DrawLine(picture, coord, -1, -int(picture->width), 1, 3, picture->width, sqs_div2, xcoord, ycoord, 0xFF4500, 0,1);			
 //=====================================================
 			//WIRE_RIGHT
 //=====================================================
-if ((value & 0xF8000000) == MAP_WIRE_RIGHT)	
+if ((value & MAP_WIRE_RIGHT) == MAP_WIRE_RIGHT)	
 coord = DrawLine(picture, coord, 1, -int(picture->width), 0, 3, picture->width, sqs_div2, xcoord, ycoord, 0xFF4500, 0,1);			
 //=====================================================
 			//ARROW_UP
@@ -273,7 +273,7 @@ if ((value & CODE_MASK) == MAP_ARROW_RIGHT)
 			//PIN
 //=====================================================
 h = (sqs_div2);
-if ((value & CODE_MASK) == MAP_PIN)	
+if ((value & 0xF0000000) == MAP_PIN)	
 {
 	coord = DrawErrow(picture, coord, -int(picture->width), 0, h, 1, sqs_div2, xcoord, ycoord, 0xFFD700, 2, 1);	
 	coord = DrawErrow(picture, coord, picture->width, 0, h, 1, sqs_div2, xcoord, ycoord, 0xDAA520, 2, 1);	
