@@ -255,12 +255,7 @@ h = (sqs_div2);
 	}
 		else return -1;
 
-
-
 }
-
-
-
 
 
 cad_picture * draw_Nothing(cad_render_module *self)
@@ -325,10 +320,9 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 		for (int r2=0; r2<w; r2++)
 		{	
 			value = MapElement3D(map, r1, r2, map->currerntLayer);
-			
 			DrawCell(picture, r1, r2, value, w);
-			
-}  
+		}
+
 	return picture;
 
 }

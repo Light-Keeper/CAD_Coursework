@@ -47,8 +47,9 @@ uint32_t Clear(cad_route_map *self)
 {
 	for (uint32_t i = 0; i < self->height * self->width * self->depth; i++)
 	{
-		if ((self->map[i] & MAP_PIN) != MAP_PIN) 
-			self->map[i] = MAP_EMPTY;
+		if ((self->map[i] & 0xF0000000) == MAP_PIN) 
+			self->map[i] &= 0xF0FFFFFF; else
+			self->map[i]  =  MAP_EMPTY;
 	}
 	
 	// переинициализировать внутренние структуры
