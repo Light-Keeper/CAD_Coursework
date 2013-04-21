@@ -25,6 +25,9 @@ cad_module_begin()
 	set_module_callbacks(Open, Close)
 cad_module_end()
 
+int InitWindow();
+int DrawInWindow(int h, int w, double x1, double y1, double x2, double y2, cad_picture *picture);
+
 uint32_t gui_Exec(cad_GUI *self);
 void gui_SetCMDArgs(cad_GUI *self, char *arg);
 void gui_UpdatePictureEvent( cad_GUI *self );
@@ -64,6 +67,7 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	kernel->PrintDebug = my_printf;
 	kernel->PrintInfo = my_printf; 
 	self = gui;
+	InitWindow();
 	return gui;
 }
 
@@ -267,7 +271,11 @@ bool __stdcall CloseCurrentFile()
 
 cad_picture * __stdcall RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNumber)
 {
-	return self->sys->kernel->RenderPicture(self->sys->kernel, forceDrawLayer, forceDrawLayerNumber);
+
+	cad_picture * res = self->sys->kernel->RenderPicture(self->sys->kernel, forceDrawLayer, forceDrawLayerNumber);
+	DrawInWindow(0,0,0,0,1,1,res);
+	res->height = res->width = 1;
+	return res;
 }
 
 void __stdcall FreePicture( cad_picture *p )
