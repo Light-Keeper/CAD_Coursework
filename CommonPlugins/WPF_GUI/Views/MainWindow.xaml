@@ -97,9 +97,10 @@
             <ScrollViewer.DataContext>
                 <viewModel:ImageViewerViewModel/>
             </ScrollViewer.DataContext>
-            <Border Padding="10">
+            <Border Padding="10" Name="BorderForImage">
             <Image Stretch="Uniform"
                    Height="{Binding Path=ImageHeight, Mode=OneWay}"
+                   Source="{Binding Path=ImageSource, Mode=OneWay}"
                    Name="DisplayedImage"
                    MouseDown="DisplayedImage_OnMouseDown"
                    HorizontalAlignment="Center"

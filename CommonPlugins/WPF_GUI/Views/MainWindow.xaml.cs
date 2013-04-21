@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using WPF_GUI.Helpers;
@@ -36,7 +39,10 @@ namespace WPF_GUI
 
         private void RefreshImage(BitmapSource bitmapSource)
         {
-            DisplayedImage.Source = bitmapSource;
+            BorderForImage.Child = new Image
+                {
+                    Source = bitmapSource
+                };
         }
 
         private void AddFileNameToTitle(string fileName)
