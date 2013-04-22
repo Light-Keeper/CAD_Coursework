@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Forms;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using WPF_GUI.Helpers;
-using MessageBox = System.Windows.MessageBox;
 
 namespace WPF_GUI.ViewModels
 {

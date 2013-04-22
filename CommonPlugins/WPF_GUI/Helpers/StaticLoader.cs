@@ -1,17 +1,12 @@
 ﻿﻿using System;
 using System.Collections.Generic;
-﻿using System.Drawing;
-﻿using System.Drawing.Imaging;
-﻿using System.IO;
 ﻿using System.Linq;
 ﻿using System.Text;
 using System.Runtime.InteropServices;
 ﻿using System.Threading;
 ﻿using System.Windows;
-﻿using System.Windows.Media.Imaging;
 ﻿using MediatorLib;
 ﻿using WPF_GUI.Helpers;
-﻿using Point = System.Drawing.Point;
 
 namespace WPF_GUI
 {
@@ -59,6 +54,7 @@ namespace WPF_GUI
 
         public static App Application;
         public static Mediator Mediator;
+        public static ImageHost Image;
 
         // Call from native code
         public static int Exec(string msg)
@@ -66,6 +62,7 @@ namespace WPF_GUI
             try
             {
                 Thread.CurrentThread.SetApartmentState(ApartmentState.STA);
+                Image = new ImageHost();
                 Mediator = new Mediator();
                 Application = new App();
                 CoreMessage(msg);
@@ -84,7 +81,7 @@ namespace WPF_GUI
         // Call from native code
         public static int UpdatePictureEvent(string arg)
         {
-            GetPicture(false, 0);
+            
             return 0;
         }
 
@@ -106,49 +103,6 @@ namespace WPF_GUI
             return res < 0 ?
                 new List<string>() :
                 str.ToString().Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
-        }
-
-        private static void GetPicture(bool forceDrawLayer, int forceDrawLayerNumber)
-        {
-//            var data = RenderPicture(forceDrawLayer, forceDrawLayerNumber);
-//
-//            var picture = new Picture();
-//
-//            unsafe
-//            {
-//                picture.UnmanagedStruct = data;
-//                picture.Height = *((int*) (data.ToPointer()) + 1);
-//                picture.Width = *((int*) (data.ToPointer()) + 2);
-//                picture.Data = (IntPtr) (*((int*) (data.ToPointer()) + 3));
-//            }
-//
-//            var imgLength = (uint) (picture.Height * picture.Width * sizeof(UInt32));
-//
-//            var bitmap = new Bitmap(picture.Width, picture.Height, PixelFormat.Format32bppRgb);
-//
-//            var dst = bitmap.LockBits(
-//                new Rectangle(Point.Empty, bitmap.Size),
-//                ImageLockMode.WriteOnly,
-//                PixelFormat.Format32bppRgb);
-//            
-//            PInvoke.CopyMemory(dst.Scan0, picture.Data, imgLength);
-//
-//            bitmap.UnlockBits(dst);
-//            
-//            FreePicture(picture.UnmanagedStruct);
-//
-//            var inStream = new MemoryStream();
-//
-//            bitmap.Save(inStream, ImageFormat.Bmp);
-//            bitmap.Dispose();
-//
-//            var image = new BitmapImage();
-//
-//            image.BeginInit();
-//            image.StreamSource = inStream;
-//            image.EndInit();
-//
-//            return image;
         }
     }
 }

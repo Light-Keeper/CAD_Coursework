@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Navigation;
 using WPF_GUI.Helpers;
 
@@ -10,8 +11,6 @@ namespace WPF_GUI
 {
     public partial class MainWindow : Window
     {
-        private ImageHost _image;
-
         private readonly Cursor _cursorGrab;
         private readonly Cursor _cursorGrabbing;
 
@@ -35,13 +34,10 @@ namespace WPF_GUI
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-//            _image = new ControlHost();
+            StaticLoader.Image.MessageHook += new HwndSourceHook(ControlMsgFilter);
+            StaticLoader.Image.MouseDown += new MouseButtonEventHandler(Image_OnMouseDown);
 
-//            _image.MessageHook += new HwndSourceHook(ControlMsgFilter);
-//            _image.MouseDown += new MouseButtonEventHandler(Image_OnMouseDown);
-//            _image.Cursor = _cursorGrab;
-
-//            BorderForImage.Child = _image;
+            BorderForImage.Child = StaticLoader.Image;
         }
 
         private static IntPtr ControlMsgFilter(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -58,7 +54,7 @@ namespace WPF_GUI
         private void Image_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
 //            _image.Cursor = this._cursorGrabbing;
-            _mouseOffset = e.GetPosition((_image.Parent as Border).Parent as ScrollViewer);
+            _mouseOffset = e.GetPosition((StaticLoader.Image.Parent as Border).Parent as ScrollViewer);
             _isDragging = true;
         }
 

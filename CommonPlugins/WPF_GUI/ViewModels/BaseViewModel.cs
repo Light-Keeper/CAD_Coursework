@@ -1,5 +1,4 @@
-﻿using MediatorLib;
-using WPF_GUI.Helpers;
+﻿using WPF_GUI.Helpers;
 
 namespace WPF_GUI.ViewModels
 {
