@@ -12,20 +12,20 @@ namespace WPF_GUI.ViewModels
     {
         public ImageViewerViewModel()
         {
-            StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>)this.ChangeImageZoom);
-//            StaticLoader.Mediator.Register(MediatorMessages.RefreshImage, (Action<bool>) this.RefreshImage);
+            StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>) this.ChangeImageZoom);
+//            StaticLoader.Mediator.Register(MediatorMessages.ChangeImageSize, (Action<Size>) this.ChangeImageSize);
         }
 
-        #region ImageSource
-        private ImageSource _imageSource;
-        public ImageSource ImageSource
+        #region ImageWidth
+        private double _imageWidth;
+        public double ImageWidth
         {
-            get { return _imageSource; }
+            get { return _imageWidth; }
             set
             {
-                if (Equals(_imageSource, value)) return;
-                _imageSource = value;
-                RaisePropertyChanged(() => ImageSource);
+                if (_imageWidth == value) return;
+                _imageWidth = value;
+                RaisePropertyChanged(() => ImageWidth);
             }
         }
         #endregion
@@ -47,16 +47,6 @@ namespace WPF_GUI.ViewModels
         public void ChangeImageZoom(int zoom)
         {
             this.ImageHeight = SystemParameters.WorkArea.Height * zoom / 100;
-        }
-
-        public void RefreshImage(bool bitmap)
-        {
-            var path = Environment.CurrentDirectory + @"\plugins\tmp.png";
-
-            MessageBox.Show(path);
-
-            this.ImageSource = new BitmapImage(new Uri(path));
-            RaisePropertyChanged(() => ImageSource);
         }
     }
 }

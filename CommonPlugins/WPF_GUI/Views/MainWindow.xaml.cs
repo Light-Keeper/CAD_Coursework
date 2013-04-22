@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using WPF_GUI.Helpers;
 
@@ -14,6 +10,8 @@ namespace WPF_GUI
 {
     public partial class MainWindow : Window
     {
+        private ImageHost _image;
+
         private readonly Cursor _cursorGrab;
         private readonly Cursor _cursorGrabbing;
 
@@ -29,20 +27,27 @@ namespace WPF_GUI
             _cursorGrab = ((TextBlock) this.Resources["CursorGrab"]).Cursor;
             _cursorGrabbing = ((TextBlock) this.Resources["CursorGrabbing"]).Cursor;
 
-            DisplayedImage.Cursor = _cursorGrab;
             _isDragging = false;
 
             StaticLoader.Mediator.Register(MediatorMessages.AddFileNameToTitle, (Action<string>) this.AddFileNameToTitle);
-            StaticLoader.Mediator.Register(MediatorMessages.RefreshImage, (Action<BitmapSource>) this.RefreshImage);
             StaticLoader.UpdatePictureEvent(null);
         }
 
-        private void RefreshImage(BitmapSource bitmapSource)
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            BorderForImage.Child = new Image
-                {
-                    Source = bitmapSource
-                };
+//            _image = new ControlHost();
+
+//            _image.MessageHook += new HwndSourceHook(ControlMsgFilter);
+//            _image.MouseDown += new MouseButtonEventHandler(Image_OnMouseDown);
+//            _image.Cursor = _cursorGrab;
+
+//            BorderForImage.Child = _image;
+        }
+
+        private static IntPtr ControlMsgFilter(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            handled = false;
+            return IntPtr.Zero;
         }
 
         private void AddFileNameToTitle(string fileName)
@@ -50,16 +55,16 @@ namespace WPF_GUI
             this.Title = fileName + " - " + Defines.ProgramName;
         }
 
-        private void DisplayedImage_OnMouseDown(object sender, MouseButtonEventArgs e)
+        private void Image_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DisplayedImage.Cursor = this._cursorGrabbing;
-            _mouseOffset = e.GetPosition((sender as Image).Parent as ScrollViewer);
+//            _image.Cursor = this._cursorGrabbing;
+            _mouseOffset = e.GetPosition((_image.Parent as Border).Parent as ScrollViewer);
             _isDragging = true;
         }
 
         private void MainWindow_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-            DisplayedImage.Cursor = this._cursorGrab;
+//            _image.Cursor = this._cursorGrab;
             _isDragging = false;
         }
 

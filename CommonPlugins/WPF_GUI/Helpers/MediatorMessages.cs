@@ -10,6 +10,6 @@
         public const string ShowAboutPopup = "ShowAboutPopup";
         public const string AddFileNameToTitle = "AddFileNameToTitle";
         public const string RefreshImage = "RefreshImage";
-        public const string ClearImage = "ClearImage";
+        public const string ChangeImageSize = "ChangeImageSize";
     }
 }

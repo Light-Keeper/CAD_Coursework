@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModel="clr-namespace:WPF_GUI.ViewModels"
         xmlns:model="clr-namespace:WPF_GUI.Models"
+        xmlns:gdi="clr-namespace:WPF_GUI.Helpers"
         Title="CAD Course Work"
         MinWidth="800" MinHeight="600"
         Width="800" Height="600"
@@ -10,7 +11,8 @@
         WindowStartupLocation="CenterScreen"
         Icon="../Recources/Images/pcb.ico"
         MouseUp="MainWindow_OnMouseUp"
-        PreviewKeyDown="MainWindow_OnPreviewKeyDown">
+        PreviewKeyDown="MainWindow_OnPreviewKeyDown"
+        Loaded="MainWindow_OnLoaded">
     <Window.Resources>
         <ResourceDictionary>
             <TextBlock x:Key="CursorGrab" Cursor="../Recources/Cursors/grab.cur"/>
@@ -93,18 +95,15 @@
                       HorizontalScrollBarVisibility="Visible"
                       BorderThickness="3" BorderBrush="DarkGray"
                       PreviewMouseWheel="ImageViewer_OnMouseWheel"
+                      Padding="20"
                       MouseMove="ScrollViewer_OnMouseMove" Focusable="False">
             <ScrollViewer.DataContext>
                 <viewModel:ImageViewerViewModel/>
             </ScrollViewer.DataContext>
-            <Border Padding="10" Name="BorderForImage">
-            <Image Stretch="Uniform"
-                   Height="{Binding Path=ImageHeight, Mode=OneWay}"
-                   Source="{Binding Path=ImageSource, Mode=OneWay}"
-                   Name="DisplayedImage"
-                   MouseDown="DisplayedImage_OnMouseDown"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"/>
+            <Border Name="BorderForImage">
+                <gdi:ImageHost
+                    Width="{Binding Path=ImageWidth, Mode=OneWayToSource}"
+                    Height="{Binding Path=ImageHeight, Mode=OneWayToSource}"/>
             </Border>
         </ScrollViewer>
         <Grid Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
