@@ -8,7 +8,7 @@ namespace WPF_GUI.ViewModels
     {
         public ImageViewerViewModel()
         {
-            StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>) this.ChangeImageZoom);
+//            StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>) this.ChangeImageZoom);
 //            StaticLoader.Mediator.Register(MediatorMessages.ChangeImageSize, (Action<Size>) this.ChangeImageSize);
         }
 

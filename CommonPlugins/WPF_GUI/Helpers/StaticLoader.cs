@@ -10,14 +10,6 @@ using System.Runtime.InteropServices;
 
 namespace WPF_GUI
 {
-    public struct Picture
-    {
-        public IntPtr UnmanagedStruct;
-        public int Width;
-        public int Height;
-        public IntPtr Data;
-    };
-
     public static class StaticLoader
     {
         #region CLR Loader Methods
@@ -42,10 +34,7 @@ namespace WPF_GUI
         private static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
 
         [DllImport("GUI_CLR_loader.dll")]
-        private static extern IntPtr RenderPicture(Boolean forceDrawLayer, Int32 forceDrawLayerNumber);
-
-        [DllImport("GUI_CLR_loader.dll")]
-        private static extern void FreePicture(IntPtr picture);
+        private static extern void RenderPicture(IntPtr hWnd, double x1, double y1, double x2, double y2);
 
         [DllImport("GUI_CLR_loader.dll")]
         private static extern void SetPictureSize(UInt32 width, UInt32 height);
@@ -81,7 +70,7 @@ namespace WPF_GUI
         // Call from native code
         public static int UpdatePictureEvent(string arg)
         {
-            
+            RenderPicture(Image.Handle, 0, 0, 1, 1);
             return 0;
         }
 

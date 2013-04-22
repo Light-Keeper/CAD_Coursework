@@ -50,7 +50,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\ImageHost.cs" />
     <Compile Include="Helpers\Defines.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Helpers\ImageHost.cs" />

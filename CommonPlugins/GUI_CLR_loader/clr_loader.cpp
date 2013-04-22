@@ -210,9 +210,8 @@ extern "C" __declspec( dllexport ) uint32_t __stdcall RunToEnd();
 extern "C" __declspec( dllexport ) uint32_t __stdcall NextStep( bool inDemoMode );
 
 extern "C" __declspec( dllexport ) bool		__stdcall CloseCurrentFile();
-extern "C" __declspec( dllexport ) void		__stdcall FreePicture( cad_picture *p );
 extern "C" __declspec( dllexport ) void		__stdcall SetPictureSize( uint32_t width, uint32_t height );
-extern "C" __declspec( dllexport ) cad_picture * __stdcall RenderPicture( bool forceDrawLayer, uint32_t forceDrawLayerNumber );
+extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2);
 
 
 uint32_t __stdcall GetKernelState()
@@ -269,19 +268,8 @@ bool __stdcall CloseCurrentFile()
 	return self->sys->kernel->CloseCurrentFile( self->sys->kernel );
 }
 
-cad_picture * __stdcall RenderPicture(bool forceDrawLayer, uint32_t forceDrawLayerNumber)
+void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2)
 {
-
-	cad_picture * res = self->sys->kernel->RenderPicture(self->sys->kernel, forceDrawLayer, forceDrawLayerNumber);
-	DrawInWindow(0,0,0,0,1,1,res);
-	res->height = res->width = 1;
-	return res;
-}
-
-void __stdcall FreePicture( cad_picture *p )
-{
-	if (p->Delete)
-		p->Delete( p );
 }
 
 void __stdcall SetPictureSize( uint32_t width, uint32_t height )
