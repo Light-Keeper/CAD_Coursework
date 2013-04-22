@@ -53,6 +53,7 @@
     <Compile Include="Helpers\ImageHost.cs" />
     <Compile Include="Helpers\Defines.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
+    <Compile Include="Helpers\ImageHost.cs" />
     <Compile Include="Helpers\InfoBarMessages.cs" />
     <Compile Include="Helpers\MediatorMessages.cs" />
     <Compile Include="Helpers\NotificationObject.cs" />
