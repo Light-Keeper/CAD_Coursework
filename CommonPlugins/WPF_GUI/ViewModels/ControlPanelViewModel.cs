@@ -77,6 +77,13 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
+        #region IsInputSelectable
+        public bool IsInputSelectable
+        {
+            get { return !_isStopButtonEnabled; }
+        }
+        #endregion
+
         #region IsNormalMode
         private bool _isNormalMode;
         public bool IsNormalMode
@@ -195,6 +202,7 @@ namespace WPF_GUI.ViewModels
                 if (_isStopButtonEnabled == value) return;
                 _isStopButtonEnabled = value;
                 RaisePropertyChanged(() => IsStopButtonEnabled);
+                RaisePropertyChanged(() => IsInputSelectable);
             }
         }
         #endregion

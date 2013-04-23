@@ -58,7 +58,6 @@
     <Compile Include="Helpers\NotificationObject.cs" />
     <Compile Include="Helpers\PInvoke.cs" />
     <Compile Include="Models\Log.cs" />
-    <Compile Include="Models\Picture.cs" />
     <Compile Include="Models\Place.cs" />
     <Compile Include="Models\Route.cs" />
     <Compile Include="Properties\Annotations.cs" />
