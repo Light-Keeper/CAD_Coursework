@@ -15,6 +15,7 @@ namespace WPF_GUI
             base.OnStartup(e);
             this.MainWindow = new MainWindow();
             this.MainWindow.Show();
+            LogViewer.Owner = this.MainWindow;
         }
 
         protected override void OnExit(ExitEventArgs e)
