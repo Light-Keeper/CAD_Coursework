@@ -32,6 +32,7 @@ void EnableOpenGL(HWND hWnd)
     // create and enable the render context (RC)
     hRC = wglCreateContext( hDC );
     wglMakeCurrent( hDC, hRC );
+	window = hWnd;
 }
 
 void DisableOpenGL()
@@ -42,10 +43,14 @@ void DisableOpenGL()
 }
 
 
-int DrawGL(double x1, double y1, double x2, double y2, cad_picture *picture)
+void SwapBuffers()
 {
-	glDrawPixels(picture->width, picture->height, GL_RGBA, GL_UNSIGNED_BYTE, picture->data);	
-	SwapBuffers( hDC );
-	return 1;
+	::SwapBuffers( hDC );
 }
 
+void ClearGLWindow()
+{
+	RECT r;
+	GetWindowRect(window, &r); 
+	glViewport( 0, 0, r.right-r.left, r.bottom-r.top);
+}

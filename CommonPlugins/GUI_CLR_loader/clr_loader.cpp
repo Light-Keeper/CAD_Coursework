@@ -270,7 +270,8 @@ bool __stdcall CloseCurrentFile()
 }
 
 void EnableOpenGL(HWND hWnd);
-int DrawGL(double x1, double y1, double x2, double y2, cad_picture *picture);
+void SwapBuffers();
+void ClearGLWindow();
 
 void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2)
 {
@@ -279,9 +280,9 @@ void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double 
 		EnableOpenGL( hWnd );
 		self->sys->window = hWnd;
 	}
-
-	cad_picture * picture = self->sys->kernel->RenderPicture(self->sys->kernel, false, 0);
-	DrawGL(x1, y1, x2,y2, picture);
+	ClearGLWindow();
+	cad_picture * picture = self->sys->kernel->RenderPicture(self->sys->kernel, x1, y1, x2, y2);
+	SwapBuffers();
 	picture->Delete( picture );
 }
 

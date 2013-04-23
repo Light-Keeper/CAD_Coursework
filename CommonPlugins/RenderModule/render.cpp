@@ -1,8 +1,13 @@
+#include <windows.h>
+#include <gl/gl.h>
+#include <gl/glu.h>
+
 #include <cad_module.h>
 #include <cad_object.h>
 #include <cstdio>
 #include <math.h>
 #include <string>
+
 #define S1 200
 #define S2 100
 
@@ -17,8 +22,8 @@ cad_module_begin()
 cad_module_end()
 
 void SetPitcureSize(cad_render_module *self, uint32_t width, uint32_t height);
-cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme);
-cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
+cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme, double x1, double y1, double x2, double y2);
+cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, double x1, double y1, double x2, double y2);
 
 struct cad_render_module_private 
 {
@@ -72,7 +77,7 @@ cad_picture *allocate_picture(cad_render_module *self)
 	return picture;
 }
 
-cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme)
+cad_picture *RenderSchme(cad_render_module *self, cad_scheme * scheme, double x1, double y1, double x2, double y2)
 {	
 	return allocate_picture(self);
 }
@@ -263,66 +268,20 @@ cad_picture * draw_Nothing(cad_render_module *self)
 	return  allocate_picture(self);
 }
 
-cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
+cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, double x1, double y1, double x2, double y2)
 {
- 	if (map == NULL) 
-	{
-		return draw_Nothing( self );
-	}
-
-	int w = map->width; 
-	int h = map->height; 
-	int width, height; uint32_t value; int addw, addh;
-	if (ceil((double)self->sys->width/w)<25) //standartization if field is too little
-	{
-		width = 25*w+w-1; 
-		height = 25*h+h-1;
-	}
-	else 
-	{
-		if (((int)ceil((double)self->sys->width/w)%2)==0)
-			{addw=w*2;
-		addh=h*2;}
-		else
-		{	addw=w;
-		addh=h;}
-		width = (int)ceil((double)self->sys->width/w)*w+addw-1;
-		height = (int)ceil((double)self->sys->width/w)*h+addh-1; 
-	}
-
-	SetPitcureSize(self, 25 * map->width, 25 * map->height);
-	auto picture = allocate_picture(self);
-	int size_square=(picture->width-w+1)/w; 
-	memset(picture->data, 220, picture->width * picture->height * sizeof( uint32_t ));
+ 	SetPitcureSize(self, 1, 1);
+	glLoadIdentity();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-//=================================================================================
-	// HORIZONTAL LINES
-//=================================================================================
-	for (int y=size_square; y < (int)picture->height; ) // horizontal lines
-		{
-			for (int i=0;  i<(int)picture->width; i++)
-				picture->data[(int)picture->width * y + i] = 0xeeeeee; 
-			y+=(size_square+1);
-		}
-//=================================================================================
-	// VERTICAL LINES
-//=================================================================================
-	for (int z=size_square; z < (int)picture->width;) //vertical lines
-		{
-			for (int i=0; i<(int)picture->height; i++)
-			picture->data[(int)picture->width*i+z] = 0xeeeeee; 
-			z+=(size_square+1);
-		}
-	//int n = MapElement3D(map, 0,0,map->currerntLayer);	
-		
-		
-	for (int r1 =0 ; r1<h; r1 ++ )
-		for (int r2=0; r2<w; r2++)
-		{	
-			value = MapElement3D(map, r1, r2, map->currerntLayer);
-			DrawCell(picture, r1, r2, value, w);
-		}
-
-	return picture;
-
+	glColor3f(1,1,1);
+	glBegin( GL_POLYGON );
+		glVertex2f(0.0, 0.0);
+		glVertex2f(0.6, 0.3);
+		glVertex2f(0.6, 0.6);
+		glVertex2f(0.3, 0.6);
+	glEnd();
+	
+	
+	return allocate_picture(self);
 }

@@ -305,18 +305,15 @@ bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bo
 }
 
 
-cad_picture * kernel_RenderPicture(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
+cad_picture * kernel_RenderPicture(cad_kernel *self, double x1, double y1, double x2, double y2)
 {
 	if (! self->sys->render ) return NULL;
 
  	if (self->sys->current_state == KERNEL_STATE_PLACE || 
 		self->sys->current_state == KERNEL_STATE_PLACING )
-		return self->sys->render->RenderSchme(self->sys->render, self->sys->current_sheme );
-
-//	if (self->sys->current_state == KERNEL_STATE_TRACE || 
-//		self->sys->current_state == KERNEL_STATE_TRACING )
-		return self->sys->render->RenderMap(self->sys->render, self->sys->current_route, forceDrawLayer,  forceDrawLayerNunber);
-
+		return self->sys->render->RenderSchme(self->sys->render, self->sys->current_sheme,  x1, y1, x2, y2);
+	else
+		return self->sys->render->RenderMap(self->sys->render, self->sys->current_route, x1, y1, x2, y2);
 	return NULL;
 }
 

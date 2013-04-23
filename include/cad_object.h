@@ -220,8 +220,8 @@ struct cad_render_module
 	cad_render_module_private *sys;
 	
 	void (* SetPitcureSize)(cad_render_module *self, uint32_t width, uint32_t height);
-	cad_picture *( *RenderSchme)(cad_render_module *self, cad_scheme * scheme);
-	cad_picture *( *RenderMap)(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
+	cad_picture *( *RenderSchme)(cad_render_module *self, cad_scheme * scheme, double x1, double y1, double x2, double y2);
+	cad_picture *( *RenderMap)(cad_render_module *self, cad_route_map * map, double x1, double y1, double x2, double y2);
 };
 
 
@@ -270,7 +270,7 @@ struct cad_kernel
 	bool (* CloseCurrentFile)( cad_kernel *self);
 	cad_render_module *(* GetRenderModule)( cad_kernel *self);
 
-	cad_picture * (*RenderPicture)(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
+	cad_picture * (*RenderPicture)(cad_kernel *self, double x1, double y1, double x2, double y2);
 };
 
 cad_kernel * cad_kernel_New();
