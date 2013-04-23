@@ -47,6 +47,11 @@ namespace WPF_GUI
             return IntPtr.Zero;
         }
 
+        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            StaticLoader.UpdatePictureEvent(null);
+        }
+
         private void AddFileNameToTitle(string fileName)
         {
             this.Title = fileName + " - " + Defines.ProgramName;
@@ -157,12 +162,14 @@ namespace WPF_GUI
         {
             FullControlPanel.Visibility = Visibility.Collapsed;
             MinControlPanel.Visibility = Visibility.Visible;
+            StaticLoader.UpdatePictureEvent(null);
         }
 
         private void MaximizeButton_OnClick(object sender, RoutedEventArgs e)
         {
             MinControlPanel.Visibility = Visibility.Collapsed;
             FullControlPanel.Visibility = Visibility.Visible;
+            StaticLoader.UpdatePictureEvent(null);
         }
 
         private void OptionsButton_OnClick(object sender, RoutedEventArgs e)

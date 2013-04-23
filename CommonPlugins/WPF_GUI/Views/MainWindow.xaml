@@ -11,7 +11,8 @@
         Icon="../Recources/Images/pcb.ico"
         MouseUp="MainWindow_OnMouseUp"
         PreviewKeyDown="MainWindow_OnPreviewKeyDown"
-        Loaded="MainWindow_OnLoaded">
+        Loaded="MainWindow_OnLoaded"
+        SizeChanged="MainWindow_OnSizeChanged">
     <Window.Resources>
         <ResourceDictionary>
             <TextBlock x:Key="CursorGrab" Cursor="../Recources/Cursors/grab.cur"/>
