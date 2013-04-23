@@ -54,6 +54,8 @@ namespace WPF_GUI.ViewModels
             this.IsPlaceMethodEnabled = true;
             this.IsTraceMethodEnabled = true;
 
+            this.StartButtonName = Defines.StartButtonNameBegin;
+
             this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
 
             StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>) this.ConsoleWasClosed);
@@ -336,9 +338,12 @@ namespace WPF_GUI.ViewModels
                         return;
                     }
 
+                    this.StartButtonName = Defines.StartButtonNameStep;
+
                     StaticLoader.StartPlaceModule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
 
                     this.IsStopButtonEnabled = true;
+
                     break;
 
                 case Defines.KernelStateTrace:
@@ -377,6 +382,8 @@ namespace WPF_GUI.ViewModels
                         }
 
                         this.IsStopButtonEnabled = true;
+
+                        this.StartButtonName = Defines.StartButtonNameStep;
 
                         StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
                                 "Начался процесс моделирования трассировки.");
@@ -419,6 +426,8 @@ namespace WPF_GUI.ViewModels
 
                         this.IsStopButtonEnabled = true;
 
+                        this.StartButtonName = Defines.StartButtonNameStep;
+
                         StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
                                 "Начался процесс моделирования компановки.");
                         return;
@@ -443,6 +452,9 @@ namespace WPF_GUI.ViewModels
                             MessageBox.Show(msg, "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
 
                             this.IsStopButtonEnabled = false;
+
+                            this.StartButtonName = Defines.StartButtonNameBegin;
+
                             break;
                     }
                     break;
@@ -462,8 +474,8 @@ namespace WPF_GUI.ViewModels
 
         private void OnStopModeling(object o)
         {
-//            this.IsStartButtonEnabled = true;
-//            this.IsStopButtonEnabled = false;
+            this.IsStopButtonEnabled = false;
+            this.StartButtonName = Defines.StartButtonNameBegin;
         }
 
         private void OnShowInformation(object o)

@@ -338,7 +338,7 @@
                                     IsEnabled="{Binding Path=IsStopButtonEnabled}"
                                     Command="{Binding Path=StopModeling}"/>
                             </StackPanel>
-                            <StackPanel IsEnabled="{Binding Path=IsAllElementsEnabled}">
+                            <StackPanel>
                                 <RadioButton Content="Компановать" Margin="0,3"
                                              IsChecked="{Binding Path=IsPlaceMethodChecked, Mode=TwoWay}"
                                              IsEnabled="{Binding Path=IsPlaceMethodEnabled, Mode=TwoWay}"/>

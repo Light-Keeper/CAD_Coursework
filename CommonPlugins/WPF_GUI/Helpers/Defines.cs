@@ -18,5 +18,8 @@ namespace WPF_GUI.Helpers
 
         public const string ConsoleButtonNameWhenOpened = "Скрыть консоль";
         public const string ConsoleButtonNameWhenClosed = "Показать консоль";
+
+        public const string StartButtonNameBegin = "Запустить";
+        public const string StartButtonNameStep = "Шаг";
     }
 }
