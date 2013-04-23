@@ -25,9 +25,6 @@ cad_module_begin()
 	set_module_callbacks(Open, Close)
 cad_module_end()
 
-int InitWindow();
-int DrawInWindow(int h, int w, double x1, double y1, double x2, double y2, cad_picture *picture);
-
 uint32_t gui_Exec(cad_GUI *self);
 void gui_SetCMDArgs(cad_GUI *self, char *arg);
 void gui_UpdatePictureEvent( cad_GUI *self );
@@ -45,6 +42,7 @@ struct cad_GUI_private
 	ICLRMetaHost *pMetaHost ;
 	ICLRRuntimeInfo *pRuntimeInfo ;
 	ICLRRuntimeHost *pClrRuntimeHost;
+	HWND window;
 };
 
 cad_GUI * Open(cad_kernel * kernel, void *)
@@ -67,13 +65,16 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	kernel->PrintDebug = my_printf;
 	kernel->PrintInfo = my_printf; 
 	self = gui;
-	InitWindow();
+	self->sys->window = 0;
 	return gui;
 }
+
+void DisableOpenGL();
 
 void *Close(cad_kernel*, cad_GUI *self)
 {
 	DestroyCLR( self );
+	DisableOpenGL();
 	free( self->sys );
 	free( self );
 	return NULL;
@@ -268,13 +269,22 @@ bool __stdcall CloseCurrentFile()
 	return self->sys->kernel->CloseCurrentFile( self->sys->kernel );
 }
 
+void EnableOpenGL(HWND hWnd);
+int DrawGL(double x1, double y1, double x2, double y2, cad_picture *picture);
+
 void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2)
 {
+	if (self->sys->window != hWnd)
+	{
+		EnableOpenGL( hWnd );
+		self->sys->window = hWnd;
+	}
+
+	cad_picture * picture = self->sys->kernel->RenderPicture(self->sys->kernel, false, 0);
+	DrawGL(x1, y1, x2,y2, picture);
+	picture->Delete( picture );
 }
 
 void __stdcall SetPictureSize( uint32_t width, uint32_t height )
-{
-	[=](cad_render_module *x ) {
-		x->SetPitcureSize(x, width, height);
-	} ( self->sys->kernel->GetRenderModule( self->sys->kernel ) );		
+{	
 }
