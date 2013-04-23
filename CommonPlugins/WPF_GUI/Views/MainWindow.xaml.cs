@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Navigation;
 using WPF_GUI.Helpers;
+using WPF_GUI.ViewModels;
 
 namespace WPF_GUI
 {
@@ -53,14 +54,12 @@ namespace WPF_GUI
 
         private void Image_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-//            _image.Cursor = this._cursorGrabbing;
             _mouseOffset = e.GetPosition((StaticLoader.Image.Parent as Border).Parent as ScrollViewer);
             _isDragging = true;
         }
 
         private void MainWindow_OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-//            _image.Cursor = this._cursorGrab;
             _isDragging = false;
         }
 

@@ -337,6 +337,8 @@ namespace WPF_GUI.ViewModels
                     }
 
                     StaticLoader.StartPlaceModule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
+
+                    this.IsStopButtonEnabled = true;
                     break;
 
                 case Defines.KernelStateTrace:
@@ -373,6 +375,9 @@ namespace WPF_GUI.ViewModels
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
                         }
+
+                        this.IsStopButtonEnabled = true;
+
                         StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
                                 "Начался процесс моделирования трассировки.");
                         return;
@@ -411,6 +416,9 @@ namespace WPF_GUI.ViewModels
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
                         }
+
+                        this.IsStopButtonEnabled = true;
+
                         StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
                                 "Начался процесс моделирования компановки.");
                         return;
@@ -434,6 +442,7 @@ namespace WPF_GUI.ViewModels
 
                             MessageBox.Show(msg, "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
 
+                            this.IsStopButtonEnabled = false;
                             break;
                     }
                     break;
@@ -447,7 +456,6 @@ namespace WPF_GUI.ViewModels
                         "Предупреждение",
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
-
                     break;
             }
         }
@@ -505,6 +513,18 @@ namespace WPF_GUI.ViewModels
             {
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.FileLoadUnsuccessful);
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateError);
+            }
+
+            var kernelState = StaticLoader.GetKernelState();
+
+            switch (kernelState)
+            {
+                case Defines.KernelStatePlace:
+                    this.IsTraceMethodEnabled = false;
+                    break;
+                case Defines.KernelStateTrace:
+                    this.IsTraceMethodEnabled = true;
+                    break;
             }
         }
 

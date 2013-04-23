@@ -212,7 +212,7 @@
                     </Button>
                     <Separator Height="2" Grid.Row="3"/>
                     <Button Grid.Row="4" Template="{StaticResource MinPanelButtonTemplate}"
-                        IsEnabled="{Binding Path=IsStartButtonEnabled, NotifyOnSourceUpdated=True}"
+                        IsEnabled="{Binding Path=IsStartButtonEnabled, Mode=TwoWay}"
                         Command="{Binding Path=StartModeling}">
                         <Image Source="../Recources/Images/start.png"/>
                         <Button.ToolTip>
@@ -220,7 +220,7 @@
                         </Button.ToolTip>
                     </Button>
                     <Button Grid.Row="5" Template="{StaticResource MinPanelButtonTemplate}"
-                        IsEnabled="{Binding Path=IsStopButtonEnabled}"
+                        IsEnabled="{Binding Path=IsStopButtonEnabled, Mode=TwoWay}"
                         Command="{Binding Path=StopModeling}">
                         <Image Source="../Recources/Images/stop.png"/>
                         <Button.ToolTip>
