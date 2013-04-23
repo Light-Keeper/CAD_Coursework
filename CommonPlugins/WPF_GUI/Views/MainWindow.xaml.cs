@@ -158,20 +158,6 @@ namespace WPF_GUI
             }
         }
 
-        private void MinimizeButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            FullControlPanel.Visibility = Visibility.Collapsed;
-            MinControlPanel.Visibility = Visibility.Visible;
-            StaticLoader.UpdatePictureEvent(null);
-        }
-
-        private void MaximizeButton_OnClick(object sender, RoutedEventArgs e)
-        {
-            MinControlPanel.Visibility = Visibility.Collapsed;
-            FullControlPanel.Visibility = Visibility.Visible;
-            StaticLoader.UpdatePictureEvent(null);
-        }
-
         private void OptionsButton_OnClick(object sender, RoutedEventArgs e)
         {
             OptionsButtonContextMenu.PlacementTarget = sender as Button;

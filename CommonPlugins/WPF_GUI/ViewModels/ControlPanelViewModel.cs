@@ -54,6 +54,8 @@ namespace WPF_GUI.ViewModels
             this.IsPlaceMethodEnabled = true;
             this.IsTraceMethodEnabled = true;
 
+            this.IsFullControlPanelVisible = Visibility.Visible;
+
             this.StartButtonName = Defines.StartButtonNameBegin;
 
             this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
@@ -244,6 +246,34 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
+        #region IsFullControlPanelVisible
+        private Visibility _isFullControlPanelVisible;
+        public Visibility IsFullControlPanelVisible
+        {
+            get { return _isFullControlPanelVisible; }
+            set
+            {
+                if (_isFullControlPanelVisible == value) return;
+                _isFullControlPanelVisible = value;
+                RaisePropertyChanged(() => IsFullControlPanelVisible);
+                RaisePropertyChanged(() => IsMinimizedControlPanelVisible);
+            }
+        }
+        #endregion
+
+        #region IsMinimizedControlPanelVisible
+        public Visibility IsMinimizedControlPanelVisible
+        {
+            get
+            {
+                return
+                    _isFullControlPanelVisible == Visibility.Visible ?
+                    Visibility.Collapsed :
+                    Visibility.Visible;
+            }
+        }
+        #endregion
+
         #region IsTraceMethodChecked
         private bool _isTraceMethodChecked;
         public bool IsTraceMethodChecked
@@ -311,11 +341,24 @@ namespace WPF_GUI.ViewModels
         public ICommand ShowInformation { get { return new DelegateCommand(OnShowInformation); } }
         public ICommand ShowConsole { get { return new DelegateCommand(OnShowConsole); } }
         public ICommand OpenSourceFile { get { return new DelegateCommand(OnOpenSourceFile); } }
+        public ICommand HideOrShowControlPanel { get { return new DelegateCommand(OnHideOrShowControlPanel); } }
 
         #endregion
 
         #region Private Methods
 
+        #region OnHideOrShowControlPanel
+        private void OnHideOrShowControlPanel(object o)
+        {
+            this.IsFullControlPanelVisible = 
+                this.IsFullControlPanelVisible == Visibility.Visible ?
+                Visibility.Collapsed :
+                Visibility.Visible;
+            StaticLoader.UpdatePictureEvent(null);
+        }
+        #endregion
+
+        #region OnStartModeling
         private void OnStartModeling(object o)
         {
 //            this.IsStartButtonEnabled = false;
@@ -479,18 +522,24 @@ namespace WPF_GUI.ViewModels
                     break;
             }
         }
+        #endregion
 
+        #region OnStopModeling
         private void OnStopModeling(object o)
         {
             this.IsStopButtonEnabled = false;
             this.StartButtonName = Defines.StartButtonNameBegin;
         }
+        #endregion
 
+        #region OnShowInformation
         private void OnShowInformation(object o)
         {
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ShowAboutPopup, true);
         }
+        #endregion
 
+        #region OnShowConsole
         private void OnShowConsole(object o)
         {
             if (StaticLoader.Application.LogViewer.Visibility == Visibility.Visible)
@@ -505,7 +554,9 @@ namespace WPF_GUI.ViewModels
                 this.ConsoleButtonText = Defines.ConsoleButtonNameWhenOpened;
             }
         }
+        #endregion
 
+        #region OnOpenSourceFile
         private void OnOpenSourceFile(object o)
         {
             var dialog = new OpenFileDialog
@@ -547,7 +598,9 @@ namespace WPF_GUI.ViewModels
                     break;
             }
         }
+        #endregion
 
+        #region OnSelectPlaceMethod
         private void OnSelectPlaceMethod(object o)
         {
             if (o == null) return;
@@ -564,7 +617,9 @@ namespace WPF_GUI.ViewModels
                 }
             }
         }
+        #endregion
 
+        #region OnSelectRouteMethod
         private void OnSelectRouteMethod(object o)
         {
             if (o == null) return;
@@ -581,12 +636,15 @@ namespace WPF_GUI.ViewModels
                 }
             }
         }
+        #endregion
 
         #endregion
 
+        #region Public Methods
         public void ConsoleWasClosed(bool state)
         {
             this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
         }
+        #endregion
     }
 }

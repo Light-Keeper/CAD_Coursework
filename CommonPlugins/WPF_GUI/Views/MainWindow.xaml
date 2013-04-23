@@ -108,8 +108,9 @@
                 <viewModel:ControlPanelViewModel/>
             </Grid.DataContext>
             <!-- Minimized Control Panel -->
-            <Border BorderBrush="DarkGray" BorderThickness="5,0,0,0">
-                <Grid Background="WhiteSmoke" Name="MinControlPanel" Visibility="Collapsed">
+            <Border BorderBrush="DarkGray" BorderThickness="5,0,0,0"
+                    Visibility="{Binding Path=IsMinimizedControlPanelVisible}">
+                <Grid Background="WhiteSmoke">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
                         <RowDefinition Height="Auto"/>
@@ -121,9 +122,9 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Button Grid.Row="0" Name="MaximizeButton" Content="&lt;&lt;&lt;" Width="40"
+                    <Button Grid.Row="0" Content="&lt;&lt;&lt;" Width="40"
                         Template="{StaticResource FadeInOutButton}" Margin="0 0 0 2"
-                        Click="MaximizeButton_OnClick">
+                        Command="{Binding Path=HideOrShowControlPanel}">
                         <Button.ToolTip>
                             Развернуть панель управления
                         </Button.ToolTip>
@@ -249,8 +250,9 @@
                 </Grid>
             </Border>
             <!-- Full Control Panel -->
-            <Border BorderBrush="DarkGray" BorderThickness="5,0,0,0" Visibility="Visible">
-                <Grid Width="220" Background="WhiteSmoke" Name="FullControlPanel">
+            <Border BorderBrush="DarkGray" BorderThickness="5,0,0,0"
+                     Visibility="{Binding Path=IsFullControlPanelVisible}">
+                <Grid Width="220" Background="WhiteSmoke">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
                         <RowDefinition Height="Auto"/>
@@ -261,9 +263,9 @@
                     </Grid.RowDefinitions>
                     <!-- Header and Minimize Button -->
                     <StackPanel Grid.Row="0" Orientation="Horizontal">
-                        <Button Name="MinimizeButton" Content="&gt;&gt;&gt;" Width="40"
+                        <Button Content="&gt;&gt;&gt;" Width="40"
                             Template="{StaticResource FadeInOutButton}"
-                            Click="MinimizeButton_OnClick">
+                            Command="{Binding Path=HideOrShowControlPanel}">
                             <Button.ToolTip>
                                 Свернуть панель управления
                             </Button.ToolTip>
