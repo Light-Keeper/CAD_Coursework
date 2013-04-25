@@ -8,8 +8,7 @@ namespace WPF_GUI.ViewModels
     {
         public ImageViewerViewModel()
         {
-//            StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>) this.ChangeImageZoom);
-//            StaticLoader.Mediator.Register(MediatorMessages.ChangeImageSize, (Action<Size>) this.ChangeImageSize);
+            StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>) this.ChangeImageZoom);
         }
 
         #region ImageWidth
@@ -42,7 +41,11 @@ namespace WPF_GUI.ViewModels
 
         public void ChangeImageZoom(int zoom)
         {
-            this.ImageHeight = SystemParameters.WorkArea.Height * zoom / 100;
+//            this.ImageWidth = this.ScrollWidth;
+//            this.ImageWidth = 200;
+//            this.ImageHeight = SystemParameters.WorkArea.Height * zoom / 100;
+
+//            MessageBox.Show("Width: " + this.ScrollWidth.ToString());
         }
     }
 }

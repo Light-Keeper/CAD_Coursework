@@ -13,56 +13,6 @@ namespace WPF_GUI.ViewModels
 {
     public class ControlPanelViewModel : BaseViewModel
     {
-        public ControlPanelViewModel()
-        {
-            this.PlaceMethodCollection = new ObservableCollection<Place>();
-            this.TraceMethodCollection = new ObservableCollection<Route>();
-
-            // Initialize Place and Route Collections
-            foreach (var module in StaticLoader.GetModuleList())
-            {
-                var name = module.Remove(0, 1);
-                switch (module[0])
-                {
-                    case 'P': // Place Method
-                        PlaceMethodCollection.Add(
-                            new Place
-                                {
-                                    Name = name,
-                                    Command = SelectPlaceMethod
-                                });
-                        break;
-                    case 'T': // Trace Method
-                        TraceMethodCollection.Add(
-                            new Route
-                                {
-                                    Name = name,
-                                    Command = SelectRouteMethod
-                                });
-                        break;
-                }
-            }
-
-            this.IsDemoMode = true;
-            this.IsStepExec = true;
-
-            this.IsStartButtonEnabled = true;
-            this.IsStopButtonEnabled = false;
-
-            this.IsTraceMethodChecked = true;
-
-            this.IsPlaceMethodEnabled = true;
-            this.IsTraceMethodEnabled = true;
-
-            this.IsFullControlPanelVisible = Visibility.Visible;
-
-            this.StartButtonName = Defines.StartButtonNameBegin;
-
-            this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
-
-            StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>) this.ConsoleWasClosed);
-        }
-
         #region Properties
 
         #region StartButtonName
@@ -274,16 +224,16 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
-        #region IsTraceMethodChecked
-        private bool _isTraceMethodChecked;
-        public bool IsTraceMethodChecked
+        #region IsTraceMethodSelected
+        private bool _isTraceMethodSelected;
+        public bool IsTraceMethodSelected
         {
-            get { return _isTraceMethodChecked; }
+            get { return _isTraceMethodSelected; }
             set
             {
-               if (_isTraceMethodChecked == value) return;
-                _isTraceMethodChecked = value;
-                RaisePropertyChanged(() => IsTraceMethodChecked);
+               if (_isTraceMethodSelected == value) return;
+                _isTraceMethodSelected = value;
+                RaisePropertyChanged(() => IsTraceMethodSelected);
             }
         }
         #endregion
@@ -302,16 +252,16 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
-        #region IsPlaceMethodChecked
-        private bool _isPlaceMethodChecked;
-        public bool IsPlaceMethodChecked
+        #region IsPlaceMethodSelected
+        private bool _isPlaceMethodSelected;
+        public bool IsPlaceMethodSelected
         {
-            get { return _isPlaceMethodChecked; }
+            get { return _isPlaceMethodSelected; }
             set
             {
-                if (_isPlaceMethodChecked == value) return;
-                _isPlaceMethodChecked = value;
-                RaisePropertyChanged(() => IsPlaceMethodChecked);
+                if (_isPlaceMethodSelected == value) return;
+                _isPlaceMethodSelected = value;
+                RaisePropertyChanged(() => IsPlaceMethodSelected);
             }
         }
         #endregion
@@ -352,9 +302,7 @@ namespace WPF_GUI.ViewModels
         {
             this.IsFullControlPanelVisible = 
                 this.IsFullControlPanelVisible == Visibility.Visible ?
-                Visibility.Collapsed :
-                Visibility.Visible;
-            StaticLoader.UpdatePictureEvent(null);
+                Visibility.Collapsed : Visibility.Visible;
         }
         #endregion
 
@@ -368,37 +316,9 @@ namespace WPF_GUI.ViewModels
 
             switch (kernelState)
             {
-                case Defines.KernelStatePlace:
-                    if (this.PlaceMethodCollection.Count == 0)
-                    {
-                        MessageBox.Show("Методы компановки не загружены!\n" +
-                            "Чтобы выполнить компановку добавьте dll файл(ы) " +
-                            "с методами компановки в папку plugins.",
-                            "Предупреждение",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    if (string.IsNullOrEmpty(this.SelectedPlaceMethod.Name))
-                    {
-                        MessageBox.Show("Метод компановки не выбран!\nВыберите метод и попробуйте снова.",
-                            "Предупреждение",
-                            MessageBoxButton.OK,
-                            MessageBoxImage.Warning);
-                        return;
-                    }
-
-                    this.StartButtonName = Defines.StartButtonNameStep;
-
-                    StaticLoader.StartPlaceModule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
-
-                    this.IsStopButtonEnabled = true;
-
-                    break;
-
                 case Defines.KernelStateTrace:
-                    if (this.IsTraceMethodChecked)
+                case Defines.KernelStatePlace:
+                    if (this.IsTraceMethodSelected)
                     {
                         if (this.TraceMethodCollection.Count == 0)
                         {
@@ -436,12 +356,16 @@ namespace WPF_GUI.ViewModels
 
                         this.StartButtonName = Defines.StartButtonNameStep;
 
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
-                                "Начался процесс моделирования трассировки.");
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog, InfoBarMessages.StartedPlacing);
+
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateBusy);
+
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.StartedPlacing);
+
                         return;
                     }
 
-                    if (this.IsPlaceMethodChecked)
+                    if (this.IsPlaceMethodSelected)
                     {
                         if (this.PlaceMethodCollection.Count == 0)
                         {
@@ -479,8 +403,12 @@ namespace WPF_GUI.ViewModels
 
                         this.StartButtonName = Defines.StartButtonNameStep;
 
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
-                                "Начался процесс моделирования компановки.");
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog, InfoBarMessages.StartedTracing);
+
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateBusy);
+
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.StartedTracing);
+
                         return;
                     }
                     break;
@@ -498,6 +426,7 @@ namespace WPF_GUI.ViewModels
                                 "Трассировка успешно завершена";
 
                             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
+
                             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, msg);
 
                             MessageBox.Show(msg, "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -527,8 +456,24 @@ namespace WPF_GUI.ViewModels
         #region OnStopModeling
         private void OnStopModeling(object o)
         {
+            var kernelState = StaticLoader.GetKernelState();
+
+            if (kernelState == Defines.KernelStatePlacing)
+            {
+                MessageBox.Show("Компановка была прервана", "Предупреждение",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else if (kernelState == Defines.KernelStateTracing)
+            {
+                MessageBox.Show("Трасировка была прервана", "Предупреждение",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+
             this.IsStopButtonEnabled = false;
+
             this.StartButtonName = Defines.StartButtonNameBegin;
+
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateGood);
         }
         #endregion
 
@@ -641,10 +586,64 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region Public Methods
+        #region Constructor
+        public ControlPanelViewModel()
+        {
+            this.PlaceMethodCollection = new ObservableCollection<Place>();
+            this.TraceMethodCollection = new ObservableCollection<Route>();
+
+            // Initialize Place and Route Collections
+            foreach (var module in StaticLoader.GetModuleList())
+            {
+                var name = module.Remove(0, 1);
+                switch (module[0])
+                {
+                    case 'P': // Place Method
+                        PlaceMethodCollection.Add(
+                            new Place
+                            {
+                                Name = name,
+                                Command = SelectPlaceMethod
+                            });
+                        break;
+                    case 'T': // Trace Method
+                        TraceMethodCollection.Add(
+                            new Route
+                            {
+                                Name = name,
+                                Command = SelectRouteMethod
+                            });
+                        break;
+                }
+            }
+
+            this.IsDemoMode = true;
+            this.IsStepExec = true;
+
+            this.IsStartButtonEnabled = true;
+            this.IsStopButtonEnabled = false;
+
+            this.IsTraceMethodSelected = true;
+
+            this.IsPlaceMethodEnabled = true;
+            this.IsTraceMethodEnabled = true;
+
+            this.IsFullControlPanelVisible = Visibility.Visible;
+
+            this.StartButtonName = Defines.StartButtonNameBegin;
+
+            this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
+
+            StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>)this.ConsoleWasClosed);
+        }
+        #endregion
+
+        #region ConsoleWasClosed
         public void ConsoleWasClosed(bool state)
         {
             this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
         }
+        #endregion
         #endregion
     }
 }
