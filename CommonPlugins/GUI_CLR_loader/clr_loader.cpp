@@ -228,6 +228,8 @@ extern "C" __declspec( dllexport ) void		__stdcall RenderPicture2(HWND hWnd, dou
 
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapWidth();
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapHeight();
+extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowWidth();
+extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowHeight();
 
 uint32_t __stdcall GetKernelState()
 {
@@ -286,7 +288,7 @@ bool __stdcall CloseCurrentFile()
 
 void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2)
 {
-	RenderPicture2(hWnd, x1, x2, 1, true, false, 0);
+	RenderPicture2(hWnd, x1, x2, 0.4, true, false, 0);
 }
 
 
@@ -326,3 +328,4 @@ uint32_t	__stdcall GetMapHeight()
 	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &x);
 	return x;
 }
+

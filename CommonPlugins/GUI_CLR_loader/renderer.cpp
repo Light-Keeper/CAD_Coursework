@@ -8,6 +8,11 @@ HWND window;
 HGLRC hRC;
 HDC hDC;
 
+uint32_t	__stdcall GetMapWidth();
+uint32_t	__stdcall GetMapHeight();
+uint32_t	__stdcall GetRenderWindowWidth();
+uint32_t	__stdcall GetRenderWindowHeight();
+
 void EnableOpenGL(HWND hWnd)
 {
     PIXELFORMATDESCRIPTOR pfd;
@@ -51,9 +56,25 @@ int DrawGL(double x, double y, double scale, cad_picture *picture)
 	glLoadIdentity();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+
+
 	glRasterPos2d(-1, 1);
 	glPixelZoom(scale, -scale);
 	glDrawPixels(picture->width, picture->height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, picture->data);	
 	SwapBuffers( hDC );
 	return 1;
+}
+
+uint32_t	__stdcall GetRenderWindowWidth()
+{
+	RECT r;
+	GetWindowRect(window, &r);
+	return r.right - r.left;
+}
+
+uint32_t	__stdcall GetRenderWindowHeight()
+{
+	RECT r;
+	GetWindowRect(window, &r);
+	return r.bottom - r.top;
 }
