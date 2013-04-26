@@ -271,6 +271,7 @@ struct cad_kernel
 	cad_render_module *(* GetRenderModule)( cad_kernel *self);
 
 	cad_picture * (*RenderPicture)(cad_kernel *self, bool forceDrawLayer, uint32_t forceDrawLayerNunber);
+	void ( *GetMapSize)(cad_kernel *self, uint32_t *x, uint32_t *y);
 };
 
 cad_kernel * cad_kernel_New();

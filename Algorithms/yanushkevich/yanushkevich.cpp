@@ -281,5 +281,11 @@ uint32_t FindWireToTrace( cad_route_map *self )
 
 uint32_t MakeStepInDemoModeImplementation( cad_route_map *self )
 {
-	return ((self->sys->queue.empty()) ? FindWireToTrace : ContinueWave) (self);
+	uint32_t res = MORE_ACTIONS;
+
+	if (self->sys->queue.empty())	
+		res = FindWireToTrace(self);
+	
+	if (res = MORE_ACTIONS) res = ContinueWave( self );
+	return res;
 }

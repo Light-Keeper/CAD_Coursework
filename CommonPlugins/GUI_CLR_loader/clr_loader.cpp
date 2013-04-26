@@ -2,6 +2,7 @@
 #include <cad_object.h>
 
 #include <windows.h>
+#include <clocale>
 #include <metahost.h>
 
 #include <stdio.h>
@@ -29,6 +30,9 @@ uint32_t gui_Exec(cad_GUI *self);
 void gui_SetCMDArgs(cad_GUI *self, char *arg);
 void gui_UpdatePictureEvent( cad_GUI *self );
 
+int DrawGL(double x, double y, double scale, cad_picture *picture);
+void EnableOpenGL(HWND hWnd);
+
 bool InitCLR(cad_GUI *self);
 bool DestroyCLR(cad_GUI *self);
 int my_printf(const char * format, ... );
@@ -38,6 +42,7 @@ static cad_GUI *self = NULL;
 struct cad_GUI_private
 {
 	cad_kernel *kernel;
+	cad_picture *current_picture;
 
 	ICLRMetaHost *pMetaHost ;
 	ICLRRuntimeInfo *pRuntimeInfo ;
@@ -66,6 +71,7 @@ cad_GUI * Open(cad_kernel * kernel, void *)
 	kernel->PrintInfo = my_printf; 
 	self = gui;
 	self->sys->window = 0;
+	self->sys->current_picture = 0;
 	return gui;
 }
 
@@ -190,8 +196,11 @@ int my_printf(const char * format, ... )
     va_start(args, format);
     int result = vsprintf(str,format, args);
     va_end(args);
+
+	setlocale( LC_ALL,"Russian" );
 	mbstowcs(wc_str, str, 2048);
- 	HRESULT hr = self->sys->pClrRuntimeHost->ExecuteInDefaultAppDomain(L"plugins\\WPF_GUI.dll", 
+	
+	HRESULT hr = self->sys->pClrRuntimeHost->ExecuteInDefaultAppDomain(L"plugins\\WPF_GUI.dll", 
         L"WPF_GUI.StaticLoader", L"CoreMessage", wc_str, &dwRetCode);
     if (FAILED(hr)) {
 		return 0;
@@ -214,6 +223,11 @@ extern "C" __declspec( dllexport ) bool		__stdcall CloseCurrentFile();
 extern "C" __declspec( dllexport ) void		__stdcall SetPictureSize( uint32_t width, uint32_t height );
 extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2);
 
+extern "C" __declspec( dllexport ) void		__stdcall RenderPicture2(HWND hWnd, double x, double y, double scale,  
+											bool RenderNewPicture, bool renderLayer, uint32_t layer);
+
+extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapWidth();
+extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapHeight();
 
 uint32_t __stdcall GetKernelState()
 {
@@ -269,10 +283,19 @@ bool __stdcall CloseCurrentFile()
 	return self->sys->kernel->CloseCurrentFile( self->sys->kernel );
 }
 
-void EnableOpenGL(HWND hWnd);
-int DrawGL(double x1, double y1, double x2, double y2, cad_picture *picture);
 
 void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2)
+{
+	RenderPicture2(hWnd, x1, x2, 1, true, false, 0);
+}
+
+
+void __stdcall SetPictureSize( uint32_t width, uint32_t height )
+{	
+}
+
+void __stdcall RenderPicture2(HWND hWnd, double x, double y, double scale,  
+											bool RenderNewPicture, bool renderLayer, uint32_t layer)
 {
 	if (self->sys->window != hWnd)
 	{
@@ -280,11 +303,26 @@ void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double 
 		self->sys->window = hWnd;
 	}
 
-	cad_picture * picture = self->sys->kernel->RenderPicture(self->sys->kernel, false, 0);
-	DrawGL(x1, y1, x2,y2, picture);
-	picture->Delete( picture );
+	if (RenderNewPicture)
+	{
+		if (self->sys->current_picture) 
+			self->sys->current_picture->Delete( self->sys->current_picture );
+
+		self->sys->current_picture = self->sys->kernel->RenderPicture(self->sys->kernel, renderLayer, layer);
+	}
+	DrawGL(x, y, scale, self->sys->current_picture);
 }
 
-void __stdcall SetPictureSize( uint32_t width, uint32_t height )
-{	
+uint32_t	__stdcall GetMapWidth()
+{
+	uint32_t x;
+	self->sys->kernel->GetMapSize( self->sys->kernel, &x, NULL);
+	return x;
+}
+
+uint32_t	__stdcall GetMapHeight()
+{
+	uint32_t x;
+	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &x);
+	return x;
 }

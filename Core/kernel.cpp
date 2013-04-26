@@ -299,7 +299,8 @@ bool kernel_StartTraceModule(cad_kernel *self, const char *force_module_name, bo
 	if (module == NULL) return false;
 	module->Open( self, self->sys->current_route );
 	self->sys->current_route->Clear( self->sys->current_route );
-	
+	self->sys->current_route->MakeStep( self->sys->current_route, demo_mode );
+
 	self->sys->gui->UpdatePictureEvent( self->sys->gui );
 	return true;	
 }
@@ -339,6 +340,23 @@ cad_render_module *kernel_GetRenderModule(cad_kernel *self)
 	return self->sys->render;
 }
 
+void kernel_GetMapSize(cad_kernel *self, uint32_t *width, uint32_t *height)
+{
+	width && (*width = 1);
+	height && (*height = 1);
+
+	if (self->GetCurrentState(self) == KERNEL_STATE_PLACING)
+	{
+		width && (*width = self->sys->current_sheme->width);
+		height && (*height = self->sys->current_sheme->height);
+	} 
+
+	if (self->GetCurrentState(self) == KERNEL_STATE_PLACING)
+	{
+		width && (*width = self->sys->current_route->width);
+		height && (*height = self->sys->current_route->height);
+	}
+}
 
 cad_kernel * cad_kernel_New()
 {
@@ -362,6 +380,7 @@ cad_kernel * cad_kernel_New()
 	kernel->RenderPicture		= kernel_RenderPicture;
 	kernel->StopCurrentModule	= kernel_StopCurrentModule;
 	kernel->GetRenderModule		= kernel_GetRenderModule;
+	kernel->GetMapSize			= kernel_GetMapSize;
 	return kernel;
 }
 
