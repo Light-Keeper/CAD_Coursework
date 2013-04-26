@@ -41,17 +41,26 @@ namespace WPF_GUI.Helpers
         protected override IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             handled = false;
+            switch (msg)
+            {
+                case PInvoke.WM_PAINT:
+                    PInvoke.PAINTSTRUCT pStruct;
+
+                    PInvoke.BeginPaint(hwnd, out pStruct);
+
+                    StaticLoader.UpdatePictureEvent(null);
+
+                    PInvoke.EndPaint(hwnd, ref pStruct);
+
+                    handled = true;
+                    break;
+            }
             return IntPtr.Zero;
         }
 
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
             PInvoke.DestroyWindow(hwnd.Handle);
-        }
-
-        private void ChangeWindowSize(Size size)
-        {
-            
         }
     }
 }

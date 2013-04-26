@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Navigation;
 using WPF_GUI.Helpers;
-using WPF_GUI.ViewModels;
 
 namespace WPF_GUI
 {
@@ -36,9 +36,27 @@ namespace WPF_GUI
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
             StaticLoader.Image.MessageHook += new HwndSourceHook(ControlMsgFilter);
-            StaticLoader.Image.MouseDown += new MouseButtonEventHandler(Image_OnMouseDown);
 
             BorderForImage.Child = StaticLoader.Image;
+
+            StaticLoader.Image.SetBinding(
+                WidthProperty,
+                new Binding
+                    {
+                        Path = new PropertyPath("ImageWidth"),
+                        Mode = BindingMode.TwoWay
+                    });
+
+            StaticLoader.Image.SetBinding(
+                HeightProperty,
+                new Binding
+                    {
+                        Path = new PropertyPath("ImageHeight"),
+                        Mode = BindingMode.TwoWay
+                    });
+
+            StaticLoader.Image.Width = BorderForImage.ActualWidth;
+            StaticLoader.Image.Height = BorderForImage.ActualHeight;
         }
 
         private static IntPtr ControlMsgFilter(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -49,18 +67,13 @@ namespace WPF_GUI
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            StaticLoader.UpdatePictureEvent(null);
+            StaticLoader.Image.Width -= (e.PreviousSize.Width - e.NewSize.Width);
+            StaticLoader.Image.Height -= (e.PreviousSize.Height - e.NewSize.Height);
         }
 
         private void AddFileNameToTitle(string fileName)
         {
             this.Title = fileName + " - " + Defines.ProgramName;
-        }
-
-        private void Image_OnMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            _mouseOffset = e.GetPosition((StaticLoader.Image.Parent as Border).Parent as ScrollViewer);
-            _isDragging = true;
         }
 
         private void MainWindow_OnMouseUp(object sender, MouseButtonEventArgs e)
