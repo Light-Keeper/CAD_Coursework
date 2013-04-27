@@ -19,6 +19,12 @@ namespace WPF_GUI.Helpers
         private static IntPtr _cursorGrabbing;
 
         private bool _isDragging;
+        public bool IsDragging { get { return _isDragging; } }
+
+        public double FirstVisibleX = 0;
+        public double FirstVisibleY = 0;
+
+        public double Scale = 1.0;
 
         public ImageHost() : this(0, 0)
         {
@@ -40,8 +46,6 @@ namespace WPF_GUI.Helpers
             FlushCursorStreamToDisk(stream, "grabbing.cur");
             _cursorGrabbing = PInvoke.LoadCursorFromFile("grabbing.cur");
             File.Delete("grabbing.cur");
-
-            _isDragging = false;
         }
 
         protected override HandleRef BuildWindowCore(HandleRef hwndParent)
@@ -62,6 +66,16 @@ namespace WPF_GUI.Helpers
             return new HandleRef(this, _hwndHost);
         }
         
+        public void Render()
+        {
+            this.Render(true);
+        }
+
+        public void Render(bool newImage)
+        {
+            Kernel.RenderPicture(this.Handle, this.FirstVisibleX, this.FirstVisibleY, this.Scale, newImage, false, 0);
+        }
+
         protected override IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             handled = false;
@@ -76,7 +90,7 @@ namespace WPF_GUI.Helpers
 
                     PInvoke.BeginPaint(hWnd, out pStruct);
 
-                    StaticLoader.UpdatePictureEvent(null);
+                    this.Render();
 
                     PInvoke.EndPaint(hWnd, ref pStruct);
 
@@ -111,36 +125,27 @@ namespace WPF_GUI.Helpers
             PInvoke.DestroyWindow(hwnd.Handle);
         }
 
-        private static bool FlushCursorStreamToDisk(Stream stream, string name)
+        private static void FlushCursorStreamToDisk(Stream stream, string name)
         {
-            if (stream == null) return false;
+            if (stream == null) return;
 
-            try
-            {
-                var fileStream = new FileStream(name, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+            var fileStream = new FileStream(name, FileMode.CreateNew, FileAccess.Write, FileShare.None);
 
-                var binaryReader = new BinaryReader(stream);
+            var binaryReader = new BinaryReader(stream);
 
-                fileStream.Write(binaryReader.ReadBytes((int)stream.Length), 0, (int)stream.Length);
+            fileStream.Write(binaryReader.ReadBytes((int)stream.Length), 0, (int)stream.Length);
 
-                binaryReader.Close();
-                binaryReader.Dispose();
+            binaryReader.Close();
+            binaryReader.Dispose();
 
-                stream.Close();
-                stream.Dispose();
+            stream.Close();
+            stream.Dispose();
 
-                fileStream.Flush(true);
-                fileStream.Close();
-                fileStream.Dispose();
+            fileStream.Flush(true);
+            fileStream.Close();
+            fileStream.Dispose();
 
-                File.SetAttributes(name, FileAttributes.Temporary | FileAttributes.Hidden);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            return true;
+            File.SetAttributes(name, FileAttributes.Temporary | FileAttributes.Hidden);
         }
     }
 }

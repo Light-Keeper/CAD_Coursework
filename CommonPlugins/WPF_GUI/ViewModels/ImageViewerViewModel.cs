@@ -41,11 +41,8 @@ namespace WPF_GUI.ViewModels
 
         public void ChangeImageZoom(int zoom)
         {
-//            this.ImageWidth = this.ScrollWidth;
-//            this.ImageWidth = 200;
-//            this.ImageHeight = SystemParameters.WorkArea.Height * zoom / 100;
-
-//            MessageBox.Show("Width: " + this.ScrollWidth.ToString());
+            StaticLoader.Image.Scale = 0.004 * zoom;
+            StaticLoader.Image.Render();
         }
     }
 }

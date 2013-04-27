@@ -148,7 +148,7 @@ namespace WPF_GUI.ViewModels
             });
 
             this.InfoMessage = InfoBarMessages.ModulesLoadSuccessful;
-            this.ImageMinZoom = 10;
+            this.ImageMinZoom = 100;
             this.ImageMaxZoom = 1000;
             this.ImageZoom = 100;
             _currentState = Defines.ProgramStateGood;

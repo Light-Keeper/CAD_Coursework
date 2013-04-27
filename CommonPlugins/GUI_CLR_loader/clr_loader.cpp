@@ -220,8 +220,7 @@ extern "C" __declspec( dllexport ) uint32_t __stdcall RunToEnd();
 extern "C" __declspec( dllexport ) uint32_t __stdcall NextStep( bool inDemoMode );
 
 extern "C" __declspec( dllexport ) bool		__stdcall CloseCurrentFile();
-extern "C" __declspec( dllexport ) void		__stdcall SetPictureSize( uint32_t width, uint32_t height );
-extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2);
+//extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2);
 
 extern "C" __declspec( dllexport ) void		__stdcall RenderPicture2(HWND hWnd, double x, double y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer);
@@ -286,15 +285,11 @@ bool __stdcall CloseCurrentFile()
 }
 
 
-void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2)
-{
-	RenderPicture2(hWnd, x1, x2, 0.4, true, false, 0);
-}
+//void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2)
+//{
+	//RenderPicture2(hWnd, x1, y1, 0.4, true, false, 0);
+//}
 
-
-void __stdcall SetPictureSize( uint32_t width, uint32_t height )
-{	
-}
 
 void __stdcall RenderPicture2(HWND hWnd, double x, double y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer)

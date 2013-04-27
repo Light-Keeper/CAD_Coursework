@@ -310,12 +310,12 @@ namespace WPF_GUI.ViewModels
         #region OnStartModeling
         private void OnStartModeling(object o)
         {
-            var kernelState = StaticLoader.GetKernelState();
+            var kernelState = Kernel.GetState();
 
             switch (kernelState)
             {
-                case Defines.KernelStateTrace:
-                case Defines.KernelStatePlace:
+                case Kernel.StateTrace:
+                case Kernel.StatePlace:
                     if (this.IsTraceMethodSelected)
                     {
                         if (this.TraceMethodCollection.Count == 0)
@@ -338,7 +338,7 @@ namespace WPF_GUI.ViewModels
                             return;
                         }
 
-                        var isOk = StaticLoader.StartTraceModule(this.SelectedTraceMethod.Name, this.IsDemoMode);
+                        var isOk = Kernel.StartTraceModule(this.SelectedTraceMethod.Name, this.IsDemoMode);
 
                         if (!isOk)
                         {
@@ -385,7 +385,7 @@ namespace WPF_GUI.ViewModels
                             return;
                         }
 
-                        var isOk = StaticLoader.StartPlaceModule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
+                        var isOk = Kernel.StartPlaceModule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
                         
                         if (!isOk)
                         {
@@ -411,15 +411,15 @@ namespace WPF_GUI.ViewModels
                     }
                     break;
 
-                case Defines.KernelStatePlacing:
-                case Defines.KernelStateTracing:
-                    StaticLoader.NextStep(this.IsDemoMode);
-                    switch (StaticLoader.GetKernelState())
+                case Kernel.StatePlacing:
+                case Kernel.StateTracing:
+                    Kernel.NextStep(this.IsDemoMode);
+                    switch (Kernel.GetState())
                     {
-                        case Defines.KernelStateEmpty:
-                        case Defines.KernelStatePlace:
-                        case Defines.KernelStateTrace:
-                            var msg = kernelState == Defines.KernelStatePlacing ?
+                        case Kernel.StateEmpty:
+                        case Kernel.StatePlace:
+                        case Kernel.StateTrace:
+                            var msg = kernelState == Kernel.StatePlacing ?
                                 "Компановка успешно завершена" :
                                 "Трассировка успешно завершена";
 
@@ -437,7 +437,7 @@ namespace WPF_GUI.ViewModels
                     }
                     break;
 
-                case Defines.KernelStateEmpty:
+                case Kernel.StateEmpty:
                     MessageBox.Show(
                         StaticLoader.Application.ProgramState == Defines.ProgramStateGood
                             ? "Входной файл не выбран!\nОткройте файл с данными и повторите попытку."
@@ -454,14 +454,14 @@ namespace WPF_GUI.ViewModels
         #region OnStopModeling
         private void OnStopModeling(object o)
         {
-            var kernelState = StaticLoader.GetKernelState();
+            var kernelState = Kernel.GetState();
 
-            if (kernelState == Defines.KernelStatePlacing)
+            if (kernelState == Kernel.StatePlacing)
             {
                 MessageBox.Show("Компановка была прервана", "Предупреждение",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-            else if (kernelState == Defines.KernelStateTracing)
+            else if (kernelState == Kernel.StateTracing)
             {
                 MessageBox.Show("Трасировка была прервана", "Предупреждение",
                     MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -516,7 +516,7 @@ namespace WPF_GUI.ViewModels
 
             this.InputFilePath = dialog.FileName;
 
-            var result = StaticLoader.LoadFile(new StringBuilder(this.InputFilePath));
+            var result = Kernel.LoadFile(new StringBuilder(this.InputFilePath));
 
             if ( result )
             {
@@ -529,14 +529,14 @@ namespace WPF_GUI.ViewModels
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateError);
             }
 
-            var kernelState = StaticLoader.GetKernelState();
+            var kernelState = Kernel.GetState();
 
             switch (kernelState)
             {
-                case Defines.KernelStatePlace:
+                case Kernel.StatePlace:
                     this.IsTraceMethodEnabled = false;
                     break;
-                case Defines.KernelStateTrace:
+                case Kernel.StateTrace:
                     this.IsTraceMethodEnabled = true;
                     break;
             }
@@ -623,8 +623,8 @@ namespace WPF_GUI.ViewModels
 
             this.IsTraceMethodSelected = true;
 
-            this.IsPlaceMethodEnabled = true;
-            this.IsTraceMethodEnabled = true;
+            this.IsPlaceMethodEnabled = PlaceMethodCollection.Count > 0;
+            this.IsTraceMethodEnabled = TraceMethodCollection.Count > 0;
 
             this.IsFullControlPanelVisible = Visibility.Visible;
 

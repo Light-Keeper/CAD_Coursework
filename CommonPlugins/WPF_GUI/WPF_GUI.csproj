@@ -54,6 +54,7 @@
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Helpers\ImageHost.cs" />
     <Compile Include="Helpers\InfoBarMessages.cs" />
+    <Compile Include="Helpers\Kernel.cs" />
     <Compile Include="Helpers\MediatorMessages.cs" />
     <Compile Include="Helpers\NotificationObject.cs" />
     <Compile Include="Helpers\PInvoke.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\StaticLoader.cs" />
+    <Compile Include="StaticLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -32,7 +32,6 @@ namespace WPF_GUI.Helpers
                 new IntPtr(SetClassLongPtr32(hWnd, nIndex, unchecked((uint)dwNewLong.ToInt32())));
         }
 
-
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern bool DestroyWindow(IntPtr hwnd);
 

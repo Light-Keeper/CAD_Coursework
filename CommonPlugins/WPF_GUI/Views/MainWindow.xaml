@@ -41,7 +41,7 @@
                 <viewModel:AboutPopupViewModel/>
             </Popup.DataContext>
             <Border Background="GhostWhite" BorderThickness="3"
-                    Padding="5"
+                    Padding="5" Width="500"
                     BorderBrush="DarkSlateGray" CornerRadius="10">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -61,9 +61,11 @@
                            Width="80" Height="80"
                            Source="../Recources/Images/pcb.ico"/>
                     <Label Grid.Row="0" Grid.Column="1"
+                           Grid.ColumnSpan="2"
                            Margin="0,10,0,0" Padding="0"
                            Content="Название программы" FontSize="26"/>
                     <Label Grid.Row="1" Grid.Column="1"
+                           Grid.ColumnSpan="2"
                            Margin="0,-10,0,0" Padding="0"
                            Content="описание программы" FontSize="16"/>
                     <Button Grid.Row="0" Grid.Column="2"
@@ -81,16 +83,16 @@
                             
                         </RichTextBox>
                     </ScrollViewer>
-                    <TextBlock Grid.Row="4" Grid.Column="2"
-                               HorizontalAlignment="Right">
-                        <Hyperlink RequestNavigate="Hyperlink_OnRequestNavigate"
-                                       NavigateUri="http://donntu.edu.ua/">DonNTU</Hyperlink>
-                    </TextBlock>
                     <Label Grid.Row="4" Grid.Column="1"
                            HorizontalAlignment="Right"
                            Padding="0" Margin="0,0,3,0">
                         @ 2013
                     </Label>
+                    <TextBlock Grid.Row="4" Grid.Column="2"
+                               HorizontalAlignment="Right">
+                        <Hyperlink RequestNavigate="Hyperlink_OnRequestNavigate"
+                                       NavigateUri="http://donntu.edu.ua/">ДонНТУ</Hyperlink>
+                    </TextBlock>
                 </Grid>
             </Border>
         </Popup>
@@ -311,12 +313,14 @@
                             
                             <Label Content="Метод компановки:" Grid.Row="2" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
                             <ComboBox Grid.Row="3" Grid.ColumnSpan="2" Width="200"
+                                      IsEnabled="{Binding Path=IsPlaceMethodEnabled}"
                                       ItemsSource="{Binding Path=PlaceMethodCollection, Mode=OneWay}"
                                       DisplayMemberPath="Name"
                                       SelectedItem="{Binding Path=SelectedPlaceMethod, Mode=TwoWay}"/>
                             
                             <Label Content="Метод трассировки:" Grid.Row="4" Grid.ColumnSpan="2" Margin="3,0" Padding="2" />
                             <ComboBox Grid.Row="5" Grid.ColumnSpan="2" Width="200"
+                                      IsEnabled="{Binding Path=IsTraceMethodEnabled}"
                                       ItemsSource="{Binding Path=TraceMethodCollection, Mode=OneWay}"
                                       DisplayMemberPath="Name"
                                       SelectedItem="{Binding Path=SelectedTraceMethod, Mode=TwoWay}"/>

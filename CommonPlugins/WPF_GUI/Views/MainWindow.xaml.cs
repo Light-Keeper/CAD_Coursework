@@ -1,40 +1,29 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Navigation;
-using System.Reflection;
 using WPF_GUI.Helpers;
 
 namespace WPF_GUI
 {
     public partial class MainWindow : Window
     {
-        private static bool _isDragging;
-        private static Point _mouseStartPos;
-
         public MainWindow()
         {
             InitializeComponent();
 
             this.Title = Defines.ProgramName;
 
-            _isDragging = false;
-
             StaticLoader.Mediator.Register(MediatorMessages.AddFileNameToTitle, (Action<string>) this.AddFileNameToTitle);
             StaticLoader.Mediator.Register(MediatorMessages.RefreshImageWidth, (Action) this.RefreshImageWidth);
-            StaticLoader.UpdatePictureEvent(null);
+            StaticLoader.Image.Render();
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            StaticLoader.Image.MessageHook += ControlMsgFilter;
-            
             BorderForImage.Child = StaticLoader.Image;
 
             StaticLoader.Image.SetBinding(
@@ -57,34 +46,34 @@ namespace WPF_GUI
             StaticLoader.Image.Height = BorderForImage.ActualHeight;
         }
 
-        private static IntPtr ControlMsgFilter(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            handled = false;
-
-            switch (msg)
-            {
-                case PInvoke.WM_LBUTTONDOWN:
-                    _isDragging = true;
-
-                    _mouseStartPos.X = PInvoke.LOWORD((UInt32) lParam);
-                    _mouseStartPos.Y = PInvoke.HIWORD((UInt32) lParam);
-
-                    handled = true;
-                    return IntPtr.Zero;
-
-                case PInvoke.WM_MOUSEMOVE:
-                    if (_isDragging)
-                    {
-                        var offsetX = PInvoke.LOWORD((UInt32)lParam) - _mouseStartPos.X;
-                        var offsetY = PInvoke.HIWORD((UInt32)lParam) - _mouseStartPos.Y;
-
-                        handled = true;
-                    }
-                    return IntPtr.Zero;
-            }
-
-            return IntPtr.Zero;
-        }
+//        private static IntPtr ControlMsgFilter(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+//        {
+//            handled = false;
+//
+//            switch (msg)
+//            {
+//                case PInvoke.WM_LBUTTONDOWN:
+//                    _isDragging = true;
+//
+//                    _mouseStartPos.X = PInvoke.LOWORD((UInt32) lParam);
+//                    _mouseStartPos.Y = PInvoke.HIWORD((UInt32) lParam);
+//
+//                    handled = true;
+//                    return IntPtr.Zero;
+//
+//                case PInvoke.WM_MOUSEMOVE:
+//                    if (_isDragging)
+//                    {
+//                        var offsetX = PInvoke.LOWORD((UInt32)lParam) - _mouseStartPos.X;
+//                        var offsetY = PInvoke.HIWORD((UInt32)lParam) - _mouseStartPos.Y;
+//
+//                        handled = true;
+//                    }
+//                    return IntPtr.Zero;
+//            }
+//
+//            return IntPtr.Zero;
+//        }
 
         public void RefreshImageWidth()
         {

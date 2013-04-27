@@ -4,11 +4,7 @@ namespace WPF_GUI.Helpers
 {
     public static class Defines
     {
-        public const UInt32 KernelStateEmpty = 0x00000000;
-        public const UInt32 KernelStatePlace = 0x00000001;
-        public const UInt32 KernelStateTrace = 0x00000002;
-        public const UInt32 KernelStatePlacing = 0x00000003;
-        public const UInt32 KernelStateTracing = 0x00000004;
+        
 
         public const string ProgramName = "Program name";
 
