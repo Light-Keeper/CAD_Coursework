@@ -72,12 +72,11 @@ namespace MediatorLib
 				actions.ForEach(action => action.DynamicInvoke(parameter));
 		}
 
-		/// <summary>
-        /// Notify all registered parties that a specific message was broadcasted
-        /// </summary>
-        /// <typeparam name="T">The Type of parameter to be passed</typeparam>
-        /// <param name="message">The message to broadcast</param>
-        public void NotifyColleagues<T>(string message)
+	    /// <summary>
+	    /// Notify all registered parties that a specific message was broadcasted
+	    /// </summary>
+	    /// <param name="message">The message to broadcast</param>
+	    public void NotifyColleagues(string message)
 		{
 			var actions = _invocationList.GetActions(message);
 

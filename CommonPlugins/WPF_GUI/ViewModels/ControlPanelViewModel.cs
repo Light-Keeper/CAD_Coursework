@@ -303,15 +303,13 @@ namespace WPF_GUI.ViewModels
             this.IsFullControlPanelVisible = 
                 this.IsFullControlPanelVisible == Visibility.Visible ?
                 Visibility.Collapsed : Visibility.Visible;
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.RefreshImageWidth);
         }
         #endregion
 
         #region OnStartModeling
         private void OnStartModeling(object o)
         {
-//            this.IsStartButtonEnabled = false;
-//            this.IsStopButtonEnabled = true;
-
             var kernelState = StaticLoader.GetKernelState();
 
             switch (kernelState)

@@ -27,6 +27,7 @@ namespace WPF_GUI
             _isDragging = false;
 
             StaticLoader.Mediator.Register(MediatorMessages.AddFileNameToTitle, (Action<string>) this.AddFileNameToTitle);
+            StaticLoader.Mediator.Register(MediatorMessages.RefreshImageWidth, (Action) this.RefreshImageWidth);
             StaticLoader.UpdatePictureEvent(null);
         }
 
@@ -83,6 +84,11 @@ namespace WPF_GUI
             }
 
             return IntPtr.Zero;
+        }
+
+        public void RefreshImageWidth()
+        {
+            StaticLoader.Image.Width = ImageViewer.Width;
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
