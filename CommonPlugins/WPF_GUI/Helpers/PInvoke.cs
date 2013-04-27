@@ -7,10 +7,7 @@ namespace WPF_GUI.Helpers
 {
     public static class PInvoke
     {
-        [DllImport("kernel32.dll", EntryPoint = "CopyMemory", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern void CopyMemory(IntPtr destination, IntPtr source, UInt32 length);
-
-        [DllImport("user32.dll", EntryPoint = "CreateWindowEx", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern IntPtr CreateWindowEx(int dwExStyle,
                                                       string lpszClassName,
                                                       string lpszWindowName,
@@ -22,26 +19,36 @@ namespace WPF_GUI.Helpers
                                                       IntPtr hInst,
                                                       [MarshalAs(UnmanagedType.AsAny)] object pvParam);
 
-        [DllImport("user32.dll", EntryPoint = "DestroyWindow", CharSet = CharSet.Unicode, SetLastError = true)]
+        [DllImport("user32.dll", EntryPoint="SetClassLongPtr", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern IntPtr SetClassLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
+
+        [DllImport("user32.dll", EntryPoint = "SetClassLong", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern uint SetClassLongPtr32(IntPtr hWnd, int nIndex, uint dwNewLong);
+
+        public static IntPtr SetClassLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
+        {
+            return IntPtr.Size > 4 ?
+                SetClassLongPtr64(hWnd, nIndex, dwNewLong) :
+                new IntPtr(SetClassLongPtr32(hWnd, nIndex, unchecked((uint)dwNewLong.ToInt32())));
+        }
+
+
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern bool DestroyWindow(IntPtr hwnd);
 
-        [DllImport("user32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern int SendMessage(IntPtr hwnd,
-                                               int msg,
-                                               IntPtr wParam,
-                                               IntPtr lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        internal static extern IntPtr BeginPaint(IntPtr hwnd, out PAINTSTRUCT lpPaint);
 
-        [DllImport("user32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern int SendMessage(IntPtr hwnd,
-                                               int msg,
-                                               int wParam,
-                                               [MarshalAs(UnmanagedType.LPWStr)] StringBuilder lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        internal static extern bool EndPaint(IntPtr hWnd, [In] ref PAINTSTRUCT lpPaint);
 
-        [DllImport("user32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Unicode, SetLastError = true)]
-        internal static extern IntPtr SendMessage(IntPtr hwnd,
-                                                  int msg,
-                                                  IntPtr wParam,
-                                                  String lParam);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern IntPtr SetCursor(IntPtr hCursor);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        internal static extern IntPtr LoadCursorFromFile(string lpFileName);
+
+        // ----------------------------------------
 
         [StructLayout(LayoutKind.Sequential)]
         internal struct RECT
@@ -196,7 +203,6 @@ namespace WPF_GUI.Helpers
             }
         }
 
-
         [StructLayout(LayoutKind.Sequential)]
         internal struct PAINTSTRUCT
         {
@@ -209,11 +215,7 @@ namespace WPF_GUI.Helpers
             public byte[] rgbReserved;
         }
 
-        [DllImport("user32.dll")]
-        internal static extern IntPtr BeginPaint(IntPtr hwnd, out PAINTSTRUCT lpPaint);
-
-        [DllImport("user32.dll")]
-        internal static extern bool EndPaint(IntPtr hWnd, [In] ref PAINTSTRUCT lpPaint);
+        // -----------------------------------------
 
         internal const int WS_CHILD = 0x40000000;
 
@@ -221,8 +223,36 @@ namespace WPF_GUI.Helpers
 
         internal const int HOST_ID = 0x00000002;
 
-        internal const int WM_COMMAND = 0x00000111;
+        internal const int WM_PAINT = 0x000F;
 
-        internal const int WM_PAINT = 0x0000000F;
+        internal const int WM_MOUSEMOVE = 0x0200;
+
+        internal const int WM_NCHITTEST = 0x0084;
+
+        internal const int HTCLIENT = 1;
+
+        internal const int WM_LBUTTONDOWN = 0x0201;
+
+        internal const int WM_LBUTTONUP = 0x0202;
+
+        internal const int IMAGE_CURSOR = 2;
+
+        internal const int IMAGE_ICON = 1;
+
+        internal const int LR_LOADFROMFILE = 0x00000010;
+
+        internal const int GCLP_HCURSOR = -12;
+
+        // ------------------------------------------
+
+        internal static UInt16 LOWORD(UInt32 dword)
+        {
+            return (UInt16) (dword & 0xFFFFFFFF);
+        }
+
+        internal static UInt16 HIWORD(UInt32 dword)
+        {
+            return (UInt16) ((dword & 0xFFFFFFFF00000000) >> 16);
+        }
     }
 }

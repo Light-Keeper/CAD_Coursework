@@ -9,7 +9,6 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
         Icon="../Recources/Images/pcb.ico"
-        MouseUp="MainWindow_OnMouseUp"
         PreviewKeyDown="MainWindow_OnPreviewKeyDown"
         Loaded="MainWindow_OnLoaded"
         SizeChanged="MainWindow_OnSizeChanged">
@@ -100,7 +99,7 @@
                       BorderThickness="3" BorderBrush="DarkGray"
                       PreviewMouseWheel="ImageViewer_OnMouseWheel"
                       Padding="1"
-                      MouseMove="ScrollViewer_OnMouseMove" Focusable="False">
+                      Focusable="False">
             <ScrollViewer.DataContext>
                 <viewModel:ImageViewerViewModel/>
             </ScrollViewer.DataContext>

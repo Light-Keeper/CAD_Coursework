@@ -98,8 +98,8 @@
     <Resource Include="Recources\Images\ok.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Recources\Cursors\grabbing.cur" />
-    <Resource Include="Recources\Cursors\grab.cur" />
+    <EmbeddedResource Include="Recources\Cursors\grabbing.cur" />
+    <EmbeddedResource Include="Recources\Cursors\grab.cur" />
     <Resource Include="Recources\Images\error.png" />
   </ItemGroup>
   <ItemGroup>

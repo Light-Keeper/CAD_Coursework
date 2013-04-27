@@ -1,31 +1,28 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Navigation;
+using System.Reflection;
 using WPF_GUI.Helpers;
 
 namespace WPF_GUI
 {
     public partial class MainWindow : Window
     {
-        private readonly Cursor _cursorGrab;
-        private readonly Cursor _cursorGrabbing;
-
-        private bool _isDragging;
-        private Point _mouseOffset;
+        private static bool _isDragging;
+        private static Point _mouseStartPos;
 
         public MainWindow()
         {
             InitializeComponent();
 
             this.Title = Defines.ProgramName;
-
-            _cursorGrab = ((TextBlock) this.Resources["CursorGrab"]).Cursor;
-            _cursorGrabbing = ((TextBlock) this.Resources["CursorGrabbing"]).Cursor;
 
             _isDragging = false;
 
@@ -35,8 +32,8 @@ namespace WPF_GUI
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            StaticLoader.Image.MessageHook += new HwndSourceHook(ControlMsgFilter);
-
+            StaticLoader.Image.MessageHook += ControlMsgFilter;
+            
             BorderForImage.Child = StaticLoader.Image;
 
             StaticLoader.Image.SetBinding(
@@ -59,9 +56,32 @@ namespace WPF_GUI
             StaticLoader.Image.Height = BorderForImage.ActualHeight;
         }
 
-        private static IntPtr ControlMsgFilter(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        private static IntPtr ControlMsgFilter(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             handled = false;
+
+            switch (msg)
+            {
+                case PInvoke.WM_LBUTTONDOWN:
+                    _isDragging = true;
+
+                    _mouseStartPos.X = PInvoke.LOWORD((UInt32) lParam);
+                    _mouseStartPos.Y = PInvoke.HIWORD((UInt32) lParam);
+
+                    handled = true;
+                    return IntPtr.Zero;
+
+                case PInvoke.WM_MOUSEMOVE:
+                    if (_isDragging)
+                    {
+                        var offsetX = PInvoke.LOWORD((UInt32)lParam) - _mouseStartPos.X;
+                        var offsetY = PInvoke.HIWORD((UInt32)lParam) - _mouseStartPos.Y;
+
+                        handled = true;
+                    }
+                    return IntPtr.Zero;
+            }
+
             return IntPtr.Zero;
         }
 
@@ -74,29 +94,6 @@ namespace WPF_GUI
         private void AddFileNameToTitle(string fileName)
         {
             this.Title = fileName + " - " + Defines.ProgramName;
-        }
-
-        private void MainWindow_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            _isDragging = false;
-        }
-
-        private void ScrollViewer_OnMouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton != MouseButtonState.Pressed || !_isDragging || sender == null)
-            {
-                return;
-            }
-
-            var mainImage = sender as ScrollViewer;
-            var mouse = e.GetPosition(mainImage);
-
-            mouse.Offset(-_mouseOffset.X, -_mouseOffset.Y);
-
-            ImageViewer.ScrollToHorizontalOffset(ImageViewer.HorizontalOffset - mouse.X);
-            ImageViewer.ScrollToVerticalOffset(ImageViewer.VerticalOffset - mouse.Y);
-
-            _mouseOffset = e.GetPosition(mainImage);
         }
 
         private void ImageViewer_OnMouseWheel(object sender, MouseWheelEventArgs e)
@@ -112,8 +109,8 @@ namespace WPF_GUI
                 {
                     if (ImageViewer.HorizontalOffset > 1)
                     {
-                        ImageViewer.LineLeft();
-                        ImageViewer.LineLeft();
+//                        ImageViewer.LineLeft();
+//                        ImageViewer.LineLeft();
                         ImageViewer.LineLeft();
                         return;
                     }
@@ -123,8 +120,8 @@ namespace WPF_GUI
                 {
                     if (ImageViewer.HorizontalOffset < ImageViewer.ScrollableWidth)
                     {
-                        ImageViewer.LineRight();
-                        ImageViewer.LineRight();
+//                        ImageViewer.LineRight();
+//                        ImageViewer.LineRight();
                         ImageViewer.LineRight();
                         return;
                     }
@@ -152,6 +149,7 @@ namespace WPF_GUI
             }
         }
 
+        // Change Image zoom with hotkeys
         private void MainWindow_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (Keyboard.Modifiers == ModifierKeys.Control &&
