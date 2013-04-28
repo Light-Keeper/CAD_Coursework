@@ -6,6 +6,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using WPF_GUI.Helpers;
+using WPF_GUI.ViewModels;
 
 namespace WPF_GUI
 {
@@ -19,7 +20,6 @@ namespace WPF_GUI
 
             StaticLoader.Mediator.Register(MediatorMessages.AddFileNameToTitle, (Action<string>) this.AddFileNameToTitle);
             StaticLoader.Mediator.Register(MediatorMessages.RefreshImageWidth, (Action) this.RefreshImageWidth);
-            StaticLoader.Image.Render();
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -29,51 +29,24 @@ namespace WPF_GUI
             StaticLoader.Image.SetBinding(
                 WidthProperty,
                 new Binding
-                    {
-                        Path = new PropertyPath("ImageWidth"),
-                        Mode = BindingMode.TwoWay
-                    });
+                {
+                    Path = new PropertyPath("ImageWidth"),
+                    Mode = BindingMode.TwoWay
+                });
 
             StaticLoader.Image.SetBinding(
                 HeightProperty,
                 new Binding
-                    {
-                        Path = new PropertyPath("ImageHeight"),
-                        Mode = BindingMode.TwoWay
-                    });
+                {
+                    Path = new PropertyPath("ImageHeight"),
+                    Mode = BindingMode.TwoWay
+                });
 
             StaticLoader.Image.Width = BorderForImage.ActualWidth;
             StaticLoader.Image.Height = BorderForImage.ActualHeight;
-        }
 
-//        private static IntPtr ControlMsgFilter(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-//        {
-//            handled = false;
-//
-//            switch (msg)
-//            {
-//                case PInvoke.WM_LBUTTONDOWN:
-//                    _isDragging = true;
-//
-//                    _mouseStartPos.X = PInvoke.LOWORD((UInt32) lParam);
-//                    _mouseStartPos.Y = PInvoke.HIWORD((UInt32) lParam);
-//
-//                    handled = true;
-//                    return IntPtr.Zero;
-//
-//                case PInvoke.WM_MOUSEMOVE:
-//                    if (_isDragging)
-//                    {
-//                        var offsetX = PInvoke.LOWORD((UInt32)lParam) - _mouseStartPos.X;
-//                        var offsetY = PInvoke.HIWORD((UInt32)lParam) - _mouseStartPos.Y;
-//
-//                        handled = true;
-//                    }
-//                    return IntPtr.Zero;
-//            }
-//
-//            return IntPtr.Zero;
-//        }
+            StaticLoader.Image.Render(true);
+        }
 
         public void RefreshImageWidth()
         {

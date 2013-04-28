@@ -251,7 +251,7 @@ namespace WPF_GUI.Helpers
 
         internal static UInt16 HIWORD(UInt32 dword)
         {
-            return (UInt16) ((dword & 0xFFFFFFFF00000000) >> 16);
+            return (UInt16) ((dword & 0xFFFF0000) >> 16);
         }
     }
 }

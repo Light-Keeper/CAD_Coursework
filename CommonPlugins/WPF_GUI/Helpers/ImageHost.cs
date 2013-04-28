@@ -2,18 +2,16 @@
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using Point = System.Drawing.Point;
+using Size = System.Drawing.Size;
 
 namespace WPF_GUI.Helpers
 {
     public class ImageHost : HwndHost
     {
         private IntPtr _hwndHost;
-        
-        private readonly int _hostWidth;
-        private readonly int _hostHeight;
 
         private static IntPtr _cursorGrab;
         private static IntPtr _cursorGrabbing;
@@ -21,19 +19,19 @@ namespace WPF_GUI.Helpers
         private bool _isDragging;
         public bool IsDragging { get { return _isDragging; } }
 
-        public int FirstVisibleX = 0;
-        public int FirstVisibleY = 0;
+        private Point _dragStartPos;
 
-        public double Scale = 1.0;
+        public Size RealSize;
 
-        public ImageHost() : this(0, 0)
+        private Point _firstVisiblePos = new Point(0, 0);
+
+        public double StartScale = 0.4;
+
+        public double Scale;
+
+        public ImageHost()
         {
-        }
-
-        public ImageHost(int width, int height)
-        {
-            _hostWidth = width;
-            _hostHeight = height;
+            Scale = StartScale;
 
             var assembly = Assembly.GetExecutingAssembly();
 
@@ -55,7 +53,7 @@ namespace WPF_GUI.Helpers
             _hwndHost = PInvoke.CreateWindowEx(0, "static", "",
                                 PInvoke.WS_CHILD | PInvoke.WS_VISIBLE,
                                 0, 0,
-                                _hostWidth, _hostHeight, 
+                                0, 0, // Width and height
                                 hwndParent.Handle,
                                 (IntPtr)PInvoke.HOST_ID,
                                 IntPtr.Zero,
@@ -71,17 +69,24 @@ namespace WPF_GUI.Helpers
             this.Render(true);
         }
 
-        public void Render(bool newImage)
+        public void Render(bool redrawImage)
         {
-            Kernel.RenderPicture(this.Handle, this.FirstVisibleX, this.FirstVisibleY, this.Scale, newImage, false, 0);
+            Kernel.RenderPicture(
+                this.Handle,
+                (uint)_firstVisiblePos.X,
+                (uint)_firstVisiblePos.Y,
+                this.Scale,
+                redrawImage,
+                false, 0);
         }
 
         protected override IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             handled = false;
+
             switch (msg)
             {
-                case PInvoke.WM_NCHITTEST: // This code activate mouse events
+                case PInvoke.WM_NCHITTEST: // Activate mouse events
                     handled = true;
                     return new IntPtr(PInvoke.HTCLIENT);
 
@@ -89,9 +94,7 @@ namespace WPF_GUI.Helpers
                     PInvoke.PAINTSTRUCT pStruct;
 
                     PInvoke.BeginPaint(hWnd, out pStruct);
-
                     this.Render();
-
                     PInvoke.EndPaint(hWnd, ref pStruct);
 
                     handled = true;
@@ -101,13 +104,53 @@ namespace WPF_GUI.Helpers
                     if (_isDragging)
                     {
                         PInvoke.SetCursor(_cursorGrabbing);
+
+                        var dragNewPos = new Point(PInvoke.LOWORD((UInt32) lParam), PInvoke.HIWORD((UInt32)lParam));
+
+                        var offsetX = dragNewPos.X - _dragStartPos.X;
+                        var offsetY = dragNewPos.Y - _dragStartPos.Y;
+
+                        if (_firstVisiblePos.X - offsetX < 0)
+                        {
+                            _firstVisiblePos.X = 0;
+                        }
+//                        else if () // > MaxWidth
+//                        {    
+//                        }
+                        else
+                        {
+                            _firstVisiblePos.X -= offsetX;
+                        }
+
+                        if (_firstVisiblePos.Y - offsetY < 0)
+                        {
+                            _firstVisiblePos.Y = 0;
+                        }
+//                        else if () // > MaxHeight
+//                        {
+//                        }
+                        else
+                        {
+                            _firstVisiblePos.Y -= offsetY;
+                        }
+                        _dragStartPos.X = dragNewPos.X;
+                        _dragStartPos.Y = dragNewPos.Y;
+
+                        handled = true;
+
+                        this.Render();
                     }
-                    handled = true;
+
                     return IntPtr.Zero;
 
                 case PInvoke.WM_LBUTTONDOWN:
                     PInvoke.SetCursor(_cursorGrabbing);
+
+                    _dragStartPos.X = PInvoke.LOWORD((UInt32) lParam);
+                    _dragStartPos.Y = PInvoke.HIWORD((UInt32) lParam);
+
                     _isDragging = true;
+
                     handled = true;
                     return IntPtr.Zero;
 

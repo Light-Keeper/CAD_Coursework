@@ -100,7 +100,7 @@
                       HorizontalScrollBarVisibility="Visible"
                       BorderThickness="3" BorderBrush="DarkGray"
                       PreviewMouseWheel="ImageViewer_OnMouseWheel"
-                      Padding="1"
+                      Padding="5"
                       Focusable="False">
             <ScrollViewer.DataContext>
                 <viewModel:ImageViewerViewModel/>
@@ -383,14 +383,12 @@
                     </Image.ToolTip>
                 </Image>
             </StatusBarItem>
-            <StatusBarItem Content="{Binding Path=InfoMessage}">
-                <!-- Вывод информации о текущем состоянии программы -->
-            </StatusBarItem>
+            <StatusBarItem Content="{Binding Path=InfoMessage}"/>
             <StatusBarItem HorizontalAlignment="Right">
-                <Slider Minimum="{Binding Path=ImageMinZoom, Mode=OneWay}"
-                        Maximum="{Binding Path=ImageMaxZoom, Mode=OneWay}"
+                <Slider Minimum="{Binding Path=MinZoom, Mode=OneWay}"
+                        Maximum="{Binding Path=MaxZoom, Mode=OneWay}"
                         Width="100" TickPlacement="BottomRight"
-                        Value="{Binding ImageZoom, Mode=TwoWay}"
+                        Value="{Binding Path=Zoom, Mode=TwoWay}"
                         IsSnapToTickEnabled="True" Name="ImageZoom">
                     <Slider.ToolTip>
                         <Label Content="{Binding Path=ZoomToolTip}"/>

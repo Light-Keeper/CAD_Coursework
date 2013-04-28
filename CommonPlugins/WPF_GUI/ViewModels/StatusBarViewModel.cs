@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using WPF_GUI.Helpers;
 
@@ -30,60 +30,36 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
-        #region ImageZoom
-        private int _imageZoom;
-        public int ImageZoom
+        #region Zoom
+        private int _zoom = 100;
+        public int Zoom
         {
-            get { return _imageZoom; }
+            get { return _zoom; }
             set
             {
-                if (_imageZoom == value) return;
+                if (_zoom == value) return;
 
-                if (value < this.ImageMinZoom)
-                {
-                    _imageZoom = this.ImageMinZoom;
-                }
-                else if (value > this.ImageMaxZoom)
-                {
-                    _imageZoom = this.ImageMaxZoom;
-                }
-                else
-                {
-                    _imageZoom = value;
-                }
+                _zoom = value;
 
-                RaisePropertyChanged(() => ImageZoom);
-                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ZoomChanged, _imageZoom);
-            }
-        }
-
-        #endregion
-
-        #region ImageMinZoom
-        private int _imageMinZoom;
-        public int ImageMinZoom
-        {
-            get { return _imageMinZoom; }
-            private set
-            {
-                if (_imageMinZoom == value) return;
-                _imageMinZoom = value;
-                RaisePropertyChanged(() => ImageMinZoom);
+                RaisePropertyChanged(() => Zoom);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ZoomChanged, _zoom);
             }
         }
         #endregion
 
-        #region ImageMaxZoom
-        private int _imageMaxZoom;
-        public int ImageMaxZoom
+        #region MinZoom
+        private int _minZoom = 100;
+        public int MinZoom
         {
-            get { return _imageMaxZoom; }
-            private set
-            {
-                if (_imageMaxZoom == value) return;
-                _imageMaxZoom = value;
-                RaisePropertyChanged(() => ImageMaxZoom);
-            }
+            get { return _minZoom; }
+        }
+        #endregion
+
+        #region MaxZoom
+        private int _maxZoom = 1000;
+        public int MaxZoom
+        {
+            get { return _maxZoom; }
         }
         #endregion
 
@@ -111,7 +87,7 @@ namespace WPF_GUI.ViewModels
         #region ZoomToolTip
         public string ZoomToolTip
         {
-            get { return "Масштаб " + this.ImageZoom + "%"; }
+            get { return "Масштаб " + this.Zoom + "%"; }
         }
         #endregion
 
@@ -148,9 +124,6 @@ namespace WPF_GUI.ViewModels
             });
 
             this.InfoMessage = InfoBarMessages.ModulesLoadSuccessful;
-            this.ImageMinZoom = 100;
-            this.ImageMaxZoom = 1000;
-            this.ImageZoom = 100;
             _currentState = Defines.ProgramStateGood;
 
             StaticLoader.Mediator.Register(MediatorMessages.SetInfoMessage, (Action<string>) this.SetInfoMessage);

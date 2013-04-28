@@ -4,7 +4,7 @@ using System.Text;
 
 namespace WPF_GUI.Helpers
 {
-    public class Kernel
+    public static class Kernel
     {
         public const UInt32 StateEmpty = 0x00000000;
         public const UInt32 StatePlace = 0x00000001;
@@ -32,7 +32,7 @@ namespace WPF_GUI.Helpers
         public static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
 
         [DllImport("GUI_CLR_loader.dll")]
-        public static extern void RenderPicture(IntPtr hWnd, int x, int y, double scale,
+        public static extern void RenderPicture(IntPtr hWnd, UInt32 x, UInt32 y, double scale,
             bool renderNewPicture, bool renderLayer, UInt32 layer);
     }
 }

@@ -220,7 +220,7 @@ extern "C" __declspec( dllexport ) uint32_t __stdcall RunToEnd();
 extern "C" __declspec( dllexport ) uint32_t __stdcall NextStep( bool inDemoMode );
 
 extern "C" __declspec( dllexport ) bool		__stdcall CloseCurrentFile();
-extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, int x, int y, double scale,  
+extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer);
 
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapWidth();
@@ -228,10 +228,12 @@ extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapHeight();
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowWidth();
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowHeight();
 
+
 uint32_t __stdcall GetKernelState()
 {
 	return self->sys->kernel->GetCurrentState( self->sys->kernel );
 }
+
 
 int32_t __stdcall GetModuleList( uint32_t bufferSize, char *buffer )
 {
@@ -252,30 +254,36 @@ int32_t __stdcall GetModuleList( uint32_t bufferSize, char *buffer )
 	return pos - buffer;
 }
 
+
 bool __stdcall LoadFile( const char *path )
 {
 	return self->sys->kernel->LoadFile( self->sys->kernel, path );
 }
+
 
 bool __stdcall StartPlaceModule( char *name, bool inDemoMode )
 {
 	return self->sys->kernel->StartPlaceMoule( self->sys->kernel, name, inDemoMode );
 }
 
+
 bool __stdcall StartTraceModule( char *name, bool inDemoMode )
 {
 	return self->sys->kernel->StartTraceModule( self->sys->kernel, name, inDemoMode );
 }
+
 
 uint32_t __stdcall RunToEnd()
 {
 	return self->sys->kernel->RunToEnd( self->sys->kernel );
 }
 
+
 uint32_t __stdcall NextStep( bool inDemoMode )
 {
 	return self->sys->kernel->NextStep( self->sys->kernel, inDemoMode);
 }
+
 
 bool __stdcall CloseCurrentFile()
 {
@@ -283,7 +291,7 @@ bool __stdcall CloseCurrentFile()
 }
 
 
-void __stdcall RenderPicture(HWND hWnd, int x, int y, double scale,  
+void __stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer)
 {
 	if (self->sys->window != hWnd)
@@ -302,17 +310,18 @@ void __stdcall RenderPicture(HWND hWnd, int x, int y, double scale,
 	DrawGL(x, y, scale, self->sys->current_picture);
 }
 
-uint32_t	__stdcall GetMapWidth()
+
+uint32_t __stdcall GetMapWidth()
 {
 	uint32_t x;
 	self->sys->kernel->GetMapSize( self->sys->kernel, &x, NULL);
 	return x;
 }
 
-uint32_t	__stdcall GetMapHeight()
+
+uint32_t __stdcall GetMapHeight()
 {
 	uint32_t x;
 	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &x);
 	return x;
 }
-
