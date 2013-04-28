@@ -31,8 +31,8 @@ namespace WPF_GUI.Helpers
         [DllImport("GUI_CLR_loader.dll")]
         public static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
 
-        [DllImport("GUI_CLR_loader.dll", EntryPoint = "RenderPicture2")]
-        public static extern void RenderPicture(IntPtr hWnd, double x, double y, double scale,
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern void RenderPicture(IntPtr hWnd, int x, int y, double scale,
             bool renderNewPicture, bool renderLayer, UInt32 layer);
     }
 }

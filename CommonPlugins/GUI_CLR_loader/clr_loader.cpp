@@ -30,7 +30,7 @@ uint32_t gui_Exec(cad_GUI *self);
 void gui_SetCMDArgs(cad_GUI *self, char *arg);
 void gui_UpdatePictureEvent( cad_GUI *self );
 
-int DrawGL(double x, double y, double scale, cad_picture *picture);
+int DrawGL(uint32_t x, uint32_t y, double scale, cad_picture *picture);
 void EnableOpenGL(HWND hWnd);
 
 bool InitCLR(cad_GUI *self);
@@ -220,9 +220,7 @@ extern "C" __declspec( dllexport ) uint32_t __stdcall RunToEnd();
 extern "C" __declspec( dllexport ) uint32_t __stdcall NextStep( bool inDemoMode );
 
 extern "C" __declspec( dllexport ) bool		__stdcall CloseCurrentFile();
-//extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2);
-
-extern "C" __declspec( dllexport ) void		__stdcall RenderPicture2(HWND hWnd, double x, double y, double scale,  
+extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, int x, int y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer);
 
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapWidth();
@@ -285,13 +283,7 @@ bool __stdcall CloseCurrentFile()
 }
 
 
-//void __stdcall RenderPicture(HWND hWnd, double x1, double y1, double x2, double y2)
-//{
-	//RenderPicture2(hWnd, x1, y1, 0.4, true, false, 0);
-//}
-
-
-void __stdcall RenderPicture2(HWND hWnd, double x, double y, double scale,  
+void __stdcall RenderPicture(HWND hWnd, int x, int y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer)
 {
 	if (self->sys->window != hWnd)

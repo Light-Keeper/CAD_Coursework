@@ -47,7 +47,7 @@ void DisableOpenGL()
     ReleaseDC( window, hDC );
 }
 
-int DrawGL(double x, double y, double scale, cad_picture *picture)
+int DrawGL(uint32_t x, uint32_t y, double scale, cad_picture *picture)
 {
 	RECT r;
 	GetWindowRect(window, &r);
@@ -56,11 +56,23 @@ int DrawGL(double x, double y, double scale, cad_picture *picture)
 	glLoadIdentity();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
+	if (y >= picture->height || x >= picture->width) return 0;
 
+	uint32_t *data = (uint32_t *)malloc(picture->width * picture->height * sizeof(uint32_t));
+	uint32_t *p1 = data;
+	uint32_t *p2 = picture->data + x + y * picture->width;
+
+	for (uint32_t i = y; i < picture->height; i++)
+	{
+		memcpy(p1, p2, sizeof(uint32_t) *( picture->width - y));
+		p1 += picture->width - y;
+		p2 += picture->width;
+	}
 
 	glRasterPos2d(-1, 1);
-	glPixelZoom(scale, -scale);
-	glDrawPixels(picture->width, picture->height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, picture->data);	
+	glPixelZoom((GLfloat)scale, -(GLfloat)scale);
+	glDrawPixels(picture->width - y, picture->height - x, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data);	
+	free(data);
 	SwapBuffers( hDC );
 	return 1;
 }

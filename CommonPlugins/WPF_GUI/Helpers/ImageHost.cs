@@ -21,8 +21,8 @@ namespace WPF_GUI.Helpers
         private bool _isDragging;
         public bool IsDragging { get { return _isDragging; } }
 
-        public double FirstVisibleX = 0;
-        public double FirstVisibleY = 0;
+        public int FirstVisibleX = 0;
+        public int FirstVisibleY = 0;
 
         public double Scale = 1.0;
 
