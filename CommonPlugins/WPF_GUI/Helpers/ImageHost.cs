@@ -66,7 +66,7 @@ namespace WPF_GUI.Helpers
         
         public void Render()
         {
-            this.Render(true);
+            this.Render(false);
         }
 
         public void Render(bool redrawImage)
@@ -105,7 +105,7 @@ namespace WPF_GUI.Helpers
                     {
                         PInvoke.SetCursor(_cursorGrabbing);
 
-                        var dragNewPos = new Point(PInvoke.LOWORD((UInt32) lParam), PInvoke.HIWORD((UInt32)lParam));
+                        var dragNewPos = new Point(PInvoke.LOWORD(lParam), PInvoke.HIWORD(lParam));
 
                         var offsetX = dragNewPos.X - _dragStartPos.X;
                         var offsetY = dragNewPos.Y - _dragStartPos.Y;
@@ -146,8 +146,8 @@ namespace WPF_GUI.Helpers
                 case PInvoke.WM_LBUTTONDOWN:
                     PInvoke.SetCursor(_cursorGrabbing);
 
-                    _dragStartPos.X = PInvoke.LOWORD((UInt32) lParam);
-                    _dragStartPos.Y = PInvoke.HIWORD((UInt32) lParam);
+                    _dragStartPos.X = PInvoke.LOWORD(lParam);
+                    _dragStartPos.Y = PInvoke.HIWORD(lParam);
 
                     _isDragging = true;
 
@@ -156,6 +156,55 @@ namespace WPF_GUI.Helpers
 
                 case PInvoke.WM_LBUTTONUP:
                     _isDragging = false;
+                    handled = true;
+                    return IntPtr.Zero;
+
+                case PInvoke.WM_MOUSEWHEEL:
+
+                    var delta = PInvoke.GET_WHEEL_DELTA_WPARAM(wParam);
+                    var keyState = PInvoke.GET_KEYSTATE_WPARAM(wParam);
+
+                    // Change zoom
+                    if ((keyState & PInvoke.MK_CONTROL) == PInvoke.MK_CONTROL &&
+                        (keyState & PInvoke.MK_SHIFT) != PInvoke.MK_SHIFT)
+                    {
+                        if (delta < 0)
+                        {
+                            
+                        }
+                        else
+                        {
+                            
+                        }
+                    }
+                    // Change width scroll
+                    else if ((keyState & PInvoke.MK_CONTROL) != PInvoke.MK_CONTROL &&
+                             (keyState & PInvoke.MK_SHIFT) == PInvoke.MK_SHIFT)
+                    {
+                        if (delta < 0)
+                        {
+                            
+                        }
+                        else
+                        {
+                            
+                        }
+                    }
+                    // Change height scroll
+                    else if ((keyState & PInvoke.MK_CONTROL) != PInvoke.MK_CONTROL &&
+                             (keyState & PInvoke.MK_SHIFT) != PInvoke.MK_SHIFT)
+                    {
+                        if (delta < 0)
+                        {
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+
+
                     handled = true;
                     return IntPtr.Zero;
             }

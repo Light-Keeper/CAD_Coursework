@@ -226,13 +226,15 @@ namespace WPF_GUI.Helpers
 
         internal const int WM_MOUSEMOVE = 0x0200;
 
-        internal const int WM_NCHITTEST = 0x0084;
-
-        internal const int HTCLIENT = 1;
-
         internal const int WM_LBUTTONDOWN = 0x0201;
 
         internal const int WM_LBUTTONUP = 0x0202;
+
+        internal const int WM_MOUSEWHEEL = 0x020A;
+
+        internal const int WM_NCHITTEST = 0x0084;
+
+        internal const int HTCLIENT = 1;        
 
         internal const int IMAGE_CURSOR = 2;
 
@@ -242,16 +244,34 @@ namespace WPF_GUI.Helpers
 
         internal const int GCLP_HCURSOR = -12;
 
+        internal const int MK_CONTROL   = 0x0008;
+        internal const int MK_LBUTTON   = 0x0001;
+        internal const int MK_MBUTTON   = 0x0010;
+        internal const int MK_RBUTTON   = 0x0002;
+        internal const int MK_SHIFT     = 0x0004;
+        internal const int MK_XBUTTON1  = 0x0020;
+        internal const int MK_XBUTTON2  = 0x0040;
+
         // ------------------------------------------
 
-        internal static UInt16 LOWORD(UInt32 dword)
+        internal static UInt16 LOWORD(IntPtr dwValue)
         {
-            return (UInt16) (dword & 0xFFFFFFFF);
+            return (UInt16) (((UInt32)dwValue) & 0x0000FFFF);
         }
 
-        internal static UInt16 HIWORD(UInt32 dword)
+        internal static UInt16 HIWORD(IntPtr dwValue)
         {
-            return (UInt16) ((dword & 0xFFFF0000) >> 16);
+            return (UInt16) ((((UInt32)dwValue) & 0xFFFF0000) >> 0x10);
+        }
+
+        internal static short GET_WHEEL_DELTA_WPARAM(IntPtr wParam)
+        {
+            return (short)HIWORD(wParam);
+        }
+
+        internal static short GET_KEYSTATE_WPARAM(IntPtr wParam)
+        {
+            return (short)LOWORD(wParam);
         }
     }
 }

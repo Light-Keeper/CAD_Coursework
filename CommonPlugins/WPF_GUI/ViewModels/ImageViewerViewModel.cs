@@ -42,7 +42,7 @@ namespace WPF_GUI.ViewModels
         public void ChangeImageZoom(int zoom)
         {
             StaticLoader.Image.Scale = StaticLoader.Image.StartScale * zoom / 100;
-            StaticLoader.Image.Render(false);
+            StaticLoader.Image.Render();
         }
     }
 }

@@ -290,7 +290,7 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 		height = (int)ceil((double)self->sys->width/w)*h+addh-1; 
 	}
 
-	SetPitcureSize(self, 25 * map->width, 25 * map->height);
+	SetPitcureSize(self, 20 * map->width, 20 * map->height);
 	auto picture = allocate_picture(self);
 	int size_square=(picture->width-w+1)/w; 
 	memset(picture->data, 220, picture->width * picture->height * sizeof( uint32_t ));

@@ -338,7 +338,7 @@ namespace WPF_GUI.ViewModels
                             return;
                         }
 
-                        var isOk = Kernel.StartTraceModule(this.SelectedTraceMethod.Name, this.IsDemoMode);
+                        var isOk = Kernel.StartTraceModule(this.SelectedTraceMethod.Name, this.IsDemoMode);                        
 
                         if (!isOk)
                         {
@@ -348,7 +348,11 @@ namespace WPF_GUI.ViewModels
                                 "Предупреждение",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
+
+                            return;
                         }
+
+                        StaticLoader.Image.Render(true);
 
                         this.IsStopButtonEnabled = true;
 
@@ -395,7 +399,10 @@ namespace WPF_GUI.ViewModels
                                 "Предупреждение",
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
+                            return;
                         }
+
+                        StaticLoader.Image.Render(true);
 
                         this.IsStopButtonEnabled = true;
 
@@ -414,6 +421,7 @@ namespace WPF_GUI.ViewModels
                 case Kernel.StatePlacing:
                 case Kernel.StateTracing:
                     Kernel.NextStep(this.IsDemoMode);
+                    StaticLoader.Image.Render(true);
                     switch (Kernel.GetState())
                     {
                         case Kernel.StateEmpty:
@@ -522,6 +530,8 @@ namespace WPF_GUI.ViewModels
             {
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.FileLoadSuccessful);
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateGood);
+
+                StaticLoader.Image.Render(true);
             }
             else
             {

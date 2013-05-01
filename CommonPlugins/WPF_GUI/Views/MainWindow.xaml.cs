@@ -6,7 +6,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Navigation;
 using WPF_GUI.Helpers;
-using WPF_GUI.ViewModels;
 
 namespace WPF_GUI
 {
@@ -62,59 +61,6 @@ namespace WPF_GUI
         private void AddFileNameToTitle(string fileName)
         {
             this.Title = fileName + " - " + Defines.ProgramName;
-        }
-
-        private void ImageViewer_OnMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            // Scroll Width
-            if (Keyboard.Modifiers != ModifierKeys.Control &&
-                Keyboard.Modifiers == ModifierKeys.Shift &&
-                Keyboard.Modifiers != ModifierKeys.Alt)
-            {
-                e.Handled = true;
-
-                if (e.Delta > 0)
-                {
-                    if (ImageViewer.HorizontalOffset > 1)
-                    {
-//                        ImageViewer.LineLeft();
-//                        ImageViewer.LineLeft();
-                        ImageViewer.LineLeft();
-                        return;
-                    }
-                }
-
-                if (e.Delta < 0)
-                {
-                    if (ImageViewer.HorizontalOffset < ImageViewer.ScrollableWidth)
-                    {
-//                        ImageViewer.LineRight();
-//                        ImageViewer.LineRight();
-                        ImageViewer.LineRight();
-                        return;
-                    }
-                }
-            }
-
-            // Change Image Size
-            if (Keyboard.Modifiers == ModifierKeys.Control &&
-                Keyboard.Modifiers != ModifierKeys.Shift &&
-                Keyboard.Modifiers != ModifierKeys.Alt)
-            {
-                e.Handled = true;
-
-                if (e.Delta < 0)
-                {
-                    ImageZoom.Value -= 5;
-                    return;
-                }
-
-                if (e.Delta > 0)
-                {
-                    ImageZoom.Value += 5;
-                    return;
-                }
-            }
         }
 
         // Change Image zoom with hotkeys

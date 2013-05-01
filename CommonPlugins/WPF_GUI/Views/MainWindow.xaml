@@ -99,7 +99,6 @@
         <ScrollViewer Name="ImageViewer" Grid.Column="0" Grid.Row="0" Background="MintCream"
                       HorizontalScrollBarVisibility="Visible"
                       BorderThickness="3" BorderBrush="DarkGray"
-                      PreviewMouseWheel="ImageViewer_OnMouseWheel"
                       Padding="5"
                       Focusable="False">
             <ScrollViewer.DataContext>
