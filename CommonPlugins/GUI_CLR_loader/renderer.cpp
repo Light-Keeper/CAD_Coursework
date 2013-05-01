@@ -71,7 +71,7 @@ int DrawGL(uint32_t x, uint32_t y, double scale, cad_picture *picture)
 
 	glRasterPos2d(-1, 1);
 	glPixelZoom((GLfloat)scale, -(GLfloat)scale);
-	glDrawPixels(picture->width - x, picture->height - y, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data);	
+	glDrawPixels(picture->width - y, picture->height - x, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data);	
 	free(data);
 	SwapBuffers( hDC );
 	return 1;
