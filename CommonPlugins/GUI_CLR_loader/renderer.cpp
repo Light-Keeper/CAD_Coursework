@@ -10,8 +10,9 @@ HDC hDC;
 
 uint32_t	__stdcall GetMapWidth();
 uint32_t	__stdcall GetMapHeight();
-uint32_t	__stdcall GetRenderWindowWidth();
-uint32_t	__stdcall GetRenderWindowHeight();
+
+extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowWidth();
+extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowHeight();
 
 void EnableOpenGL(HWND hWnd)
 {

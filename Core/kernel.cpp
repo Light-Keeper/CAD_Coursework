@@ -351,7 +351,7 @@ void kernel_GetMapSize(cad_kernel *self, uint32_t *width, uint32_t *height)
 		height && (*height = self->sys->current_sheme->height);
 	} 
 
-	if (self->GetCurrentState(self) == KERNEL_STATE_PLACING)
+	if (self->GetCurrentState(self) == KERNEL_STATE_TRACE || self->GetCurrentState(self) == KERNEL_STATE_TRACING)
 	{
 		width && (*width = self->sys->current_route->width);
 		height && (*height = self->sys->current_route->height);

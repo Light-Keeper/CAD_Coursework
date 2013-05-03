@@ -225,11 +225,6 @@ extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, uint
 
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapWidth();
 extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapHeight();
-extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowWidth();
-extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowHeight();
-
-uint32_t	__stdcall GetRenderWindowWidth();
-uint32_t	__stdcall GetRenderWindowHeight();
 
 uint32_t __stdcall GetKernelState()
 {
