@@ -40,7 +40,7 @@ bool generator_PlaceChip_Right(cad_map_generator *self, cad_route_map *map, cad_
 
 	if (false == validate_place( self, map, chip->top_border, chip->left_border,	4, one_side_pins * 2 - 1))
 	{
-		self->sys->kernel->PrintDebug( "No place for element %d\n", chip->num );
+		self->sys->kernel->PrintDebug( "Не удалось разместить микросхему №%d вероятно для нее слишком мало места.", chip->num );
 		return false;
 	}
 
@@ -71,7 +71,7 @@ bool generator_PlaceSocket(cad_map_generator *self, cad_route_map *map, cad_chip
 	if (false == validate_place( self, map, chip->top_border, chip->left_border,	
 					(chip->package_type & NUMBER_MASK) * 2 - 1 , 2 ))
 	{
-		self->sys->kernel->PrintDebug( "No place for slot %d\n", chip->num );
+		self->sys->kernel->PrintDebug( "Не удалось разместь разъем %d", chip->num );
 		return false;
 	}
 
