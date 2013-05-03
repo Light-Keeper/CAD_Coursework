@@ -37,12 +37,12 @@ namespace WPF_GUI.Helpers
 
             var stream = assembly.GetManifestResourceStream("WPF_GUI.Recources.Cursors.grab.cur");
             FlushCursorStreamToDisk(stream, "grab.cur");
-            _cursorGrab = PInvoke.LoadCursorFromFile("grab.cur");
+            _cursorGrab = LoadCursorFromFile("grab.cur");
             File.Delete("grab.cur");
 
             stream = assembly.GetManifestResourceStream("WPF_GUI.Recources.Cursors.grabbing.cur");
             FlushCursorStreamToDisk(stream, "grabbing.cur");
-            _cursorGrabbing = PInvoke.LoadCursorFromFile("grabbing.cur");
+            _cursorGrabbing = LoadCursorFromFile("grabbing.cur");
             File.Delete("grabbing.cur");
         }
 
@@ -105,36 +105,34 @@ namespace WPF_GUI.Helpers
                     {
                         PInvoke.SetCursor(_cursorGrabbing);
 
-                        var dragNewPos = new Point(PInvoke.LOWORD(lParam), PInvoke.HIWORD(lParam));
+                        var offsetX = PInvoke.LOWORD(lParam) - _dragStartPos.X;
+                        var offsetY = PInvoke.HIWORD(lParam) - _dragStartPos.Y;
 
-                        var offsetX = dragNewPos.X - _dragStartPos.X;
-                        var offsetY = dragNewPos.Y - _dragStartPos.Y;
 
-                        if (_firstVisiblePos.X - offsetX < 0)
-                        {
-                            _firstVisiblePos.X = 0;
-                        }
-//                        else if () // > MaxWidth
-//                        {    
-//                        }
-                        else
-                        {
-                            _firstVisiblePos.X -= offsetX;
-                        }
 
-                        if (_firstVisiblePos.Y - offsetY < 0)
-                        {
-                            _firstVisiblePos.Y = 0;
-                        }
-//                        else if () // > MaxHeight
+//                        if (_firstVisiblePos.X - offsetX < 0)
 //                        {
+//                            _firstVisiblePos.X = 0;
 //                        }
-                        else
-                        {
-                            _firstVisiblePos.Y -= offsetY;
-                        }
-                        _dragStartPos.X = dragNewPos.X;
-                        _dragStartPos.Y = dragNewPos.Y;
+////                        else if () // > MaxWidth
+////                        {    
+////                        }
+//                        else
+//                        {
+//                            _firstVisiblePos.X -= offsetX;
+//                        }
+//
+//                        if (_firstVisiblePos.Y - offsetY < 0)
+//                        {
+//                            _firstVisiblePos.Y = 0;
+//                        }
+////                        else if () // > MaxHeight
+////                        {
+////                        }
+//                        else
+//                        {
+//                            _firstVisiblePos.Y -= offsetY;
+//                        }
 
                         handled = true;
 
@@ -159,56 +157,56 @@ namespace WPF_GUI.Helpers
                     handled = true;
                     return IntPtr.Zero;
 
-                case PInvoke.WM_MOUSEHWHEEL:
-
-                    var delta = PInvoke.GET_WHEEL_DELTA_WPARAM(wParam);
-                    var keyState = PInvoke.GET_KEYSTATE_WPARAM(wParam);
-
-                    MessageBox.Show("Delta: " + delta.ToString("X") + "\nkeyState: " + keyState.ToString("X"));
-
-                    // Change zoom
-                    if ((keyState & PInvoke.MK_CONTROL) == PInvoke.MK_CONTROL &&
-                        (keyState & PInvoke.MK_SHIFT) != PInvoke.MK_SHIFT)
-                    {
-                        if (delta < 0)
-                        {
-                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ChangeZoom, -5);
-                        }
-                        else
-                        {
-                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ChangeZoom, 5);
-                        }
-                    }
-                    // Change width scroll
-                    else if ((keyState & PInvoke.MK_CONTROL) != PInvoke.MK_CONTROL &&
-                             (keyState & PInvoke.MK_SHIFT) == PInvoke.MK_SHIFT)
-                    {
-                        if (delta < 0)
-                        {
-                            
-                        }
-                        else
-                        {
-                            
-                        }
-                    }
-                    // Change height scroll
-                    else if ((keyState & PInvoke.MK_CONTROL) != PInvoke.MK_CONTROL &&
-                             (keyState & PInvoke.MK_SHIFT) != PInvoke.MK_SHIFT)
-                    {
-                        if (delta < 0)
-                        {
-
-                        }
-                        else
-                        {
-
-                        }
-                    }
-
-
-                    handled = true;
-                    return IntPtr.Zero;
+//                case PInvoke.WM_MOUSEHWHEEL:
+//
+//                    var delta = PInvoke.GET_WHEEL_DELTA_WPARAM(wParam);
+//                    var keyState = PInvoke.GET_KEYSTATE_WPARAM(wParam);
+//
+////                    MessageBox.Show("Delta: " + delta.ToString("X") + "\nkeyState: " + keyState.ToString("X"));
+//
+//                    // Change zoom
+//                    if ((keyState & PInvoke.MK_CONTROL) == PInvoke.MK_CONTROL &&
+//                        (keyState & PInvoke.MK_SHIFT) != PInvoke.MK_SHIFT)
+//                    {
+//                        if (delta < 0)
+//                        {
+//                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ChangeZoom, -5);
+//                        }
+//                        else
+//                        {
+//                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ChangeZoom, 5);
+//                        }
+//                    }
+//                    // Change width scroll
+//                    else if ((keyState & PInvoke.MK_CONTROL) != PInvoke.MK_CONTROL &&
+//                             (keyState & PInvoke.MK_SHIFT) == PInvoke.MK_SHIFT)
+//                    {
+//                        if (delta < 0)
+//                        {
+//                            
+//                        }
+//                        else
+//                        {
+//                            
+//                        }
+//                    }
+//                    // Change height scroll
+//                    else if ((keyState & PInvoke.MK_CONTROL) != PInvoke.MK_CONTROL &&
+//                             (keyState & PInvoke.MK_SHIFT) != PInvoke.MK_SHIFT)
+//                    {
+//                        if (delta < 0)
+//                        {
+//
+//                        }
+//                        else
+//                        {
+//
+//                        }
+//                    }
+//
+//
+//                    handled = true;
+//                    return IntPtr.Zero;
             }
 
             return IntPtr.Zero;
@@ -217,6 +215,19 @@ namespace WPF_GUI.Helpers
         protected override void DestroyWindowCore(HandleRef hwnd)
         {
             PInvoke.DestroyWindow(hwnd.Handle);
+        }
+
+        private static IntPtr LoadCursorFromFile(string lpFileName)
+        {
+            const int cursorSize = 16;
+
+            return PInvoke.LoadImage(
+                IntPtr.Zero,
+                lpFileName,
+                PInvoke.IMAGE_CURSOR,
+                cursorSize, // X size
+                cursorSize, // Y size
+                PInvoke.LR_LOADFROMFILE);
         }
 
         private static void FlushCursorStreamToDisk(Stream stream, string name)

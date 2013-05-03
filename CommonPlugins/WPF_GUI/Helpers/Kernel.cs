@@ -34,5 +34,17 @@ namespace WPF_GUI.Helpers
         [DllImport("GUI_CLR_loader.dll")]
         public static extern void RenderPicture(IntPtr hWnd, UInt32 x, UInt32 y, double scale,
             bool renderNewPicture, bool renderLayer, UInt32 layer);
+
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern UInt32 GetMapWidth();
+
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern UInt32 GetMapHeight();
+
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern UInt32 GetRenderWindowWidth();
+
+        [DllImport("GUI_CLR_loader.dll")]
+        public static extern UInt32 GetRenderWindowHeight();
     }
 }

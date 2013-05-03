@@ -547,6 +547,13 @@ namespace WPF_GUI.ViewModels
                     this.IsTraceMethodEnabled = true;
                     break;
             }
+
+            MessageBox.Show(
+                "Map width: " + Kernel.GetMapWidth()
+                + "\nMap height: " + Kernel.GetMapHeight()
+                + "\nRender width: " + Kernel.GetRenderWindowWidth()
+                + "\nRender height: " + Kernel.GetRenderWindowHeight()
+                );
         }
         #endregion
 

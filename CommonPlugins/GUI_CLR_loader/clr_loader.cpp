@@ -294,8 +294,8 @@ bool __stdcall CloseCurrentFile()
 void __stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer)
 {
-	int xx = 0;
-	xx = -GetTickCount();
+	//int xx = 0;
+	//xx = -GetTickCount();
 	if (self->sys->window != hWnd)
 	{
 		EnableOpenGL( hWnd );
@@ -313,7 +313,7 @@ void __stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,
 
 	DrawGL(x, y, scale, self->sys->current_picture);
 
-	xx += GetTickCount();
+	//xx += GetTickCount();
 	//self->sys->kernel->PrintDebug("RenderPicture time = %d ms, RenderNewPicture = %d", xx, RenderNewPicture); 
 }
 
@@ -328,7 +328,7 @@ uint32_t __stdcall GetMapWidth()
 
 uint32_t __stdcall GetMapHeight()
 {
-	uint32_t x;
-	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &x);
-	return x;
+	uint32_t y;
+	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &y);
+	return y;
 }
