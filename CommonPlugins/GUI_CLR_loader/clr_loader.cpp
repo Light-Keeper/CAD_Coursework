@@ -321,9 +321,9 @@ int32_t __stdcall GetRealImageWidth()
 		return self->sys->current_picture->width;
 	
 	int cell_size = 25;
-	uint32_t y;
-	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &y);
-	return y * cell_size;
+	uint32_t x;
+	self->sys->kernel->GetMapSize( self->sys->kernel, &x, NULL);
+	return x * cell_size;
 }
 
 
@@ -333,8 +333,8 @@ int32_t __stdcall GetRealImageHeight()
 		return self->sys->current_picture->height;
 
 	int cell_size = 25;
-	uint32_t x;
-	self->sys->kernel->GetMapSize( self->sys->kernel, &x, NULL);
-	return x * cell_size;
+	uint32_t y;
+	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &y);
+	return y * cell_size;
 
 }
