@@ -50,10 +50,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\Defines.cs" />
+    <Compile Include="Models\Program.cs" />
     <Compile Include="Helpers\DelegateCommand.cs" />
     <Compile Include="Helpers\ImageHost.cs" />
-    <Compile Include="Helpers\InfoBarMessages.cs" />
     <Compile Include="Helpers\Kernel.cs" />
     <Compile Include="Helpers\MediatorMessages.cs" />
     <Compile Include="Helpers\NotificationObject.cs" />
@@ -62,6 +61,11 @@
     <Compile Include="Models\Place.cs" />
     <Compile Include="Models\Route.cs" />
     <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="ViewModels\AboutPopupViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\ControlPanelViewModel.cs" />
@@ -101,6 +105,10 @@
   <ItemGroup>
     <EmbeddedResource Include="Recources\Cursors\grabbing.cur" />
     <EmbeddedResource Include="Recources\Cursors\grab.cur" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <Resource Include="Recources\Images\error.png" />
   </ItemGroup>
   <ItemGroup>

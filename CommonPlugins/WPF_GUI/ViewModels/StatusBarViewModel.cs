@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WPF_GUI.Helpers;
+using WPF_GUI.Properties;
 
 namespace WPF_GUI.ViewModels
 {
@@ -13,6 +14,11 @@ namespace WPF_GUI.ViewModels
         }
 
         private readonly List<StateInfo> _stateInfo = new List<StateInfo>();
+
+        #region Constants
+        private const int MinZoomConst = 100;
+        private const int MaxZoomConst = 1000;
+        #endregion
 
         #region Properties
 
@@ -31,7 +37,7 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region Zoom
-        private int _zoom = 100;
+        private int _zoom = MinZoomConst;
         public int Zoom
         {
             get { return _zoom; }
@@ -42,36 +48,34 @@ namespace WPF_GUI.ViewModels
                 _zoom = value;
 
                 RaisePropertyChanged(() => Zoom);
-                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ZoomChanged, _zoom);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewImageZoom, _zoom);
             }
         }
         #endregion
 
         #region MinZoom
-        private int _minZoom = 100;
         public int MinZoom
         {
-            get { return _minZoom; }
+            get { return MinZoomConst; }
         }
         #endregion
 
         #region MaxZoom
-        private int _maxZoom = 1000;
         public int MaxZoom
         {
-            get { return _maxZoom; }
+            get { return MaxZoomConst; }
         }
         #endregion
 
         #region CurrentState
-        private int _currentState;
-        public int CurrentState {
+        private Program.State _currentState;
+        public Program.State CurrentState {
             get { return _currentState; }
             set
             {
                 if (value == _currentState) return;
                 _currentState = value;
-                StaticLoader.Application.ProgramState = value;
+                StaticLoader.Application.State = value;
                 RaisePropertyChanged(() => ImageStatePath);
                 RaisePropertyChanged(() => ImageStateToolTip);
             }}
@@ -80,21 +84,21 @@ namespace WPF_GUI.ViewModels
         #region ImageStatePath
         public string ImageStatePath 
         {
-            get { return _stateInfo[_currentState].ImagePath; } 
+            get { return _stateInfo[(int)_currentState].ImagePath; } 
         }
         #endregion
 
         #region ZoomToolTip
         public string ZoomToolTip
         {
-            get { return "Масштаб " + this.Zoom + "%"; }
+            get { return Resources.StatusBar_ZoomToolTipName + " " + this.Zoom + "%"; }
         }
         #endregion
 
         #region ImageStateToolTip
         public string ImageStateToolTip
         {
-            get { return _stateInfo[_currentState].Description; }
+            get { return _stateInfo[(int)_currentState].Description; }
         }
         #endregion
 
@@ -108,26 +112,26 @@ namespace WPF_GUI.ViewModels
             _stateInfo.Add(new StateInfo
             {
                 ImagePath = "../Recources/Images/ok.png",
-                Description = "Всё в порядке, программа готова к работе"
+                Description = Resources.ProgramStateDescription_Good
             });
 
             _stateInfo.Add(new StateInfo
             {
                 ImagePath = "../Recources/Images/loading.png",
-                Description = "Программа выполняет указанные действия"
+                Description = Resources.ProgramStateDescription_Busy
             });
 
             _stateInfo.Add(new StateInfo
             {
                 ImagePath = "../Recources/Images/error.png",
-                Description = "Произошла ошибка в ходе работы программы"
+                Description = Resources.ProgramStateDescription_Error
             });
 
-            this.InfoMessage = InfoBarMessages.ModulesLoadSuccessful;
-            _currentState = Defines.ProgramStateGood;
+            _currentState = StaticLoader.Application.State;
 
-            StaticLoader.Mediator.Register(MediatorMessages.SetInfoMessage, (Action<string>) this.SetInfoMessage);
-            StaticLoader.Mediator.Register(MediatorMessages.SetProgramState, (Action<int>) this.SetProgramState);
+            StaticLoader.Mediator.Register(MediatorMessages.NewInfoMsg, (Action<string>) this.SetInfoMessage);
+            StaticLoader.Mediator.Register(MediatorMessages.SetProgramState, (Action<Program.State>) this.SetProgramState);
+            StaticLoader.Mediator.Register(MediatorMessages.ChangeZoom, (Action<int>) this.ChangeImageZoom);
         }
         #endregion
 
@@ -139,9 +143,16 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region SetProgramState
-        public void SetProgramState(int state)
+        public void SetProgramState(Program.State state)
         {
             this.CurrentState = state;
+        }
+        #endregion
+
+        #region ChangeImageZoom
+        public void ChangeImageZoom(int delta)
+        {
+            this.Zoom += delta;
         }
         #endregion
 

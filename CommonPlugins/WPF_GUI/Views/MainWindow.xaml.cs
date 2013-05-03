@@ -15,8 +15,6 @@ namespace WPF_GUI
         {
             InitializeComponent();
 
-            this.Title = Defines.ProgramName;
-
             StaticLoader.Mediator.Register(MediatorMessages.AddFileNameToTitle, (Action<string>) this.AddFileNameToTitle);
             StaticLoader.Mediator.Register(MediatorMessages.RefreshImageWidth, (Action) this.RefreshImageWidth);
         }
@@ -45,6 +43,8 @@ namespace WPF_GUI
             StaticLoader.Image.Height = BorderForImage.ActualHeight;
 
             StaticLoader.Image.Render(true);
+
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Properties.Resources.ModulesLoadSuccessful);
         }
 
         public void RefreshImageWidth()
@@ -60,7 +60,7 @@ namespace WPF_GUI
 
         private void AddFileNameToTitle(string fileName)
         {
-            this.Title = fileName + " - " + Defines.ProgramName;
+            this.Title = fileName + " - " + Properties.Resources.ProgramName;
         }
 
         // Change Image zoom with hotkeys

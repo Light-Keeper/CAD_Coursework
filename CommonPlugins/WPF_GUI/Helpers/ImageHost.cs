@@ -159,10 +159,12 @@ namespace WPF_GUI.Helpers
                     handled = true;
                     return IntPtr.Zero;
 
-                case PInvoke.WM_MOUSEWHEEL:
+                case PInvoke.WM_MOUSEHWHEEL:
 
                     var delta = PInvoke.GET_WHEEL_DELTA_WPARAM(wParam);
                     var keyState = PInvoke.GET_KEYSTATE_WPARAM(wParam);
+
+                    MessageBox.Show("Delta: " + delta.ToString("X") + "\nkeyState: " + keyState.ToString("X"));
 
                     // Change zoom
                     if ((keyState & PInvoke.MK_CONTROL) == PInvoke.MK_CONTROL &&
@@ -170,11 +172,11 @@ namespace WPF_GUI.Helpers
                     {
                         if (delta < 0)
                         {
-                            
+                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ChangeZoom, -5);
                         }
                         else
                         {
-                            
+                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ChangeZoom, 5);
                         }
                     }
                     // Change width scroll

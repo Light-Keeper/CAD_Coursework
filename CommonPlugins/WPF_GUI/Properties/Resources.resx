@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CanNotStartPlacing" xml:space="preserve">
+    <value>Не удалось запустить компановку</value>
+  </data>
+  <data name="CanNotStartTracing" xml:space="preserve">
+    <value>Не удалось запустить трассировку</value>
+  </data>
+  <data name="CompanyName" xml:space="preserve">
+    <value>ДонНТУ</value>
+  </data>
+  <data name="ConsoleButtonName_Hide" xml:space="preserve">
+    <value>Скрыть консоль</value>
+  </data>
+  <data name="ConsoleButtonName_Show" xml:space="preserve">
+    <value>Показать консоль</value>
+  </data>
+  <data name="ControlPanelName" xml:space="preserve">
+    <value>Панель управления</value>
+  </data>
+  <data name="ControlPanel_Modeling" xml:space="preserve">
+    <value>Моделирование</value>
+  </data>
+  <data name="ControlPanel_Modeling_Place" xml:space="preserve">
+    <value>Компановать</value>
+  </data>
+  <data name="ControlPanel_Modeling_Trace" xml:space="preserve">
+    <value>Трассировать</value>
+  </data>
+  <data name="ControlPanel_Performance" xml:space="preserve">
+    <value>Выполнение</value>
+  </data>
+  <data name="ControlPanel_Performance_Auto" xml:space="preserve">
+    <value>Автоматическое</value>
+  </data>
+  <data name="ControlPanel_Performance_StepByStep" xml:space="preserve">
+    <value>Пошаговое</value>
+  </data>
+  <data name="ControlPanel_PlaceMethod" xml:space="preserve">
+    <value>Метод компановки</value>
+  </data>
+  <data name="ControlPanel_TraceMethod" xml:space="preserve">
+    <value>Метод трассировки</value>
+  </data>
+  <data name="ControlPanel_WorkMode" xml:space="preserve">
+    <value>Режим работы</value>
+  </data>
+  <data name="ControlPanel_WorkMode_Demo" xml:space="preserve">
+    <value>Демонстрационный</value>
+  </data>
+  <data name="ControlPanel_WorkMode_Normal" xml:space="preserve">
+    <value>Обычный</value>
+  </data>
+  <data name="DialogBox_InfoTitle" xml:space="preserve">
+    <value>Информация</value>
+  </data>
+  <data name="DialogBox_WarningTitle" xml:space="preserve">
+    <value>Предупреждение</value>
+  </data>
+  <data name="ExpandControlPanel" xml:space="preserve">
+    <value>Развернуть панель управления</value>
+  </data>
+  <data name="FullControlPanel_AboutButtonName" xml:space="preserve">
+    <value>О программе</value>
+  </data>
+  <data name="FullControlPanel_InfoGroupName" xml:space="preserve">
+    <value>Информация</value>
+  </data>
+  <data name="FullControlPanel_SourceData" xml:space="preserve">
+    <value>Исходные данные</value>
+  </data>
+  <data name="FullControlPanel_SourceFile" xml:space="preserve">
+    <value>Входной файл</value>
+  </data>
+  <data name="FullControlPanel_StopButtonName" xml:space="preserve">
+    <value>Стоп</value>
+  </data>
+  <data name="MinControlPanel_OpenFileToolTip" xml:space="preserve">
+    <value>Открыть входной файл</value>
+  </data>
+  <data name="MinControlPanel_OptionsToolTip" xml:space="preserve">
+    <value>Настройки моделирования</value>
+  </data>
+  <data name="MinControlPanel_ShowOrHideLogWindow" xml:space="preserve">
+    <value>Показать/скрыть консоль</value>
+  </data>
+  <data name="MinControlPanel_ShowProgramInfo" xml:space="preserve">
+    <value>Показать информацию о программе</value>
+  </data>
+  <data name="MinControlPanel_StartModelingToolTip" xml:space="preserve">
+    <value>Запустить моделирование</value>
+  </data>
+  <data name="MinControlPanel_StopModelingToolTip" xml:space="preserve">
+    <value>Остановить моделирование</value>
+  </data>
+  <data name="MinimizeControlPanel" xml:space="preserve">
+    <value>Свернуть панель управления</value>
+  </data>
+  <data name="ModulesLoadSuccessful" xml:space="preserve">
+    <value>Загрузка модулей программы прошла успешно</value>
+  </data>
+  <data name="OpenSourceFile_DialogTitle" xml:space="preserve">
+    <value>Открытие файла с входными данными</value>
+  </data>
+  <data name="OpenSourceFile_FileNotOpened" xml:space="preserve">
+    <value>Входной файл не выбран!
+Откройте файл с данными и повторите попытку.</value>
+  </data>
+  <data name="OpenSourceFile_IncorrectFile" xml:space="preserve">
+    <value>Выбранный файл не содержит данных для моделирования!
+Откройте файл с корректными данными и повторите попытку.</value>
+  </data>
+  <data name="OpenSourceFile_SupportedFormats" xml:space="preserve">
+    <value>Файл данных (*.txt)|*.txt|Все файлы (*.*)|*.*</value>
+  </data>
+  <data name="PlaceMethodNotLoaded" xml:space="preserve">
+    <value>Методы компановки не загружены!
+Чтобы выполнить компановку добавьте dll файл(ы) с методами компановки в папку plugins и перезапустите приложение.</value>
+  </data>
+  <data name="PlaceMethodNotSelected" xml:space="preserve">
+    <value>Метод компановки не выбран!
+Выберите метод и попробуйте снова.</value>
+  </data>
+  <data name="PlaceWereBreaked" xml:space="preserve">
+    <value>Компановка была прервана</value>
+  </data>
+  <data name="PlacingSuccessfulyEnded" xml:space="preserve">
+    <value>Компановка успешно завершена</value>
+  </data>
+  <data name="ProgramDescription" xml:space="preserve">
+    <value>Описание программы</value>
+  </data>
+  <data name="ProgramName" xml:space="preserve">
+    <value>Название программы</value>
+  </data>
+  <data name="ProgramStateDescription_Busy" xml:space="preserve">
+    <value>Программа выполняет действия</value>
+  </data>
+  <data name="ProgramStateDescription_Error" xml:space="preserve">
+    <value>Произошла ошибка в ходе работы программы</value>
+  </data>
+  <data name="ProgramStateDescription_Good" xml:space="preserve">
+    <value>Всё в порядке, программа готова к работе</value>
+  </data>
+  <data name="SourceFileLoaded_Successful" xml:space="preserve">
+    <value>Файл с исходными данными был успешно загружен</value>
+  </data>
+  <data name="SourceFileLoaded_Unsuccessful" xml:space="preserve">
+    <value>Не удалось загрузить файл с исходными данными</value>
+  </data>
+  <data name="StartButtonName_Start" xml:space="preserve">
+    <value>Запустить</value>
+  </data>
+  <data name="StartButtonName_Step" xml:space="preserve">
+    <value>Шаг</value>
+  </data>
+  <data name="StartedPlacing" xml:space="preserve">
+    <value>Выполняется компановка печатной платы</value>
+  </data>
+  <data name="StartedTracing" xml:space="preserve">
+    <value>Выполняется трасировка печатной платы</value>
+  </data>
+  <data name="StatusBar_ZoomToolTipName" xml:space="preserve">
+    <value>Масштаб</value>
+  </data>
+  <data name="TraceMethodIsNotLoaded" xml:space="preserve">
+    <value>Методы трассировки не загружены!
+Чтобы выполнить трассировку добавьте dll файл(ы) с методами трассировки в папку plugins и перезапустите приложение.</value>
+  </data>
+  <data name="TraceMethodIsNotSelected" xml:space="preserve">
+    <value>Метод трассировки не выбран!
+Выберите метод и попробуйте снова.</value>
+  </data>
+  <data name="TraceWereBreaked" xml:space="preserve">
+    <value>Трасировка была прервана</value>
+  </data>
+  <data name="TracingSuccessfulyEnded" xml:space="preserve">
+    <value>Трассировка успешно завершена</value>
+  </data>
+</root>

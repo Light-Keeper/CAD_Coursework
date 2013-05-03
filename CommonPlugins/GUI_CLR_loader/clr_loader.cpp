@@ -294,7 +294,8 @@ bool __stdcall CloseCurrentFile()
 void __stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer)
 {
-	int xx = - GetTickCount();
+	int xx = 0;
+	xx = -GetTickCount();
 	if (self->sys->window != hWnd)
 	{
 		EnableOpenGL( hWnd );
@@ -307,10 +308,13 @@ void __stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,
 			self->sys->current_picture->Delete( self->sys->current_picture );
 
 		self->sys->current_picture = self->sys->kernel->RenderPicture(self->sys->kernel, renderLayer, layer);
+		//self->sys->kernel->PrintDebug("Render New Picture!!!");
 	}
+
 	DrawGL(x, y, scale, self->sys->current_picture);
+
 	xx += GetTickCount();
-	self->sys->kernel->PrintDebug("RenderPicture time = %d ms, RenderNewPicture = %d", xx, RenderNewPicture); 
+	//self->sys->kernel->PrintDebug("RenderPicture time = %d ms, RenderNewPicture = %d", xx, RenderNewPicture); 
 }
 
 

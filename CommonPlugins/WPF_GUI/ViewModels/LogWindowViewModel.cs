@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using WPF_GUI.Helpers;
 using WPF_GUI.Models;
@@ -11,29 +12,9 @@ namespace WPF_GUI.ViewModels
     {
         #region Properties
 
-        #region LogCollection
-        private ObservableCollection<Log> _logCollection;
-        public ObservableCollection<Log> LogCollection
-        {
-            get { return _logCollection; }
-            set
-            {
-                if (_logCollection == value) return;
-                _logCollection = value;
-                RaisePropertyChanged(() => LogCollection);
-            }
-        }
-        #endregion
-
-        #region AllLogMessages
-        public string AllLogMessages
-        {
-            get
-            {
-                return LogCollection.Aggregate("", (current, log) => current + (log.Formated + "\n"));
-            }
-        }
-
+        #region LogMessages
+        private readonly StringBuilder _logMessages = new StringBuilder();
+        public StringBuilder LogMessages { get { return _logMessages; } }
         #endregion
 
         #region IsLogVisible
@@ -46,7 +27,7 @@ namespace WPF_GUI.ViewModels
                 if (_isLogVisible == value) return;
                 _isLogVisible = value;
                 RaisePropertyChanged(() => IsLogVisible);
-                if (_isLogVisible == Visibility.Hidden) StaticLoader.Mediator.NotifyColleagues(MediatorMessages.LogWindowClosed, true);
+                if (_isLogVisible == Visibility.Hidden) StaticLoader.Mediator.NotifyColleagues(MediatorMessages.LogWindowClosed);
             }
         }
         #endregion
@@ -58,25 +39,23 @@ namespace WPF_GUI.ViewModels
         #region Constructor
         public LogWindowViewModel()
         {
-            LogCollection = new ObservableCollection<Log>();
-            StaticLoader.Mediator.Register(MediatorMessages.NewLog, (Action<string>)this.AddLog);
+            StaticLoader.Mediator.Register(MediatorMessages.NewInfoMsg, (Action<string>) this.AddLog);
         }
         #endregion
 
         #region AddLog
         public void AddLog(string msg)
         {
-            _logCollection.Add(
-                new Log
-                    {
-                        CreateTime = DateTime.Now,
-                        Message = msg
-                    });
-            RaisePropertyChanged(() => AllLogMessages);
+            _logMessages.AppendLine(
+                (new Log
+                {
+                    CreateTime = DateTime.Now,
+                    Message = msg
+                }).Formated);
+            RaisePropertyChanged(() => LogMessages);
         }
         #endregion
 
         #endregion
     }
 }
-

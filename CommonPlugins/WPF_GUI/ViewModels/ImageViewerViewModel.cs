@@ -8,7 +8,7 @@ namespace WPF_GUI.ViewModels
     {
         public ImageViewerViewModel()
         {
-            StaticLoader.Mediator.Register(MediatorMessages.ZoomChanged, (Action<int>) this.ChangeImageZoom);
+            StaticLoader.Mediator.Register(MediatorMessages.NewImageZoom, (Action<int>) this.SetNewImageZoom);
         }
 
         #region ImageWidth
@@ -39,7 +39,7 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
-        public void ChangeImageZoom(int zoom)
+        public void SetNewImageZoom(int zoom)
         {
             StaticLoader.Image.Scale = StaticLoader.Image.StartScale * zoom / 100;
             StaticLoader.Image.Render();

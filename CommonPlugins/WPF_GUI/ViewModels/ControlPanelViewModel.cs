@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using WPF_GUI.Helpers;
 using WPF_GUI.Models;
+using WPF_GUI.Properties;
 using MessageBox = System.Windows.MessageBox;
 
 namespace WPF_GUI.ViewModels
@@ -320,61 +321,54 @@ namespace WPF_GUI.ViewModels
                     {
                         if (this.TraceMethodCollection.Count == 0)
                         {
-                            MessageBox.Show("Методы трассировки не загружены!\n" +
-                                "Чтобы выполнить трассировку добавьте dll файл(ы) " +
-                                "с методами трассировки в папку plugins и перезапустите приложение.",
-                                "Предупреждение",
+                            MessageBox.Show(
+                                Resources.TraceMethodIsNotLoaded,
+                                Resources.DialogBox_WarningTitle,
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
+
                             return;
                         }
 
                         if (this.SelectedTraceMethod == null)
                         {
-                            MessageBox.Show("Метод трассировки не выбран!\nВыберите метод и попробуйте снова.",
-                                "Предупреждение",
+                            MessageBox.Show(
+                                Resources.TraceMethodIsNotSelected,
+                                Resources.DialogBox_WarningTitle,
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
+
                             return;
                         }
+
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.StartedTracing);
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Busy);
 
                         var isOk = Kernel.StartTraceModule(this.SelectedTraceMethod.Name, this.IsDemoMode);                        
 
                         if (!isOk)
                         {
-                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
-                                "Не удалось запустить трассировку.");
-                            MessageBox.Show("Не удалось запустить трассировку.",
-                                "Предупреждение",
+                            StaticLoader.Mediator.NotifyColleagues(
+                                MediatorMessages.NewInfoMsg,
+                                Resources.CanNotStartTracing);
+
+                            MessageBox.Show(
+                                Resources.CanNotStartTracing,
+                                Resources.DialogBox_WarningTitle,
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
 
                             return;
                         }
-
-                        StaticLoader.Image.Render(true);
-
-                        this.IsStopButtonEnabled = true;
-
-                        this.StartButtonName = Defines.StartButtonNameStep;
-
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog, InfoBarMessages.StartedPlacing);
-
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateBusy);
-
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.StartedPlacing);
-
-                        return;
                     }
 
                     if (this.IsPlaceMethodSelected)
                     {
                         if (this.PlaceMethodCollection.Count == 0)
                         {
-                            MessageBox.Show("Методы компановки не загружены!\n" +
-                                "Чтобы выполнить компановку добавьте dll файл(ы) " +
-                                "с методами компановки в папку plugins и перезапустите приложение.",
-                                "Предупреждение",
+                            MessageBox.Show(
+                                Resources.PlaceMethodNotLoaded,
+                                Resources.DialogBox_WarningTitle,
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
                             return;
@@ -382,40 +376,39 @@ namespace WPF_GUI.ViewModels
 
                         if (this.SelectedPlaceMethod == null)
                         {
-                            MessageBox.Show("Метод компановки не выбран!\nВыберите метод и попробуйте снова.",
-                                "Предупреждение",
+                            MessageBox.Show(
+                                Resources.PlaceMethodNotSelected,
+                                Resources.DialogBox_WarningTitle,
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
+
                             return;
                         }
+
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.StartedPlacing);
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Busy);
 
                         var isOk = Kernel.StartPlaceModule(this.SelectedPlaceMethod.Name, this.IsDemoMode);
-                        
+
                         if (!isOk)
                         {
-                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog,
-                                "Не удалось запустить компановку.");
-                            MessageBox.Show("Не удалось запустить компановку.",
-                                "Предупреждение",
+                            StaticLoader.Mediator.NotifyColleagues(
+                                MediatorMessages.NewInfoMsg,
+                                Resources.CanNotStartPlacing);
+
+                            MessageBox.Show(
+                                Resources.CanNotStartPlacing,
+                                Resources.DialogBox_WarningTitle,
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Warning);
+
                             return;
                         }
-
-                        StaticLoader.Image.Render(true);
-
-                        this.IsStopButtonEnabled = true;
-
-                        this.StartButtonName = Defines.StartButtonNameStep;
-
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog, InfoBarMessages.StartedTracing);
-
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateBusy);
-
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.StartedTracing);
-
-                        return;
                     }
+
+                    StaticLoader.Image.Render(true);
+                    this.IsStopButtonEnabled = true;
+                    this.StartButtonName = Resources.StartButtonName_Step;
                     break;
 
                 case Kernel.StatePlacing:
@@ -428,18 +421,19 @@ namespace WPF_GUI.ViewModels
                         case Kernel.StatePlace:
                         case Kernel.StateTrace:
                             var msg = kernelState == Kernel.StatePlacing ?
-                                "Компановка успешно завершена" :
-                                "Трассировка успешно завершена";
+                                Resources.PlacingSuccessfulyEnded :
+                                Resources.TracingSuccessfulyEnded;
 
-                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
-
-                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, msg);
-
-                            MessageBox.Show(msg, "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
 
                             this.IsStopButtonEnabled = false;
+                            this.StartButtonName = Resources.StartButtonName_Start;
 
-                            this.StartButtonName = Defines.StartButtonNameBegin;
+                            MessageBox.Show(
+                                msg,
+                                Resources.DialogBox_InfoTitle,
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
 
                             break;
                     }
@@ -447,11 +441,10 @@ namespace WPF_GUI.ViewModels
 
                 case Kernel.StateEmpty:
                     MessageBox.Show(
-                        StaticLoader.Application.ProgramState == Defines.ProgramStateGood
-                            ? "Входной файл не выбран!\nОткройте файл с данными и повторите попытку."
-                            : "Выбранный файл не содержит данных для моделирования!\nОткройте файл " +
-                              "с корректными данными и повторите попытку.",
-                        "Предупреждение",
+                        StaticLoader.Application.State == Program.State.Good ?
+                            Resources.OpenSourceFile_FileNotOpened :
+                            Resources.OpenSourceFile_IncorrectFile,
+                        Resources.DialogBox_WarningTitle,
                         MessageBoxButton.OK,
                         MessageBoxImage.Warning);
                     break;
@@ -466,27 +459,31 @@ namespace WPF_GUI.ViewModels
 
             if (kernelState == Kernel.StatePlacing)
             {
-                MessageBox.Show("Компановка была прервана", "Предупреждение",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    Resources.PlaceWereBreaked,
+                    Resources.DialogBox_WarningTitle,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
             else if (kernelState == Kernel.StateTracing)
             {
-                MessageBox.Show("Трасировка была прервана", "Предупреждение",
-                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show(
+                    Resources.TraceWereBreaked,
+                    Resources.DialogBox_WarningTitle,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Warning);
             }
 
             this.IsStopButtonEnabled = false;
-
-            this.StartButtonName = Defines.StartButtonNameBegin;
-
-            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateGood);
+            this.StartButtonName = Resources.StartButtonName_Start;
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
         }
         #endregion
 
         #region OnShowInformation
-        private void OnShowInformation(object o)
+        private static void OnShowInformation(object o)
         {
-            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ShowAboutPopup, true);
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ShowAboutPopup);
         }
         #endregion
 
@@ -496,13 +493,13 @@ namespace WPF_GUI.ViewModels
             if (StaticLoader.Application.LogViewer.Visibility == Visibility.Visible)
             {
                 StaticLoader.Application.LogViewer.Hide();
-                this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
+                this.ConsoleButtonText = Resources.ConsoleButtonName_Show;
             }
             else
             {
                 StaticLoader.Application.LogViewer.Show();
                 StaticLoader.Application.LogViewer.WindowState = WindowState.Normal;
-                this.ConsoleButtonText = Defines.ConsoleButtonNameWhenOpened;
+                this.ConsoleButtonText = Resources.ConsoleButtonName_Hide;
             }
         }
         #endregion
@@ -512,8 +509,8 @@ namespace WPF_GUI.ViewModels
         {
             var dialog = new OpenFileDialog
                 {
-                    Title = "Открытие файла с входными данными",
-                    Filter = "Файл данных (*.txt)|*.txt|Все файлы (*.*)|*.*",
+                    Title = Resources.OpenSourceFile_DialogTitle,
+                    Filter = Resources.OpenSourceFile_SupportedFormats,
                     DefaultExt = "*.txt"
                 };
 
@@ -528,15 +525,15 @@ namespace WPF_GUI.ViewModels
 
             if ( result )
             {
-                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.FileLoadSuccessful);
-                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateGood);
-
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.SourceFileLoaded_Successful);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
                 StaticLoader.Image.Render(true);
             }
             else
             {
-                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetInfoMessage, InfoBarMessages.FileLoadUnsuccessful);
-                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Defines.ProgramStateError);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.SourceFileLoaded_Unsuccessful);
+                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Error);
+                return;
             }
 
             var kernelState = Kernel.GetState();
@@ -638,20 +635,21 @@ namespace WPF_GUI.ViewModels
 
             this.IsFullControlPanelVisible = Visibility.Visible;
 
-            this.StartButtonName = Defines.StartButtonNameBegin;
+            this.StartButtonName = Resources.StartButtonName_Start;
 
-            this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
+            this.ConsoleButtonText = Resources.ConsoleButtonName_Show;
 
-            StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action<bool>)this.ConsoleWasClosed);
+            StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action) this.ConsoleWasClosed);
         }
         #endregion
 
         #region ConsoleWasClosed
-        public void ConsoleWasClosed(bool state)
+        public void ConsoleWasClosed()
         {
-            this.ConsoleButtonText = Defines.ConsoleButtonNameWhenClosed;
+            this.ConsoleButtonText = Resources.ConsoleButtonName_Show;
         }
         #endregion
+
         #endregion
     }
 }

@@ -46,7 +46,7 @@ namespace WPF_GUI
         {
             if (Mediator != null)
             {
-                Mediator.NotifyColleagues(MediatorMessages.NewLog, msg);
+                Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, msg);
             }
             return msg.Length;
         }

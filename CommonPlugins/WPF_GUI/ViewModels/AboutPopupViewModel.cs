@@ -8,7 +8,7 @@ namespace WPF_GUI.ViewModels
     {
         public AboutPopupViewModel()
         {
-            StaticLoader.Mediator.Register(MediatorMessages.ShowAboutPopup, (Action<bool>) this.Show);
+            StaticLoader.Mediator.Register(MediatorMessages.ShowAboutPopup, (Action) this.Show);
         }
 
         public ICommand Close { get { return new DelegateCommand(OnClose); } }
@@ -30,9 +30,9 @@ namespace WPF_GUI.ViewModels
             }
         }
 
-        public void Show(bool state)
+        public void Show()
         {
-            this.ShowAbout = state;
+            this.ShowAbout = true;
         }
     }
 }

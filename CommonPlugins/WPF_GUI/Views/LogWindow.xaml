@@ -5,7 +5,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         mc:Ignorable="d"
         Width="600" Height="300" MinHeight="60"
-        Title="CAD Course Work - Log Viewer"
         WindowStartupLocation="CenterScreen"
         Icon="../Recources/Images/pcb.ico"
         Visibility="{Binding Path=IsLogVisible, Mode=OneWayToSource}">
@@ -13,6 +12,6 @@
     <TextBox Name="LogViewer" Background="Black" Foreground="Azure"
              TextWrapping="Wrap" BorderThickness="0"
              PreviewTextInput="LogViewer_OnPreviewTextInput"
-             Text="{Binding Path=AllLogMessages, Mode=OneWay}"/>
+             Text="{Binding Path=LogMessages, Mode=OneWay}"/>
     </ScrollViewer>
 </Window>

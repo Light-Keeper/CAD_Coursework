@@ -10,6 +10,7 @@ namespace WPF_GUI
         {
             InitializeComponent();
             DataContext = new LogWindowViewModel();
+            this.Title = Properties.Resources.ProgramName + " - Log Viewer";
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)

@@ -230,7 +230,7 @@ namespace WPF_GUI.Helpers
 
         internal const int WM_LBUTTONUP = 0x0202;
 
-        internal const int WM_MOUSEWHEEL = 0x020A;
+        internal const int WM_MOUSEHWHEEL = 0x020E;
 
         internal const int WM_NCHITTEST = 0x0084;
 
