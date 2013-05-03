@@ -44,8 +44,9 @@ namespace WPF_GUI.Helpers
         [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern IntPtr SetCursor(IntPtr hCursor);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        internal static extern IntPtr LoadCursorFromFile(string lpFileName);
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        internal static extern IntPtr LoadImage(IntPtr hinst, string lpszName, uint uType,
+            int cxDesired, int cyDesired, uint fuLoad);
 
         // ----------------------------------------
 
