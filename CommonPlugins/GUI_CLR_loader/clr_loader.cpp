@@ -317,19 +317,24 @@ void __stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,
 
 int32_t __stdcall GetRealImageWidth()
 {
-	int cell_size = 20;
-
-	uint32_t x;
-	self->sys->kernel->GetMapSize( self->sys->kernel, &x, NULL);
-	return x * cell_size;
+	if (self->sys->current_picture->width) 
+		return self->sys->current_picture->width;
+	
+	int cell_size = 25;
+	uint32_t y;
+	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &y);
+	return y * cell_size;
 }
 
 
 int32_t __stdcall GetRealImageHeight()
 {
-	int cell_size = 20;
+	if (self->sys->current_picture->height) 
+		return self->sys->current_picture->height;
 
-	uint32_t y;
-	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &y);
-	return y * cell_size;
+	int cell_size = 25;
+	uint32_t x;
+	self->sys->kernel->GetMapSize( self->sys->kernel, &x, NULL);
+	return x * cell_size;
+
 }
