@@ -1,0 +1,22 @@
+﻿[Scheme description 1.0]
+D0	SOCKET8
+D1	DIP8
+D2	DIP16
+
+[Connections]
+D0.2 D0.4 D1.4
+D1.4 D0.1 D2.1 D2.10
+
+[Positions]
+field-rows=2
+field-columns=2
+D1 X
+D2 X
+
+
+[Map Coordinates]
+map-height=30
+map-width=30
+D0 2  2
+D1 8 10
+D2 20 10

@@ -243,11 +243,13 @@ uint32_t access_ReadBlock(cad_access_module *self, FILE *f, char *blockName,
 {
 	int BUFFER_SIZE = cad_access_module_private::BUFFER_SIZE;
 	char *buffer = self->sys->buffer;
+	char *utf8Hack = buffer;
 
 	do {
 		if ( fgets(buffer, BUFFER_SIZE, f) == NULL )
 			return E_NOT_FOUND;
-	} while( memcmp(buffer, blockName, sizeof( blockName )) != 0 );
+		utf8Hack = ( *(unsigned short *)buffer) == 0xBBEF ? buffer + 3 : buffer; 
+	} while( memcmp(utf8Hack, blockName, sizeof( blockName )) != 0 );
 	
 	while ( 1 ) 
 	{

@@ -62,14 +62,14 @@ int DrawGL(uint32_t x, uint32_t y, double scale, cad_picture *picture)
 
 	for (uint32_t i = y; i < picture->height; i++)
 	{
-		memcpy(p1, p2, sizeof(uint32_t) *( picture->width - y));
-		p1 += picture->width - y;
+		memcpy(p1, p2, sizeof(uint32_t) *( picture->width - x));
+		p1 += picture->width - x;
 		p2 += picture->width;
 	}
 
 	glRasterPos2d(-1, 1);
 	glPixelZoom((GLfloat)scale, -(GLfloat)scale);
-	glDrawPixels(picture->width - y, picture->height - x, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data);	
+	glDrawPixels(picture->width - x, picture->height - y, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data);	
 	free(data);
 	SwapBuffers( hDC );
 	return 1;
