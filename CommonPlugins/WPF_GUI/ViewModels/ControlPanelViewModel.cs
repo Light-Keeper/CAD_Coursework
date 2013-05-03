@@ -523,18 +523,27 @@ namespace WPF_GUI.ViewModels
 
             var result = Kernel.LoadFile(new StringBuilder(this.InputFilePath));
 
-            if ( result )
-            {
-                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.SourceFileLoaded_Successful);
-                StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
-                StaticLoader.Image.Render(true);
-            }
-            else
+            if ( !result )
             {
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.SourceFileLoaded_Unsuccessful);
                 StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Error);
                 return;
             }
+
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.SourceFileLoaded_Successful);
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
+
+            StaticLoader.Image.Render(true);
+
+            /* TODO
+             * Здесь должны быть вызваны методы ядра, которые
+             * вернут реальные размеры картинки,
+             * после чего их необходимо засунуть так:
+             */
+            StaticLoader.Image.RealSize.Width = REAL_IMAGE_WIDTH_RETURNED_FROM_KERNEL;
+            StaticLoader.Image.RealSize.Height = REAL_IMAGE_HEIGHT_RETURNED_FROM_KERNEL;
+            // После открытия файла и установки размеров картинки, её размер не должен меняться,
+            // иначе приложение будет вылетать, т.к. ожидается, что размеры не будут меняться
 
             var kernelState = Kernel.GetState();
 
@@ -547,13 +556,6 @@ namespace WPF_GUI.ViewModels
                     this.IsTraceMethodEnabled = true;
                     break;
             }
-
-            MessageBox.Show(
-                "Map width: " + Kernel.GetMapWidth()
-                + "\nMap height: " + Kernel.GetMapHeight()
-                + "\nRender width: " + Kernel.GetRenderWindowWidth()
-                + "\nRender height: " + Kernel.GetRenderWindowHeight()
-                );
         }
         #endregion
 

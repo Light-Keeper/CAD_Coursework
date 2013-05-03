@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using System.Windows;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using Point = System.Drawing.Point;
@@ -21,18 +20,16 @@ namespace WPF_GUI.Helpers
 
         private Point _dragStartPos;
 
+        private Point _dragFistVisiblePos;
+
         public Size RealSize;
 
         private Point _firstVisiblePos = new Point(0, 0);
 
-        public double StartScale = 0.4;
-
-        public double Scale;
+        public double Scale = 1.0;
 
         public ImageHost()
         {
-            Scale = StartScale;
-
             var assembly = Assembly.GetExecutingAssembly();
 
             var stream = assembly.GetManifestResourceStream("WPF_GUI.Recources.Cursors.grab.cur");
@@ -101,38 +98,38 @@ namespace WPF_GUI.Helpers
                     return IntPtr.Zero;
 
                 case PInvoke.WM_MOUSEMOVE:
-                    if (_isDragging)
+                    if ( _isDragging )
                     {
                         PInvoke.SetCursor(_cursorGrabbing);
 
-                        var offsetX = PInvoke.LOWORD(lParam) - _dragStartPos.X;
-                        var offsetY = PInvoke.HIWORD(lParam) - _dragStartPos.Y;
+                        var offsetX = (int)((_dragStartPos.X - PInvoke.LOWORD(lParam)) / this.Scale);
+                        var offsetY = (int)((_dragStartPos.Y - PInvoke.HIWORD(lParam)) / this.Scale);
 
-
-
-//                        if (_firstVisiblePos.X - offsetX < 0)
-//                        {
-//                            _firstVisiblePos.X = 0;
-//                        }
-////                        else if () // > MaxWidth
-////                        {    
-////                        }
-//                        else
-//                        {
-//                            _firstVisiblePos.X -= offsetX;
-//                        }
+                        if (_dragFistVisiblePos.X + offsetX < 0)
+                        {
+                            _firstVisiblePos.X = 0;
+                        }
+                        else if (_dragFistVisiblePos.X + offsetX > RealSize.Width)
+                        {
+                            _firstVisiblePos.X = (int)(RealSize.Width - this.Width);
+                        }
+                        else
+                        {
+                            _firstVisiblePos.X = _dragFistVisiblePos.X + offsetX;
+                        }
 //
-//                        if (_firstVisiblePos.Y - offsetY < 0)
-//                        {
-//                            _firstVisiblePos.Y = 0;
-//                        }
-////                        else if () // > MaxHeight
-////                        {
-////                        }
-//                        else
-//                        {
-//                            _firstVisiblePos.Y -= offsetY;
-//                        }
+                        if (_dragFistVisiblePos.Y + offsetY < 0)
+                        {
+                            _firstVisiblePos.Y = 0;
+                        }
+                        else if (_dragFistVisiblePos.Y + offsetY > RealSize.Height)
+                        {
+                            _firstVisiblePos.Y = (int)(RealSize.Height - this.Height);
+                        }
+                        else
+                        {
+                            _firstVisiblePos.Y = _dragFistVisiblePos.Y + offsetY;
+                        }
 
                         handled = true;
 
@@ -146,6 +143,8 @@ namespace WPF_GUI.Helpers
 
                     _dragStartPos.X = PInvoke.LOWORD(lParam);
                     _dragStartPos.Y = PInvoke.HIWORD(lParam);
+
+                    _dragFistVisiblePos = _firstVisiblePos;
 
                     _isDragging = true;
 
