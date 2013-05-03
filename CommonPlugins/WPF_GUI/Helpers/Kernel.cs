@@ -36,15 +36,9 @@ namespace WPF_GUI.Helpers
             bool renderNewPicture, bool renderLayer, UInt32 layer);
 
         [DllImport("GUI_CLR_loader.dll")]
-        public static extern UInt32 GetMapWidth();
+        public static extern Int32 GetRealImageWidth();
 
         [DllImport("GUI_CLR_loader.dll")]
-        public static extern UInt32 GetMapHeight();
-
-        [DllImport("GUI_CLR_loader.dll")]
-        public static extern UInt32 GetRenderWindowWidth();
-
-        [DllImport("GUI_CLR_loader.dll")]
-        public static extern UInt32 GetRenderWindowHeight();
+        public static extern Int32 GetRealImageHeight();
     }
 }

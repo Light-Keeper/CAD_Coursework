@@ -533,17 +533,12 @@ namespace WPF_GUI.ViewModels
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.SourceFileLoaded_Successful);
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
 
-            StaticLoader.Image.Render(true);
+            StaticLoader.Image.RealSize.Width = Kernel.GetRealImageWidth();
+            StaticLoader.Image.RealSize.Height = Kernel.GetRealImageHeight();
 
-            /* TODO
-             * Здесь должны быть вызваны методы ядра, которые
-             * вернут реальные размеры картинки,
-             * после чего их необходимо засунуть так:
-             */
-            StaticLoader.Image.RealSize.Width = REAL_IMAGE_WIDTH_RETURNED_FROM_KERNEL;
-            StaticLoader.Image.RealSize.Height = REAL_IMAGE_HEIGHT_RETURNED_FROM_KERNEL;
-            // После открытия файла и установки размеров картинки, её размер не должен меняться,
-            // иначе приложение будет вылетать, т.к. ожидается, что размеры не будут меняться
+
+
+            StaticLoader.Image.Render(true);
 
             var kernelState = Kernel.GetState();
 

@@ -11,9 +11,6 @@ HDC hDC;
 uint32_t	__stdcall GetMapWidth();
 uint32_t	__stdcall GetMapHeight();
 
-extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowWidth();
-extern "C" __declspec( dllexport ) uint32_t	__stdcall GetRenderWindowHeight();
-
 void EnableOpenGL(HWND hWnd)
 {
     PIXELFORMATDESCRIPTOR pfd;
@@ -76,18 +73,4 @@ int DrawGL(uint32_t x, uint32_t y, double scale, cad_picture *picture)
 	free(data);
 	SwapBuffers( hDC );
 	return 1;
-}
-
-uint32_t	__stdcall GetRenderWindowWidth()
-{
-	RECT r;
-	GetWindowRect(window, &r);
-	return r.right - r.left;
-}
-
-uint32_t	__stdcall GetRenderWindowHeight()
-{
-	RECT r;
-	GetWindowRect(window, &r);
-	return r.bottom - r.top;
 }

@@ -109,22 +109,22 @@ namespace WPF_GUI.Helpers
                         {
                             _firstVisiblePos.X = 0;
                         }
-                        else if (_dragFistVisiblePos.X + offsetX > RealSize.Width)
+                        else if (_dragFistVisiblePos.X + offsetX + (this.Width / this.Scale) > RealSize.Width)
                         {
-                            _firstVisiblePos.X = (int)(RealSize.Width - this.Width);
+                            _firstVisiblePos.X = (int)(RealSize.Width - (this.Width / this.Scale));
                         }
                         else
                         {
                             _firstVisiblePos.X = _dragFistVisiblePos.X + offsetX;
                         }
-//
+
                         if (_dragFistVisiblePos.Y + offsetY < 0)
                         {
                             _firstVisiblePos.Y = 0;
                         }
-                        else if (_dragFistVisiblePos.Y + offsetY > RealSize.Height)
+                        else if (_dragFistVisiblePos.Y + offsetY + (this.Height / this.Scale) > RealSize.Height)
                         {
-                            _firstVisiblePos.Y = (int)(RealSize.Height - this.Height);
+                            _firstVisiblePos.Y = (int)(RealSize.Height - (this.Height / this.Scale));
                         }
                         else
                         {
@@ -145,6 +145,11 @@ namespace WPF_GUI.Helpers
                     _dragStartPos.Y = PInvoke.HIWORD(lParam);
 
                     _dragFistVisiblePos = _firstVisiblePos;
+
+                    StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg,
+                        "StartX: " + (_firstVisiblePos.X + (_dragStartPos.X / this.Scale))
+                        + " StartY: " + (_firstVisiblePos.Y + (_dragStartPos.Y / this.Scale))
+                        + "  RealWidth: " + RealSize.Width + " RealHeight: " + RealSize.Height);
 
                     _isDragging = true;
 

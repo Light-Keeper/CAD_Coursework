@@ -223,15 +223,9 @@ extern "C" __declspec( dllexport ) bool		__stdcall CloseCurrentFile();
 extern "C" __declspec( dllexport ) void		__stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer);
 
-extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapWidth();
-extern "C" __declspec( dllexport ) uint32_t	__stdcall GetMapHeight();
+extern "C" __declspec( dllexport ) int32_t	__stdcall GetRealImageWidth();
+extern "C" __declspec( dllexport ) int32_t	__stdcall GetRealImageHeight();
 
-extern "C" __declspec( dllexport ) uint32_t	__stdcall GetPixelsPerCell();
-
-uint32_t	__stdcall GetPixelsPerCell()
-{
-	return 20;
-}
 
 uint32_t __stdcall GetKernelState()
 {
@@ -298,8 +292,7 @@ bool __stdcall CloseCurrentFile()
 void __stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,  
 											bool RenderNewPicture, bool renderLayer, uint32_t layer)
 {
-	//int xx = 0;
-	//xx = -GetTickCount();
+	//int xx = -GetTickCount();
 	if (self->sys->window != hWnd)
 	{
 		EnableOpenGL( hWnd );
@@ -322,17 +315,21 @@ void __stdcall RenderPicture(HWND hWnd, uint32_t x, uint32_t y, double scale,
 }
 
 
-uint32_t __stdcall GetMapWidth()
+int32_t __stdcall GetRealImageWidth()
 {
+	int cell_size = 20;
+
 	uint32_t x;
 	self->sys->kernel->GetMapSize( self->sys->kernel, &x, NULL);
-	return x;
+	return x * cell_size;
 }
 
 
-uint32_t __stdcall GetMapHeight()
+int32_t __stdcall GetRealImageHeight()
 {
+	int cell_size = 20;
+
 	uint32_t y;
 	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &y);
-	return y;
+	return y * cell_size;
 }
