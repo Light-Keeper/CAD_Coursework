@@ -48,6 +48,9 @@ namespace WPF_GUI.Helpers
         internal static extern IntPtr LoadImage(IntPtr hinst, string lpszName, uint uType,
             int cxDesired, int cyDesired, uint fuLoad);
 
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        internal static extern Int32 GetKeyState(Int32 key);
+
         // ----------------------------------------
 
         [StructLayout(LayoutKind.Sequential)]
@@ -252,6 +255,8 @@ namespace WPF_GUI.Helpers
         internal const int MK_SHIFT     = 0x0004;
         internal const int MK_XBUTTON1  = 0x0020;
         internal const int MK_XBUTTON2  = 0x0040;
+
+        internal const int VK_LBUTTON   = 0x0001;
 
         // ------------------------------------------
 

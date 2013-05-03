@@ -98,6 +98,7 @@ namespace WPF_GUI.Helpers
                     return IntPtr.Zero;
 
                 case PInvoke.WM_MOUSEMOVE:
+                    if ((PInvoke.GetKeyState(PInvoke.VK_LBUTTON) & 0x80) == 0) _isDragging = false;
                     if ( _isDragging )
                     {
                         PInvoke.SetCursor(_cursorGrabbing);
