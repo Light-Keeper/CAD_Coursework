@@ -20,7 +20,7 @@ namespace WPF_GUI.Helpers
 
         private Point _dragStartPos;
 
-        private Point _dragFistVisiblePos;
+        private Point _dragFirstVisiblePos;
 
         public Size RealSize;
 
@@ -106,30 +106,37 @@ namespace WPF_GUI.Helpers
                         var offsetX = (int)((_dragStartPos.X - PInvoke.LOWORD(lParam)) / this.Scale);
                         var offsetY = (int)((_dragStartPos.Y - PInvoke.HIWORD(lParam)) / this.Scale);
 
-                        if (_dragFistVisiblePos.X + offsetX < 0)
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg,
+                        " StartX: " + (_firstVisiblePos.X + (_dragStartPos.X / this.Scale))
+                        + " RealWidth: " + RealSize.Width
+                        + " OffsetX: " + offsetX
+                        + " this.Width: " + this.Width
+                        + " this.Scale: " + this.Scale);
+
+                        if (_dragFirstVisiblePos.X + offsetX < 0)
                         {
                             _firstVisiblePos.X = 0;
                         }
-                        else if (_dragFistVisiblePos.X + offsetX + (this.Width / this.Scale) > RealSize.Width)
+                        else if (_dragFirstVisiblePos.X + offsetX + (this.Width / this.Scale) > RealSize.Width)
                         {
                             _firstVisiblePos.X = (int)(RealSize.Width - (this.Width / this.Scale));
                         }
                         else
                         {
-                            _firstVisiblePos.X = _dragFistVisiblePos.X + offsetX;
+                            _firstVisiblePos.X = _dragFirstVisiblePos.X + offsetX;
                         }
 
-                        if (_dragFistVisiblePos.Y + offsetY < 0)
+                        if (_dragFirstVisiblePos.Y + offsetY < 0)
                         {
                             _firstVisiblePos.Y = 0;
                         }
-                        else if (_dragFistVisiblePos.Y + offsetY + (this.Height / this.Scale) > RealSize.Height)
+                        else if (_dragFirstVisiblePos.Y + offsetY + (this.Height / this.Scale) > RealSize.Height)
                         {
                             _firstVisiblePos.Y = (int)(RealSize.Height - (this.Height / this.Scale));
                         }
                         else
                         {
-                            _firstVisiblePos.Y = _dragFistVisiblePos.Y + offsetY;
+                            _firstVisiblePos.Y = _dragFirstVisiblePos.Y + offsetY;
                         }
 
                         handled = true;
@@ -145,12 +152,7 @@ namespace WPF_GUI.Helpers
                     _dragStartPos.X = PInvoke.LOWORD(lParam);
                     _dragStartPos.Y = PInvoke.HIWORD(lParam);
 
-                    _dragFistVisiblePos = _firstVisiblePos;
-
-                    StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg,
-                        "StartX: " + (_firstVisiblePos.X + (_dragStartPos.X / this.Scale))
-                        + " StartY: " + (_firstVisiblePos.Y + (_dragStartPos.Y / this.Scale))
-                        + "  RealWidth: " + RealSize.Width + " RealHeight: " + RealSize.Height);
+                    _dragFirstVisiblePos = _firstVisiblePos;
 
                     _isDragging = true;
 

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -14,6 +15,8 @@ namespace WPF_GUI.ViewModels
 {
     public class ControlPanelViewModel : BaseViewModel
     {
+        private readonly System.Timers.Timer _timer;
+
         #region Properties
 
         #region StartButtonName
@@ -89,6 +92,18 @@ namespace WPF_GUI.ViewModels
                 if (_isAutoExec == value) return;
                 _isAutoExec = value;
                 RaisePropertyChanged(() => IsAutoExec);
+                RaisePropertyChanged(() => IsStartButtonEnabled);
+
+                if (StaticLoader.Application.State != Program.State.Busy) return;
+
+                if (_isAutoExec)
+                {
+                    _timer.Start();
+                }
+                else
+                {
+                    _timer.Stop();
+                }
             }
         }
         #endregion
@@ -132,16 +147,9 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region IsStartButtonEnabled
-        private bool _isStartButtonEnabled;
         public bool IsStartButtonEnabled
         {
-            get { return _isStartButtonEnabled; }
-            set
-            {
-                if (_isStartButtonEnabled == value) return;
-                _isStartButtonEnabled = value;
-                RaisePropertyChanged(() => IsStartButtonEnabled);
-            }
+            get { return !(this.IsAutoExec && StaticLoader.Application.State == Program.State.Busy); }
         }
         #endregion
 
@@ -406,9 +414,13 @@ namespace WPF_GUI.ViewModels
                         }
                     }
 
-                    StaticLoader.Image.Render(true);
                     this.IsStopButtonEnabled = true;
                     this.StartButtonName = Resources.StartButtonName_Step;
+                    RaisePropertyChanged(() => IsStartButtonEnabled);
+
+                    if (this.IsAutoExec && _timer.Enabled == false) _timer.Start();
+                    StaticLoader.Image.Render(true);
+
                     break;
 
                 case Kernel.StatePlacing:
@@ -429,6 +441,8 @@ namespace WPF_GUI.ViewModels
                             this.IsStopButtonEnabled = false;
                             this.StartButtonName = Resources.StartButtonName_Start;
 
+                            _timer.Stop();
+
                             MessageBox.Show(
                                 msg,
                                 Resources.DialogBox_InfoTitle,
@@ -437,6 +451,7 @@ namespace WPF_GUI.ViewModels
 
                             break;
                     }
+                    RaisePropertyChanged(() => IsStartButtonEnabled);
                     break;
 
                 case Kernel.StateEmpty:
@@ -455,6 +470,12 @@ namespace WPF_GUI.ViewModels
         #region OnStopModeling
         private void OnStopModeling(object o)
         {
+            this.IsStopButtonEnabled = false;
+            this.StartButtonName = Resources.StartButtonName_Start;
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
+            RaisePropertyChanged(() => IsStartButtonEnabled);
+            _timer.Stop();
+
             var kernelState = Kernel.GetState();
 
             if (kernelState == Kernel.StatePlacing)
@@ -473,10 +494,6 @@ namespace WPF_GUI.ViewModels
                     MessageBoxButton.OK,
                     MessageBoxImage.Warning);
             }
-
-            this.IsStopButtonEnabled = false;
-            this.StartButtonName = Resources.StartButtonName_Start;
-            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
         }
         #endregion
 
@@ -533,12 +550,10 @@ namespace WPF_GUI.ViewModels
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Resources.SourceFileLoaded_Successful);
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
 
+            StaticLoader.Image.Render(true);
+
             StaticLoader.Image.RealSize.Width = Kernel.GetRealImageWidth();
             StaticLoader.Image.RealSize.Height = Kernel.GetRealImageHeight();
-
-
-
-            StaticLoader.Image.Render(true);
 
             var kernelState = Kernel.GetState();
 
@@ -629,7 +644,6 @@ namespace WPF_GUI.ViewModels
             this.IsDemoMode = true;
             this.IsStepExec = true;
 
-            this.IsStartButtonEnabled = true;
             this.IsStopButtonEnabled = false;
 
             this.IsTraceMethodSelected = true;
@@ -644,6 +658,13 @@ namespace WPF_GUI.ViewModels
             this.ConsoleButtonText = Resources.ConsoleButtonName_Show;
 
             StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action) this.ConsoleWasClosed);
+
+            _timer = new System.Timers.Timer();
+            _timer.Elapsed += delegate(object o, ElapsedEventArgs e)
+                {
+                    this.OnStartModeling(o);
+                };
+            _timer.Interval = 1000;
         }
         #endregion
 

@@ -1,4 +1,4 @@
-﻿<Window x:Class="WPF_GUI.MainWindow"
+﻿<Window x:Class="WPF_GUI.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewModel="clr-namespace:WPF_GUI.ViewModels"
@@ -222,7 +222,7 @@
                     </Button>
                     <Separator Height="2" Grid.Row="3"/>
                     <Button Grid.Row="4" Template="{StaticResource MinPanelButtonTemplate}"
-                        IsEnabled="{Binding Path=IsStartButtonEnabled, Mode=TwoWay}"
+                        IsEnabled="{Binding Path=IsStartButtonEnabled, Mode=OneWay}"
                         Command="{Binding Path=StartModeling}">
                         <Image Source="../Recources/Images/start.png"/>
                         <Button.ToolTip>
@@ -353,7 +353,7 @@
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                 <Button Content="{Binding Path=StartButtonName, Mode=OneWay}"
-                                    IsEnabled="{Binding Path=IsStartButtonEnabled}"
+                                    IsEnabled="{Binding Path=IsStartButtonEnabled, Mode=OneWay}"
                                     Style="{StaticResource StartStopButton}"
                                     Command="{Binding Path=StartModeling}"/>
                                 <Button Content="{x:Static res:Resources.FullControlPanel_StopButtonName}"

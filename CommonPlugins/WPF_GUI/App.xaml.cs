@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using WPF_GUI.Helpers;
+using WPF_GUI.Views;
 
 namespace WPF_GUI
 {

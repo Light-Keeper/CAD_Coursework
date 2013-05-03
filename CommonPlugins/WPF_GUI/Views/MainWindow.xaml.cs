@@ -7,7 +7,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using WPF_GUI.Helpers;
 
-namespace WPF_GUI
+namespace WPF_GUI.Views
 {
     public partial class MainWindow : Window
     {
@@ -39,8 +39,8 @@ namespace WPF_GUI
                     Mode = BindingMode.TwoWay
                 });
 
-            StaticLoader.Image.Width = BorderForImage.ActualWidth;
-            StaticLoader.Image.Height = BorderForImage.ActualHeight;
+            StaticLoader.Image.Width = ImageViewer.ViewportWidth;
+            StaticLoader.Image.Height = ImageViewer.ViewportHeight;
 
             StaticLoader.Image.Render(true);
 
@@ -49,7 +49,8 @@ namespace WPF_GUI
 
         public void RefreshImageWidth()
         {
-            StaticLoader.Image.Width = ImageViewer.Width;
+            ImageViewer.UpdateLayout();
+            StaticLoader.Image.Width = this.ImageViewer.ViewportWidth;
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)

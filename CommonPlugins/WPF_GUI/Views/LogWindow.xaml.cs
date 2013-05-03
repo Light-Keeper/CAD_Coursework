@@ -2,7 +2,7 @@
 using System.Windows.Input;
 using WPF_GUI.ViewModels;
 
-namespace WPF_GUI
+namespace WPF_GUI.Views
 {
     public partial class LogWindow : Window
     {
@@ -10,7 +10,7 @@ namespace WPF_GUI
         {
             InitializeComponent();
             DataContext = new LogWindowViewModel();
-            this.Title = Properties.Resources.ProgramName + " - Log Viewer";
+            this.Title =  "Log Viewer - " + Properties.Resources.ProgramName;
         }
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
