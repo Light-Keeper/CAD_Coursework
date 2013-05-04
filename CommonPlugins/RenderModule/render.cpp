@@ -3,8 +3,8 @@
 #include <cstdio>
 #include <math.h>
 #include <string>
-#define S1 200
-#define S2 100
+#define WantWidth 1366
+#define WantHeight 728
 
 cad_render_module * Open(cad_kernel *, void *);
 void *Close(cad_kernel* kernel, cad_render_module *self);
@@ -263,6 +263,14 @@ cad_picture * draw_Nothing(cad_render_module *self)
 	return  allocate_picture(self);
 }
 
+int Max(int a, int b)
+{
+	if (a>=b)
+		return a;
+	else 
+		return b;
+}
+
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
  	if (map == NULL) 
@@ -272,46 +280,38 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 
 	int w = map->width; 
 	int h = map->height; 
-	int width, height; uint32_t value; int addw, addh;
-	if (ceil((double)self->sys->width/w)<25) //standartization if field is too little
-	{
-		width = 25*w+w-1; 
-		height = 25*h+h-1;
-	}
-	else 
-	{
-		if (((int)ceil((double)self->sys->width/w)%2)==0)
-			{addw=w*2;
-		addh=h*2;}
-		else
-		{	addw=w;
-		addh=h;}
-		width = (int)ceil((double)self->sys->width/w)*w+addw-1;
-		height = (int)ceil((double)self->sys->width/w)*h+addh-1; 
-	}
-
-	SetPitcureSize(self, 25 * map->width, 25 * map->height);
+	int width, height; uint32_t value; int addw, addh, CellWidth, CellHeight, CellSize, ImageWidth, ImageHeight;
+	CellWidth = (int)ceil((double)WantWidth/w);
+	CellHeight = (int)ceil((double)WantHeight/h);
+	CellSize = Max(CellWidth, CellHeight);
+	if (CellSize<15)
+		CellSize=15;
+	if ((CellSize%2)==0)
+			CellSize+=1;
+	ImageWidth = w * CellSize + w -1;
+	ImageHeight = h * CellSize + h -1;
+	SetPitcureSize(self, ImageWidth, ImageHeight);
 	auto picture = allocate_picture(self);
-	int size_square=(picture->width-w+1)/w; 
-	memset(picture->data, 220, picture->width * picture->height * sizeof( uint32_t ));
+	int size_square=CellSize; 
+	memset(picture->data, 220, ImageWidth * ImageHeight * sizeof( uint32_t ));
 	
 //=================================================================================
 	// HORIZONTAL LINES
 //=================================================================================
-	for (int y=size_square; y < (int)picture->height; ) // horizontal lines
+	for (int y=CellSize; y<ImageHeight; ) // horizontal lines
 		{
-			for (int i=0;  i<(int)picture->width; i++)
-				picture->data[(int)picture->width * y + i] = 0xeeeeee; 
-			y+=(size_square+1);
+			for (int i=0;  i<ImageWidth; i++)
+				picture->data[ImageWidth * y + i] = 0xeeeeee; 
+			y+=(CellSize+1);
 		}
 //=================================================================================
 	// VERTICAL LINES
 //=================================================================================
-	for (int z=size_square; z < (int)picture->width;) //vertical lines
+	for (int z=CellSize; z<ImageWidth;) //vertical lines
 		{
-			for (int i=0; i<(int)picture->height; i++)
-			picture->data[(int)picture->width*i+z] = 0xeeeeee; 
-			z+=(size_square+1);
+			for (int i=0; i<ImageHeight; i++)
+			picture->data[ImageWidth*i+z] = 0xeeeeee; 
+			z+=(CellSize+1);
 		}
 	//int n = MapElement3D(map, 0,0,map->currerntLayer);	
 		
