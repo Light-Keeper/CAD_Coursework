@@ -98,20 +98,16 @@ namespace WPF_GUI.Helpers
                     return IntPtr.Zero;
 
                 case PInvoke.WM_MOUSEMOVE:
-                    if ((PInvoke.GetKeyState(PInvoke.VK_LBUTTON) & 0x80) == 0) _isDragging = false;
+                    if ((PInvoke.GetKeyState(PInvoke.VK_LBUTTON) & 0x80) == 0)
+                    {
+                        _isDragging = false;
+                    }
                     if ( _isDragging )
                     {
                         PInvoke.SetCursor(_cursorGrabbing);
 
                         var offsetX = (int)((_dragStartPos.X - PInvoke.LOWORD(lParam)) / this.Scale);
                         var offsetY = (int)((_dragStartPos.Y - PInvoke.HIWORD(lParam)) / this.Scale);
-
-                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg,
-                        " StartX: " + (_firstVisiblePos.X + (_dragStartPos.X / this.Scale))
-                        + " RealWidth: " + RealSize.Width
-                        + " OffsetX: " + offsetX
-                        + " this.Width: " + this.Width
-                        + " this.Scale: " + this.Scale);
 
                         if (_dragFirstVisiblePos.X + offsetX < 0)
                         {
@@ -169,7 +165,7 @@ namespace WPF_GUI.Helpers
 //                    var delta = PInvoke.GET_WHEEL_DELTA_WPARAM(wParam);
 //                    var keyState = PInvoke.GET_KEYSTATE_WPARAM(wParam);
 //
-////                    MessageBox.Show("Delta: " + delta.ToString("X") + "\nkeyState: " + keyState.ToString("X"));
+//                    MessageBox.Show("Delta: " + delta.ToString("X") + "\nkeyState: " + keyState.ToString("X"));
 //
 //                    // Change zoom
 //                    if ((keyState & PInvoke.MK_CONTROL) == PInvoke.MK_CONTROL &&

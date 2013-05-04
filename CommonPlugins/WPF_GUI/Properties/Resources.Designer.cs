@@ -324,9 +324,18 @@ namespace WPF_GUI.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Запустить моделирование.
         /// </summary>
-        public static string MinControlPanel_StartModelingToolTip {
+        public static string MinControlPanel_StartModelingToolTip_Start {
             get {
-                return ResourceManager.GetString("MinControlPanel_StartModelingToolTip", resourceCulture);
+                return ResourceManager.GetString("MinControlPanel_StartModelingToolTip_Start", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Сделать следующий шаг.
+        /// </summary>
+        public static string MinControlPanel_StartModelingToolTip_Step {
+            get {
+                return ResourceManager.GetString("MinControlPanel_StartModelingToolTip_Step", resourceCulture);
             }
         }
         

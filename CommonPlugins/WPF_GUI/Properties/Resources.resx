@@ -204,8 +204,11 @@
   <data name="MinControlPanel_ShowProgramInfo" xml:space="preserve">
     <value>Показать информацию о программе</value>
   </data>
-  <data name="MinControlPanel_StartModelingToolTip" xml:space="preserve">
+  <data name="MinControlPanel_StartModelingToolTip_Start" xml:space="preserve">
     <value>Запустить моделирование</value>
+  </data>
+  <data name="MinControlPanel_StartModelingToolTip_Step" xml:space="preserve">
+    <value>Сделать следующий шаг</value>
   </data>
   <data name="MinControlPanel_StopModelingToolTip" xml:space="preserve">
     <value>Остановить моделирование</value>

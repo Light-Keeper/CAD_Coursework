@@ -96,14 +96,14 @@ namespace WPF_GUI.ViewModels
 
                 if (StaticLoader.Application.State != Program.State.Busy) return;
 
-                if (_isAutoExec)
-                {
-                    _timer.Start();
-                }
-                else
-                {
-                    _timer.Stop();
-                }
+//                if (this.IsAutoExec)
+//                {
+//                    _timer.Start();
+//                }
+//                else
+//                {
+//                    _timer.Stop();
+//                }
             }
         }
         #endregion
@@ -150,6 +150,20 @@ namespace WPF_GUI.ViewModels
         public bool IsStartButtonEnabled
         {
             get { return !(this.IsAutoExec && StaticLoader.Application.State == Program.State.Busy); }
+        }
+        #endregion
+
+        #region
+        private string _startButtonTooltip;
+        public string StartButtonTooltip
+        {
+            get { return _startButtonTooltip; }
+            set
+            {
+                if (_startButtonTooltip == value) return;
+                _startButtonTooltip = value;
+                RaisePropertyChanged(() => StartButtonTooltip);
+            }
         }
         #endregion
 
@@ -416,17 +430,14 @@ namespace WPF_GUI.ViewModels
 
                     this.IsStopButtonEnabled = true;
                     this.StartButtonName = Resources.StartButtonName_Step;
+                    this.StartButtonTooltip = Resources.MinControlPanel_StartModelingToolTip_Step;
                     RaisePropertyChanged(() => IsStartButtonEnabled);
-
-                    if (this.IsAutoExec && _timer.Enabled == false) _timer.Start();
-                    StaticLoader.Image.Render(true);
-
+                    if (this.IsAutoExec) _timer.Start();
                     break;
 
                 case Kernel.StatePlacing:
                 case Kernel.StateTracing:
                     Kernel.NextStep(this.IsDemoMode);
-                    StaticLoader.Image.Render(true);
                     switch (Kernel.GetState())
                     {
                         case Kernel.StateEmpty:
@@ -440,8 +451,9 @@ namespace WPF_GUI.ViewModels
 
                             this.IsStopButtonEnabled = false;
                             this.StartButtonName = Resources.StartButtonName_Start;
+                            this.StartButtonTooltip = Resources.MinControlPanel_StartModelingToolTip_Start;
 
-                            _timer.Stop();
+                            RaisePropertyChanged(() => IsStartButtonEnabled);
 
                             MessageBox.Show(
                                 msg,
@@ -449,9 +461,8 @@ namespace WPF_GUI.ViewModels
                                 MessageBoxButton.OK,
                                 MessageBoxImage.Information);
 
-                            break;
+                            return;
                     }
-                    RaisePropertyChanged(() => IsStartButtonEnabled);
                     break;
 
                 case Kernel.StateEmpty:
@@ -472,6 +483,7 @@ namespace WPF_GUI.ViewModels
         {
             this.IsStopButtonEnabled = false;
             this.StartButtonName = Resources.StartButtonName_Start;
+            this.StartButtonTooltip = Resources.MinControlPanel_StartModelingToolTip_Start;
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
             RaisePropertyChanged(() => IsStartButtonEnabled);
             _timer.Stop();
@@ -654,6 +666,7 @@ namespace WPF_GUI.ViewModels
             this.IsFullControlPanelVisible = Visibility.Visible;
 
             this.StartButtonName = Resources.StartButtonName_Start;
+            this.StartButtonTooltip = Resources.MinControlPanel_StartModelingToolTip_Start;
 
             this.ConsoleButtonText = Resources.ConsoleButtonName_Show;
 
@@ -662,7 +675,9 @@ namespace WPF_GUI.ViewModels
             _timer = new System.Timers.Timer();
             _timer.Elapsed += delegate(object o, ElapsedEventArgs e)
                 {
+                    _timer.Stop();
                     this.OnStartModeling(o);
+                    _timer.Start();
                 };
             _timer.Interval = 1000;
         }

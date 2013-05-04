@@ -37,7 +37,7 @@ namespace WPF_GUI
         // Call from native code
         public static int UpdatePictureEvent(string arg)
         {
-            Image.Render();
+            Image.Render(true);
             return 0;
         }
 

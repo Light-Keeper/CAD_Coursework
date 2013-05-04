@@ -16,8 +16,8 @@ namespace WPF_GUI.ViewModels
         private readonly List<StateInfo> _stateInfo = new List<StateInfo>();
 
         #region Constants
-        private const int MinZoomConst = 100;
-        private const int MaxZoomConst = 1000;
+        private const int MinZoomConst = 20;
+        private const int MaxZoomConst = 400;
         #endregion
 
         #region Properties
@@ -37,7 +37,7 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region Zoom
-        private int _zoom = MinZoomConst;
+        private int _zoom = 100;
         public int Zoom
         {
             get { return _zoom; }
