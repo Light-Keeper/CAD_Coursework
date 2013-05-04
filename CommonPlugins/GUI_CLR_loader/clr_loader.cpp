@@ -336,5 +336,4 @@ int32_t __stdcall GetRealImageHeight()
 	uint32_t y;
 	self->sys->kernel->GetMapSize( self->sys->kernel, NULL, &y);
 	return y * cell_size;
-
 }

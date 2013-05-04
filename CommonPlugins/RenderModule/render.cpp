@@ -3,8 +3,13 @@
 #include <cstdio>
 #include <math.h>
 #include <string>
-#define WantWidth 1366
-#define WantHeight 728
+
+#define max(a, b) (a) > (b) ? (a) : (b)
+
+#define WANT_WIDTH		1366	// Должен задавать WPF_GUI модуль
+#define WANT_HEIGHT		728		// Должен задавать WPF_GUI модуль
+
+#define MIN_CELL_SIZE	21		// При меньшем размере стрелочки отображаются не корректно
 
 cad_render_module * Open(cad_kernel *, void *);
 void *Close(cad_kernel* kernel, cad_render_module *self);
@@ -263,14 +268,6 @@ cad_picture * draw_Nothing(cad_render_module *self)
 	return  allocate_picture(self);
 }
 
-int Max(int a, int b)
-{
-	if (a>=b)
-		return a;
-	else 
-		return b;
-}
-
 cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceDrawLayer, uint32_t forceDrawLayerNunber)
 {
  	if (map == NULL) 
@@ -278,43 +275,49 @@ cad_picture *RenderMap(cad_render_module *self, cad_route_map * map, bool forceD
 		return draw_Nothing( self );
 	}
 
-	int w = map->width; 
-	int h = map->height; 
-	int width, height; uint32_t value; int addw, addh, CellWidth, CellHeight, CellSize, ImageWidth, ImageHeight;
-	CellWidth = (int)ceil((double)WantWidth/w);
-	CellHeight = (int)ceil((double)WantHeight/h);
-	CellSize = Max(CellWidth, CellHeight);
-	if (CellSize<15)
-		CellSize=15;
-	if ((CellSize%2)==0)
-			CellSize+=1;
-	ImageWidth = w * CellSize + w -1;
-	ImageHeight = h * CellSize + h -1;
-	SetPitcureSize(self, ImageWidth, ImageHeight);
-	auto picture = allocate_picture(self);
-	int size_square=CellSize; 
-	memset(picture->data, 220, ImageWidth * ImageHeight * sizeof( uint32_t ));
+	int w = map->width;
+	int h = map->height;
+
+	int width, height;
+	uint32_t value;
+	int addw, addh;
+	int cell_size;
+	int image_width, image_height;
+
+	cell_size = (int) max( ceil((double) WANT_WIDTH / w), ceil((double) WANT_HEIGHT / h) );
+
+	if (cell_size % 2 == 0) cell_size += 1;
+
+	if (cell_size < MIN_CELL_SIZE) cell_size = MIN_CELL_SIZE;
+	
+	image_width = w * cell_size + w - 1;
+	image_height = h * cell_size + h - 1;
+
+	SetPitcureSize( self, image_width, image_height );
+
+	auto picture = allocate_picture( self ); 
+
+	memset( picture->data, 220, image_width * image_height * sizeof( uint32_t ) );
 	
 //=================================================================================
 	// HORIZONTAL LINES
 //=================================================================================
-	for (int y=CellSize; y<ImageHeight; ) // horizontal lines
+	for (int y=cell_size; y < image_height; ) // horizontal lines
 		{
-			for (int i=0;  i<ImageWidth; i++)
-				picture->data[ImageWidth * y + i] = 0xeeeeee; 
-			y+=(CellSize+1);
+			for (int i=0;  i < image_width; i++)
+				picture->data[image_width * y + i] = 0xeeeeee; 
+			y += (cell_size + 1);
 		}
 //=================================================================================
 	// VERTICAL LINES
 //=================================================================================
-	for (int z=CellSize; z<ImageWidth;) //vertical lines
+	for (int z=cell_size; z < image_width;) //vertical lines
 		{
-			for (int i=0; i<ImageHeight; i++)
-			picture->data[ImageWidth*i+z] = 0xeeeeee; 
-			z+=(CellSize+1);
+			for (int i=0; i < image_height; i++)
+				picture->data[image_width * i + z] = 0xeeeeee; 
+			z += (cell_size + 1);
 		}
 	//int n = MapElement3D(map, 0,0,map->currerntLayer);	
-		
 		
 	for (int r1 =0 ; r1<h; r1 ++ )
 		for (int r2=0; r2<w; r2++)
