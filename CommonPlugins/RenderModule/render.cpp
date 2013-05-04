@@ -1,4 +1,4 @@
-#include <cad_module.h>
+п»ї#include <cad_module.h>
 #include <cad_object.h>
 #include <cstdio>
 #include <math.h>
@@ -6,10 +6,10 @@
 
 #define max(a, b) (a) > (b) ? (a) : (b)
 
-#define WANT_WIDTH		1366	// Должен задавать WPF_GUI модуль
-#define WANT_HEIGHT		728		// Должен задавать WPF_GUI модуль
+#define WANT_WIDTH		1366	// Р”РѕР»Р¶РµРЅ Р·Р°РґР°РІР°С‚СЊ WPF_GUI РјРѕРґСѓР»СЊ
+#define WANT_HEIGHT		728		// Р”РѕР»Р¶РµРЅ Р·Р°РґР°РІР°С‚СЊ WPF_GUI РјРѕРґСѓР»СЊ
 
-#define MIN_CELL_SIZE	21		// При меньшем размере стрелочки отображаются не корректно
+#define MIN_CELL_SIZE	21		// РџСЂРё РјРµРЅСЊС€РµРј СЂР°Р·РјРµСЂРµ СЃС‚СЂРµР»РѕС‡РєРё РѕС‚РѕР±СЂР°Р¶Р°СЋС‚СЃСЏ РЅРµРєРѕСЂСЂРµРєС‚РЅРѕ
 
 cad_render_module * Open(cad_kernel *, void *);
 void *Close(cad_kernel* kernel, cad_render_module *self);
