@@ -140,7 +140,7 @@ bool generator_ReinitializeRouteMap(cad_map_generator *self, cad_scheme *scheme,
 {
 	cad_route_map *m = *map;
 	if (m == NULL) return false;
-	if (m->height == 0 || m->width == 0 || m->height == 0) return false;
+	if (m->height == 0 || m->width == 0 || m->depth == 0) return false;
 	if (scheme != m->sheme) return false;
 
 	for (uint32_t i = 0; i < m->sheme->chip_number; i++)
