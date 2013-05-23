@@ -10,7 +10,6 @@
         public const string ShowAboutPopup = "ShowAboutPopup";
         public const string AddFileNameToTitle = "AddFileNameToTitle";
         public const string RefreshImageWidth = "RefreshImageWidth";
-//        public const string InitImageScrollBar = "InitImageScrollBar";
         public const string ResizeImageScrollBar = "ResizeImageScrollBar";
     }
 }

@@ -112,7 +112,7 @@
                 <viewModel:ImageViewerViewModel/>
             </Grid.DataContext>
             <Border Name="ImageViewer" Grid.Row="0" Grid.Column="0"
-                    Background="MintCream" Focusable="False" Padding="5"/>
+                    Background="MintCream" Focusable="False" Padding="1"/>
             <ScrollBar Grid.Row="0" Grid.Column="1" LargeChange="1" SmallChange="1"
                        Minimum="{Binding Path=VerticalScrollBarMinimum}"
                        Maximum="{Binding Path=VerticalScrollBarMaximum}"

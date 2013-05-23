@@ -92,14 +92,23 @@ namespace WPF_GUI.Views
                 Keyboard.Modifiers != ModifierKeys.Shift &&
                 Keyboard.Modifiers != ModifierKeys.Alt)
             {
+                var delta = StaticLoader.Image.RealHeight;
+                delta -= StaticLoader.Image.RealVisibleHeight;
+                delta += StaticLoader.Image.RealWidth;
+                delta -= StaticLoader.Image.RealVisibleWidth;
+                delta /= 200;
+
+                delta = Math.Ceiling(delta);
+                delta = Math.Max(1.0, delta);
+                
                 if (e.Key == Key.OemPlus)
                 {
-                    ImageZoom.Value += 5;
+                    ImageZoom.Value += delta;
                     return;
                 }
                 if (e.Key == Key.OemMinus)
                 {
-                    ImageZoom.Value -= 5;
+                    ImageZoom.Value -= delta;
                     return;
                 }
             }
