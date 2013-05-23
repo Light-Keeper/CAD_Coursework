@@ -45,6 +45,9 @@ namespace WPF_GUI.Views
             StaticLoader.Image.Width = ImageViewer.ActualWidth - ImageViewer.Padding.Left - ImageViewer.Padding.Right;
             StaticLoader.Image.Height = ImageViewer.ActualHeight - ImageViewer.Padding.Top - ImageViewer.Padding.Bottom;
 
+            StaticLoader.Image.MaxWidth = StaticLoader.Image.Width;
+            StaticLoader.Image.MaxHeight = StaticLoader.Image.Height;
+
             StaticLoader.Image.Render(true);
 
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
@@ -53,7 +56,15 @@ namespace WPF_GUI.Views
         public void RefreshImageWidth()
         {
             ImageViewer.UpdateLayout();
-            StaticLoader.Image.Width = ImageViewer.ActualWidth - ImageViewer.Padding.Left - ImageViewer.Padding.Right;
+            var newWidth = ImageViewer.ActualWidth - ImageViewer.Padding.Left - ImageViewer.Padding.Right;
+            if (StaticLoader.Image.Width == StaticLoader.Image.MaxWidth)
+            {
+                StaticLoader.Image.Width = StaticLoader.Image.MaxWidth = newWidth;
+            }
+            else
+            {
+                StaticLoader.Image.MaxWidth = newWidth;
+            }
 
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
         }
@@ -62,6 +73,9 @@ namespace WPF_GUI.Views
         {
             StaticLoader.Image.Width -= (e.PreviousSize.Width - e.NewSize.Width);
             StaticLoader.Image.Height -= (e.PreviousSize.Height - e.NewSize.Height);
+
+            StaticLoader.Image.MaxWidth -= (e.PreviousSize.Width - e.NewSize.Width);
+            StaticLoader.Image.MaxHeight -= (e.PreviousSize.Height - e.NewSize.Height);
 
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
         }

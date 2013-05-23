@@ -14,13 +14,15 @@ namespace WPF_GUI.Helpers
         private static IntPtr _cursorGrab;
         private static IntPtr _cursorGrabbing;
 
-        public bool IsDragging { get; private set; }
-
+        private bool _isDragging;
         private Point _dragStartPos;
         private Point _dragFirstVisiblePos;
 
-        public int RealWidth;
-        public int RealHeight;
+        public double RealWidth { get; set; }
+        public double RealHeight { get; set; }
+
+        public new double MaxWidth { get; set; }
+        public new double MaxHeight { get; set; }
 
         public double RealVisibleWidth
         {
@@ -34,7 +36,40 @@ namespace WPF_GUI.Helpers
 
         public Point FirstVisiblePos = new Point(0, 0);
 
-        public double Scale = 1.0;
+        private double _scale = 1.0;
+        public double Scale
+        {
+            get { return _scale; }
+            set
+            {
+                if (_scale == value) return;
+                _scale = value;
+
+                if (this.RealVisibleWidth > this.RealWidth)
+                {
+                    this.Width -= (this.RealVisibleWidth - this.RealWidth) * _scale;
+                }
+                
+                if (this.RealVisibleHeight > this.RealHeight)
+                {
+                    this.Height -= (this.RealVisibleHeight - this.RealHeight) * _scale;
+                }
+
+                if (this.RealVisibleWidth < this.RealWidth && this.Width < this.MaxWidth)
+                {
+                    var newWidth = this.RealWidth * _scale;
+                    this.Width = newWidth > this.MaxWidth ? this.MaxWidth : newWidth;
+                }
+
+                if (this.RealVisibleHeight < this.RealHeight && this.Height < this.MaxHeight)
+                {
+                    var newHeight = this.RealHeight * _scale;
+                    this.Height = newHeight > this.MaxHeight ? this.MaxHeight : newHeight;
+                }
+
+                this.CheckBorders();
+            }
+        }
 
         public ImageHost()
         {
@@ -67,6 +102,19 @@ namespace WPF_GUI.Helpers
             PInvoke.SetClassLong(_hwndHost, PInvoke.GCLP_HCURSOR, _cursorGrab);
 
             return new HandleRef(this, _hwndHost);
+        }
+
+        public void CheckBorders()
+        {
+            if (FirstVisiblePos.X + RealVisibleWidth > RealWidth)
+            {
+                FirstVisiblePos.X = 0;
+            }
+            if (FirstVisiblePos.Y + RealVisibleHeight > RealHeight)
+            {
+                FirstVisiblePos.Y = 0;
+            }
+            this.Render();
         }
         
         public void Render()
@@ -108,14 +156,14 @@ namespace WPF_GUI.Helpers
                 case PInvoke.WM_MOUSEMOVE:
                     if ((PInvoke.GetKeyState(PInvoke.VK_LBUTTON) & 0x80) == 0)
                     {
-                        IsDragging = false;
+                        _isDragging = false;
                     }
-                    if ( IsDragging )
+                    if ( _isDragging )
                     {
                         PInvoke.SetCursor(_cursorGrabbing);
 
-                        var offsetX = (int)((_dragStartPos.X - PInvoke.LOWORD(lParam)) / this.Scale);
-                        var offsetY = (int)((_dragStartPos.Y - PInvoke.HIWORD(lParam)) / this.Scale);
+                        var offsetX = (int)((_dragStartPos.X - PInvoke.LOWORD(lParam)) / _scale);
+                        var offsetY = (int)((_dragStartPos.Y - PInvoke.HIWORD(lParam)) / _scale);
 
                         if (_dragFirstVisiblePos.X + offsetX < 0)
                         {
@@ -143,11 +191,11 @@ namespace WPF_GUI.Helpers
                             FirstVisiblePos.Y = _dragFirstVisiblePos.Y + offsetY;
                         }
 
-                        handled = true;
-
                         this.Render();
 
                         StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
+
+                        handled = true;
                     }
 
                     return IntPtr.Zero;
@@ -160,13 +208,13 @@ namespace WPF_GUI.Helpers
 
                     _dragFirstVisiblePos = FirstVisiblePos;
 
-                    IsDragging = true;
+                    _isDragging = true;
 
                     handled = true;
                     return IntPtr.Zero;
 
                 case PInvoke.WM_LBUTTONUP:
-                    IsDragging = false;
+                    _isDragging = false;
                     handled = true;
                     return IntPtr.Zero;
             }
