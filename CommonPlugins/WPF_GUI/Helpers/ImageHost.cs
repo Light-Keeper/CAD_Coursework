@@ -114,7 +114,6 @@ namespace WPF_GUI.Helpers
             {
                 FirstVisiblePos.Y = 0;
             }
-            this.Render();
         }
         
         public void Render()
@@ -190,8 +189,6 @@ namespace WPF_GUI.Helpers
                         {
                             FirstVisiblePos.Y = _dragFirstVisiblePos.Y + offsetY;
                         }
-
-                        this.Render();
 
                         StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
 
