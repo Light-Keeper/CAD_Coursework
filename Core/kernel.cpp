@@ -342,8 +342,8 @@ cad_render_module *kernel_GetRenderModule(cad_kernel *self)
 
 void kernel_GetMapSize(cad_kernel *self, uint32_t *width, uint32_t *height)
 {
-	width && (*width = 1);
-	height && (*height = 1);
+	if (width) *width = 1;
+	if (height) *height = 1;
 
 	if (self->GetCurrentState(self) == KERNEL_STATE_PLACING)
 	{
