@@ -1,7 +1,4 @@
 ﻿﻿using System;
-using System.Collections.Generic;
-﻿using System.Linq;
-﻿using System.Text;
 ﻿using System.Threading;
 ﻿using System.Windows;
 ﻿using MediatorLib;
@@ -47,18 +44,9 @@ namespace WPF_GUI
             if (Mediator != null)
             {
                 Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, msg);
+                return msg.Length;
             }
-            return msg.Length;
-        }
-
-        public static List<string> GetModuleList()
-        {
-            const int bufferSize = 10000;
-            var str = new StringBuilder(bufferSize);
-            var res = Kernel.GetModuleList(bufferSize, str);
-            return res < 0 ?
-                new List<string>() :
-                str.ToString().Split(new char[] {'\n'}, StringSplitOptions.RemoveEmptyEntries).ToList();
+            return 0;
         }
     }
 }

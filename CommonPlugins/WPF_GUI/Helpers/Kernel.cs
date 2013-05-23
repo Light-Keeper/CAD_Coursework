@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -29,7 +31,7 @@ namespace WPF_GUI.Helpers
         public static extern UInt32 NextStep(bool inDemoMode);
 
         [DllImport("GUI_CLR_loader.dll")]
-        public static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
+        private static extern int GetModuleList(int bufferSize, StringBuilder charBuffer);
 
         [DllImport("GUI_CLR_loader.dll")]
         public static extern void RenderPicture(IntPtr hWnd, UInt32 x, UInt32 y, double scale,
@@ -40,5 +42,15 @@ namespace WPF_GUI.Helpers
 
         [DllImport("GUI_CLR_loader.dll")]
         public static extern Int32 GetRealImageHeight();
+
+        public static List<string> GetModuleList()
+        {
+            const int bufferSize = 10000;
+            var str = new StringBuilder(bufferSize);
+            var res = GetModuleList(bufferSize, str);
+            return res < 0 ?
+                new List<string>() :
+                str.ToString().Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+        }
     }
 }

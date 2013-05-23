@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -21,7 +22,9 @@ namespace WPF_GUI.Views
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            BorderForImage.Child = StaticLoader.Image;
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Properties.Resources.ModulesLoadSuccessful);
+
+            ImageViewer.Child = StaticLoader.Image;
 
             StaticLoader.Image.SetBinding(
                 WidthProperty,
@@ -39,24 +42,28 @@ namespace WPF_GUI.Views
                     Mode = BindingMode.TwoWay
                 });
 
-            StaticLoader.Image.Width = ImageViewer.ViewportWidth;
-            StaticLoader.Image.Height = ImageViewer.ViewportHeight;
+            StaticLoader.Image.Width = ImageViewer.ActualWidth - ImageViewer.Padding.Left - ImageViewer.Padding.Right;
+            StaticLoader.Image.Height = ImageViewer.ActualHeight - ImageViewer.Padding.Top - ImageViewer.Padding.Bottom;
 
             StaticLoader.Image.Render(true);
 
-            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Properties.Resources.ModulesLoadSuccessful);
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
         }
 
         public void RefreshImageWidth()
         {
             ImageViewer.UpdateLayout();
-            StaticLoader.Image.Width = this.ImageViewer.ViewportWidth;
+            StaticLoader.Image.Width = ImageViewer.ActualWidth - ImageViewer.Padding.Left - ImageViewer.Padding.Right;
+
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             StaticLoader.Image.Width -= (e.PreviousSize.Width - e.NewSize.Width);
             StaticLoader.Image.Height -= (e.PreviousSize.Height - e.NewSize.Height);
+
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
         }
 
         private void AddFileNameToTitle(string fileName)
@@ -99,6 +106,21 @@ namespace WPF_GUI.Views
         {
             Process.Start(e.Uri.AbsoluteUri);
             e.Handled = true;
+        }
+
+        private void RangeBase_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var scroll = sender as ScrollBar;
+
+            if (scroll.Orientation == Orientation.Horizontal)
+            {
+                StaticLoader.Image.FirstVisiblePos.X = (int)(scroll.Value - scroll.Minimum);
+            }
+            else
+            {
+                StaticLoader.Image.FirstVisiblePos.Y = (int)(scroll.Value - scroll.Minimum);
+            }
+            StaticLoader.Image.Render();
         }
     }
 }

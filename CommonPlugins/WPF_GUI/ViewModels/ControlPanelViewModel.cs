@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using System.Timers;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -15,8 +14,6 @@ namespace WPF_GUI.ViewModels
 {
     public class ControlPanelViewModel : BaseViewModel
     {
-        private readonly System.Timers.Timer _timer;
-
         #region Properties
 
         #region StartButtonName
@@ -93,17 +90,6 @@ namespace WPF_GUI.ViewModels
                 _isAutoExec = value;
                 RaisePropertyChanged(() => IsAutoExec);
                 RaisePropertyChanged(() => IsStartButtonEnabled);
-
-                if (StaticLoader.Application.State != Program.State.Busy) return;
-
-//                if (this.IsAutoExec)
-//                {
-//                    _timer.Start();
-//                }
-//                else
-//                {
-//                    _timer.Stop();
-//                }
             }
         }
         #endregion
@@ -153,7 +139,7 @@ namespace WPF_GUI.ViewModels
         }
         #endregion
 
-        #region
+        #region StartButtonTooltip
         private string _startButtonTooltip;
         public string StartButtonTooltip
         {
@@ -432,7 +418,6 @@ namespace WPF_GUI.ViewModels
                     this.StartButtonName = Resources.StartButtonName_Step;
                     this.StartButtonTooltip = Resources.MinControlPanel_StartModelingToolTip_Step;
                     RaisePropertyChanged(() => IsStartButtonEnabled);
-                    if (this.IsAutoExec) _timer.Start();
                     break;
 
                 case Kernel.StatePlacing:
@@ -486,7 +471,6 @@ namespace WPF_GUI.ViewModels
             this.StartButtonTooltip = Resources.MinControlPanel_StartModelingToolTip_Start;
             StaticLoader.Mediator.NotifyColleagues(MediatorMessages.SetProgramState, Program.State.Good);
             RaisePropertyChanged(() => IsStartButtonEnabled);
-            _timer.Stop();
 
             var kernelState = Kernel.GetState();
 
@@ -564,8 +548,10 @@ namespace WPF_GUI.ViewModels
 
             StaticLoader.Image.Render(true);
 
-            StaticLoader.Image.RealSize.Width = Kernel.GetRealImageWidth();
-            StaticLoader.Image.RealSize.Height = Kernel.GetRealImageHeight();
+            StaticLoader.Image.RealWidth = Kernel.GetRealImageWidth();
+            StaticLoader.Image.RealHeight = Kernel.GetRealImageHeight();
+
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
 
             var kernelState = Kernel.GetState();
 
@@ -622,6 +608,7 @@ namespace WPF_GUI.ViewModels
         #endregion
 
         #region Public Methods
+
         #region Constructor
         public ControlPanelViewModel()
         {
@@ -629,7 +616,7 @@ namespace WPF_GUI.ViewModels
             this.TraceMethodCollection = new ObservableCollection<Route>();
 
             // Initialize Place and Route Collections
-            foreach (var module in StaticLoader.GetModuleList())
+            foreach (var module in Kernel.GetModuleList())
             {
                 var name = module.Remove(0, 1);
                 switch (module[0])
@@ -671,15 +658,6 @@ namespace WPF_GUI.ViewModels
             this.ConsoleButtonText = Resources.ConsoleButtonName_Show;
 
             StaticLoader.Mediator.Register(MediatorMessages.LogWindowClosed, (Action) this.ConsoleWasClosed);
-
-            _timer = new System.Timers.Timer();
-            _timer.Elapsed += delegate(object o, ElapsedEventArgs e)
-                {
-                    _timer.Stop();
-                    this.OnStartModeling(o);
-                    _timer.Start();
-                };
-            _timer.Interval = 1000;
         }
         #endregion
 
