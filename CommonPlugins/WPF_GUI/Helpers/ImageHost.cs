@@ -4,7 +4,6 @@ using System.Reflection;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using Point = System.Drawing.Point;
-using Size = System.Drawing.Size;
 
 namespace WPF_GUI.Helpers
 {
@@ -16,17 +15,61 @@ namespace WPF_GUI.Helpers
         private static IntPtr _cursorGrabbing;
 
         private bool _isDragging;
-        public bool IsDragging { get { return _isDragging; } }
-
         private Point _dragStartPos;
-
         private Point _dragFirstVisiblePos;
 
-        public Size RealSize;
+        public double RealWidth { get; set; }
+        public double RealHeight { get; set; }
 
-        private Point _firstVisiblePos = new Point(0, 0);
+        public new double MaxWidth { get; set; }
+        public new double MaxHeight { get; set; }
 
-        public double Scale = 1.0;
+        public double RealVisibleWidth
+        {
+            get { return this.Width / this.Scale; }
+        }
+
+        public double RealVisibleHeight
+        {
+            get { return this.Height / this.Scale; }
+        }
+
+        public Point FirstVisiblePos = new Point(0, 0);
+
+        private double _scale = 1.0;
+        public double Scale
+        {
+            get { return _scale; }
+            set
+            {
+                if (_scale == value) return;
+                _scale = value;
+
+                if (this.RealVisibleWidth > this.RealWidth)
+                {
+                    this.Width -= (this.RealVisibleWidth - this.RealWidth) * _scale;
+                }
+                
+                if (this.RealVisibleHeight > this.RealHeight)
+                {
+                    this.Height -= (this.RealVisibleHeight - this.RealHeight) * _scale;
+                }
+
+                if (this.RealVisibleWidth < this.RealWidth && this.Width < this.MaxWidth)
+                {
+                    var newWidth = this.RealWidth * _scale;
+                    this.Width = newWidth > this.MaxWidth ? this.MaxWidth : newWidth;
+                }
+
+                if (this.RealVisibleHeight < this.RealHeight && this.Height < this.MaxHeight)
+                {
+                    var newHeight = this.RealHeight * _scale;
+                    this.Height = newHeight > this.MaxHeight ? this.MaxHeight : newHeight;
+                }
+
+                this.CheckBorders();
+            }
+        }
 
         public ImageHost()
         {
@@ -60,6 +103,18 @@ namespace WPF_GUI.Helpers
 
             return new HandleRef(this, _hwndHost);
         }
+
+        public void CheckBorders()
+        {
+            if (FirstVisiblePos.X + RealVisibleWidth > RealWidth)
+            {
+                FirstVisiblePos.X = 0;
+            }
+            if (FirstVisiblePos.Y + RealVisibleHeight > RealHeight)
+            {
+                FirstVisiblePos.Y = 0;
+            }
+        }
         
         public void Render()
         {
@@ -70,8 +125,8 @@ namespace WPF_GUI.Helpers
         {
             Kernel.RenderPicture(
                 this.Handle,
-                (uint)_firstVisiblePos.X,
-                (uint)_firstVisiblePos.Y,
+                (uint)FirstVisiblePos.X,
+                (uint)FirstVisiblePos.Y,
                 this.Scale,
                 redrawImage,
                 false, 0);
@@ -106,38 +161,38 @@ namespace WPF_GUI.Helpers
                     {
                         PInvoke.SetCursor(_cursorGrabbing);
 
-                        var offsetX = (int)((_dragStartPos.X - PInvoke.LOWORD(lParam)) / this.Scale);
-                        var offsetY = (int)((_dragStartPos.Y - PInvoke.HIWORD(lParam)) / this.Scale);
+                        var offsetX = (int)((_dragStartPos.X - PInvoke.LOWORD(lParam)) / _scale);
+                        var offsetY = (int)((_dragStartPos.Y - PInvoke.HIWORD(lParam)) / _scale);
 
                         if (_dragFirstVisiblePos.X + offsetX < 0)
                         {
-                            _firstVisiblePos.X = 0;
+                            FirstVisiblePos.X = 0;
                         }
-                        else if (_dragFirstVisiblePos.X + offsetX + (this.Width / this.Scale) > RealSize.Width)
+                        else if (_dragFirstVisiblePos.X + offsetX + RealVisibleWidth > RealWidth)
                         {
-                            _firstVisiblePos.X = (int)(RealSize.Width - (this.Width / this.Scale));
+                            FirstVisiblePos.X = (int)(RealWidth - RealVisibleWidth);
                         }
                         else
                         {
-                            _firstVisiblePos.X = _dragFirstVisiblePos.X + offsetX;
+                            FirstVisiblePos.X = _dragFirstVisiblePos.X + offsetX;
                         }
 
                         if (_dragFirstVisiblePos.Y + offsetY < 0)
                         {
-                            _firstVisiblePos.Y = 0;
+                            FirstVisiblePos.Y = 0;
                         }
-                        else if (_dragFirstVisiblePos.Y + offsetY + (this.Height / this.Scale) > RealSize.Height)
+                        else if (_dragFirstVisiblePos.Y + offsetY + RealVisibleHeight > RealHeight)
                         {
-                            _firstVisiblePos.Y = (int)(RealSize.Height - (this.Height / this.Scale));
+                            FirstVisiblePos.Y = (int)(RealHeight - RealVisibleHeight);
                         }
                         else
                         {
-                            _firstVisiblePos.Y = _dragFirstVisiblePos.Y + offsetY;
+                            FirstVisiblePos.Y = _dragFirstVisiblePos.Y + offsetY;
                         }
 
-                        handled = true;
+                        StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
 
-                        this.Render();
+                        handled = true;
                     }
 
                     return IntPtr.Zero;
@@ -148,7 +203,7 @@ namespace WPF_GUI.Helpers
                     _dragStartPos.X = PInvoke.LOWORD(lParam);
                     _dragStartPos.Y = PInvoke.HIWORD(lParam);
 
-                    _dragFirstVisiblePos = _firstVisiblePos;
+                    _dragFirstVisiblePos = FirstVisiblePos;
 
                     _isDragging = true;
 
@@ -159,57 +214,6 @@ namespace WPF_GUI.Helpers
                     _isDragging = false;
                     handled = true;
                     return IntPtr.Zero;
-
-//                case PInvoke.WM_MOUSEHWHEEL:
-//
-//                    var delta = PInvoke.GET_WHEEL_DELTA_WPARAM(wParam);
-//                    var keyState = PInvoke.GET_KEYSTATE_WPARAM(wParam);
-//
-//                    MessageBox.Show("Delta: " + delta.ToString("X") + "\nkeyState: " + keyState.ToString("X"));
-//
-//                    // Change zoom
-//                    if ((keyState & PInvoke.MK_CONTROL) == PInvoke.MK_CONTROL &&
-//                        (keyState & PInvoke.MK_SHIFT) != PInvoke.MK_SHIFT)
-//                    {
-//                        if (delta < 0)
-//                        {
-//                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ChangeZoom, -5);
-//                        }
-//                        else
-//                        {
-//                            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ChangeZoom, 5);
-//                        }
-//                    }
-//                    // Change width scroll
-//                    else if ((keyState & PInvoke.MK_CONTROL) != PInvoke.MK_CONTROL &&
-//                             (keyState & PInvoke.MK_SHIFT) == PInvoke.MK_SHIFT)
-//                    {
-//                        if (delta < 0)
-//                        {
-//                            
-//                        }
-//                        else
-//                        {
-//                            
-//                        }
-//                    }
-//                    // Change height scroll
-//                    else if ((keyState & PInvoke.MK_CONTROL) != PInvoke.MK_CONTROL &&
-//                             (keyState & PInvoke.MK_SHIFT) != PInvoke.MK_SHIFT)
-//                    {
-//                        if (delta < 0)
-//                        {
-//
-//                        }
-//                        else
-//                        {
-//
-//                        }
-//                    }
-//
-//
-//                    handled = true;
-//                    return IntPtr.Zero;
             }
 
             return IntPtr.Zero;

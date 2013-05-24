@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Navigation;
@@ -21,7 +22,9 @@ namespace WPF_GUI.Views
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            BorderForImage.Child = StaticLoader.Image;
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Properties.Resources.ModulesLoadSuccessful);
+
+            ImageViewer.Child = StaticLoader.Image;
 
             StaticLoader.Image.SetBinding(
                 WidthProperty,
@@ -39,24 +42,42 @@ namespace WPF_GUI.Views
                     Mode = BindingMode.TwoWay
                 });
 
-            StaticLoader.Image.Width = ImageViewer.ViewportWidth;
-            StaticLoader.Image.Height = ImageViewer.ViewportHeight;
+            StaticLoader.Image.Width = ImageViewer.ActualWidth - ImageViewer.Padding.Left - ImageViewer.Padding.Right;
+            StaticLoader.Image.Height = ImageViewer.ActualHeight - ImageViewer.Padding.Top - ImageViewer.Padding.Bottom;
+
+            StaticLoader.Image.MaxWidth = StaticLoader.Image.Width;
+            StaticLoader.Image.MaxHeight = StaticLoader.Image.Height;
 
             StaticLoader.Image.Render(true);
 
-            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.NewInfoMsg, Properties.Resources.ModulesLoadSuccessful);
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
         }
 
         public void RefreshImageWidth()
         {
             ImageViewer.UpdateLayout();
-            StaticLoader.Image.Width = this.ImageViewer.ViewportWidth;
+            var newWidth = ImageViewer.ActualWidth - ImageViewer.Padding.Left - ImageViewer.Padding.Right;
+            if (StaticLoader.Image.Width == StaticLoader.Image.MaxWidth)
+            {
+                StaticLoader.Image.Width = StaticLoader.Image.MaxWidth = newWidth;
+            }
+            else
+            {
+                StaticLoader.Image.MaxWidth = newWidth;
+            }
+
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             StaticLoader.Image.Width -= (e.PreviousSize.Width - e.NewSize.Width);
             StaticLoader.Image.Height -= (e.PreviousSize.Height - e.NewSize.Height);
+
+            StaticLoader.Image.MaxWidth -= (e.PreviousSize.Width - e.NewSize.Width);
+            StaticLoader.Image.MaxHeight -= (e.PreviousSize.Height - e.NewSize.Height);
+
+            StaticLoader.Mediator.NotifyColleagues(MediatorMessages.ResizeImageScrollBar);
         }
 
         private void AddFileNameToTitle(string fileName)
@@ -71,14 +92,23 @@ namespace WPF_GUI.Views
                 Keyboard.Modifiers != ModifierKeys.Shift &&
                 Keyboard.Modifiers != ModifierKeys.Alt)
             {
+                var delta = StaticLoader.Image.RealHeight;
+                delta -= StaticLoader.Image.RealVisibleHeight;
+                delta += StaticLoader.Image.RealWidth;
+                delta -= StaticLoader.Image.RealVisibleWidth;
+                delta /= 200;
+
+                delta = Math.Ceiling(delta);
+                delta = Math.Max(1.0, delta);
+                
                 if (e.Key == Key.OemPlus)
                 {
-                    ImageZoom.Value += 5;
+                    ImageZoom.Value += delta;
                     return;
                 }
                 if (e.Key == Key.OemMinus)
                 {
-                    ImageZoom.Value -= 5;
+                    ImageZoom.Value -= delta;
                     return;
                 }
             }
@@ -99,6 +129,21 @@ namespace WPF_GUI.Views
         {
             Process.Start(e.Uri.AbsoluteUri);
             e.Handled = true;
+        }
+
+        private void RangeBase_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            var scroll = sender as ScrollBar;
+
+            if (scroll.Orientation == Orientation.Horizontal)
+            {
+                StaticLoader.Image.FirstVisiblePos.X = (int)(scroll.Value - scroll.Minimum);
+            }
+            else
+            {
+                StaticLoader.Image.FirstVisiblePos.Y = (int)(scroll.Value - scroll.Minimum);
+            }
+            StaticLoader.Image.Render();
         }
     }
 }
