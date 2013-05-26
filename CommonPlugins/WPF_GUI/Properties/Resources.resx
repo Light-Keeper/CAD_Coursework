@@ -248,10 +248,10 @@
     <value>Компановка успешно завершена</value>
   </data>
   <data name="ProgramDescription" xml:space="preserve">
-    <value>Описание программы</value>
+    <value>Программа компановки печатных плат</value>
   </data>
   <data name="ProgramName" xml:space="preserve">
-    <value>Название программы</value>
+    <value>Nyithra-CAD</value>
   </data>
   <data name="ProgramStateDescription_Busy" xml:space="preserve">
     <value>Программа выполняет действия</value>

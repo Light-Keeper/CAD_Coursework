@@ -443,7 +443,7 @@ namespace WPF_GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Описание программы.
+        ///   Looks up a localized string similar to Программа компановки печатных плат.
         /// </summary>
         public static string ProgramDescription {
             get {
@@ -452,7 +452,7 @@ namespace WPF_GUI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Название программы.
+        ///   Looks up a localized string similar to Nyithra-CAD.
         /// </summary>
         public static string ProgramName {
             get {
