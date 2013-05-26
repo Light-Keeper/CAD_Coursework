@@ -202,7 +202,7 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowTy
 	if ((MapElement3D(self, i, j, self->currerntLayer) != MAP_EMPTY) && (MapElement3D(self, i, j, self->currerntLayer) != 0x03000000) && (MapElement3D(self, i, j, self->currerntLayer) != 0xc000000))  return MORE_ACTIONS_IN_DEMO_MODE;
 
 	self->sys->queue.push_back(((0LL + i) << 32) | j);
-	MapElement3D(self, i, j, self->currerntLayer) = ArraowType;
+	MapElement3D(self, i, j, self->currerntLayer) |= ArraowType; 
 	return MORE_ACTIONS_IN_DEMO_MODE;
 }
 
