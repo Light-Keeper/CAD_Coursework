@@ -155,7 +155,7 @@ coord = DrawLine(picture, coord, 1, -int(picture->width), 0, 3, picture->width, 
 			//ARROW_UP
 //=====================================================
 int h = (sqs+1)/2;
-if ((value & CODE_MASK) == MAP_ARROW_UP)	
+if ((value & 0xF0000000) == MAP_ARROW_UP)	
 {
 	coord = DrawErrow(picture, coord, -int(picture->width), 0, h, 1, sqs_div2, xcoord, ycoord, 0x000000, 2, 1);			
 	coord = DrawLine(picture, coord, picture->width, -1, -sqs_div2/2, 3, 1, sqs_div2, xcoord, ycoord, 0x000000, 0,1);
@@ -163,7 +163,7 @@ if ((value & CODE_MASK) == MAP_ARROW_UP)
 //=====================================================
 			//ARROW_DOWN
 //=====================================================
-if ((value & CODE_MASK) == MAP_ARROW_DOWN)	
+if ((value & 0xF0000000) == MAP_ARROW_DOWN)	
 {
 	coord = DrawErrow(picture, coord, picture->width, 0, h, 1, sqs_div2, xcoord, ycoord, 0x000000, 2, 1);	
 	coord = DrawLine(picture, coord, -int(picture->width), -1, -sqs_div2/2, 3, 1, sqs_div2, xcoord, ycoord, 0x000000, 0,1);			
@@ -171,7 +171,7 @@ if ((value & CODE_MASK) == MAP_ARROW_DOWN)
 //=====================================================
 			//ARROW_LEFT
 //=====================================================
-if ((value & CODE_MASK) == MAP_ARROW_LEFT)	
+if ((value & 0xF0000000) == MAP_ARROW_LEFT)	
 {
 	coord = DrawErrow(picture, coord, -1, 0, h, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 2, picture->width);	
 	coord = DrawLine(picture, coord, 1, -int(picture->width), -sqs_div2/2, 3, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 0,1);
@@ -179,7 +179,7 @@ if ((value & CODE_MASK) == MAP_ARROW_LEFT)
 //=====================================================
 			//ARROW_RIGHT
 //=====================================================
-if ((value & CODE_MASK) == MAP_ARROW_RIGHT)	
+if ((value & 0xF0000000) == MAP_ARROW_RIGHT)	
 {
 	coord = DrawErrow(picture, coord, 1, 0, h, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 2, picture->width);	
 	coord = DrawLine(picture, coord, -1, -int(picture->width), -sqs_div2/2, 3, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 0,1);
