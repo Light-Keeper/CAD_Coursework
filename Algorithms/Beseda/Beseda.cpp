@@ -174,7 +174,7 @@ bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t &ArrowT
 		if ((ArrowType1 >= 0x60000000 && ArrowType1 < 0x60000100 && ArrowType == 0x80000001) || (ArrowType1 > 0x80000000 && ArrowType1 < 0x90000000 && ArrowType1 < ArrowType))
 		{
 			SetHalfLine(self, i, j, i, j+1);
-			ArrowType = ArrowTyp5e1;
+			ArrowType = ArrowType1;
 			return ArrowType;
 		}
 		ArrowType1 = MapElement3D(self, i, j-1, self->currerntLayer);
