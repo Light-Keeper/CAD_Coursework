@@ -186,6 +186,8 @@ struct cad_route_map
 #define IS_ONLY_ARROW(X)	((X == MAP_ARROW_LEFT) || (X == MAP_ARROW_RIGHT) || (X == MAP_ARROW_DOWN) || (X == MAP_ARROW_UP))
 #define IS_ONLY_WIRE(X)		((X == MAP_WIRE_LEFT) || (X == MAP_WIRE_RIGHT) || (X == MAP_WIRE_DOWN) || (X == MAP_WIRE_UP))
 
+//#define IS_ONLY_ARROW_AND_NUMBER(X)	((X == (MAP_ARROW_LEFT | MAP_NUMBER) || (X == MAP_ARROW_RIGHT  | MAP_NUMBER) || (X == MAP_ARROW_DOWN  | MAP_NUMBER) || (X == MAP_ARROW_UP  | MAP_NUMBER))
+
 #define CODE_MASK				0xFF000000
 #define NUMBER_MASK				0x00FFFFFF
 

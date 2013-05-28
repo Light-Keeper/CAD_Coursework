@@ -2,7 +2,7 @@
 #include <cad_object.h>
 #include <queue>
 #include <set>
-
+#define IS_ONLY_ARROW_AND_NUMBER(X)	((X == (MAP_ARROW_LEFT | MAP_NUMBER) || (X == MAP_ARROW_RIGHT  | MAP_NUMBER) || (X == MAP_ARROW_DOWN  | MAP_NUMBER) || (X == MAP_ARROW_UP  | MAP_NUMBER))
 cad_route_map *Open(cad_kernel *c, cad_route_map *m);
 cad_route_map *Close(cad_kernel *c, cad_route_map *m);
 
@@ -133,13 +133,13 @@ bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t x, uint
 	self->sys->EndPoints.insert(((0LL + i) << 32) | j);
 	self->sys->EndPoints.insert(((0LL + x) << 32) | y);
 
-	if (val1 == MAP_ARROW_DOWN  ||	val1 == MAP_ARROW_RIGHT  ||
-			val1 == MAP_ARROW_LEFT  ||	val1 == MAP_ARROW_UP	)	val1 = MAP_EMPTY;
-	if (val2 == MAP_ARROW_DOWN  ||	val2 == MAP_ARROW_RIGHT  ||
-			val2 == MAP_ARROW_LEFT  ||	val2 == MAP_ARROW_UP	)	val2 = MAP_EMPTY;
+	if (val1 == (MAP_ARROW_DOWN | MAP_NUMBER)  ||	val1 == (MAP_ARROW_RIGHT | MAP_NUMBER)  ||
+			val1 == (MAP_ARROW_LEFT | MAP_NUMBER)  ||	val1 == (MAP_ARROW_UP | MAP_NUMBER)	)	val1 &= MAP_EMPTY;
+	if (val2 == (MAP_ARROW_DOWN | MAP_NUMBER)  ||	val2 == (MAP_ARROW_RIGHT | MAP_NUMBER)  ||
+			val2 == (MAP_ARROW_LEFT | MAP_NUMBER)  ||	val2 == (MAP_ARROW_UP | MAP_NUMBER)	)	val2 &= MAP_EMPTY;
 
-	if ( i < x ) val2 |= MAP_WIRE_UP	, val1 |= MAP_WIRE_DOWN	; else
-	if ( x < i ) val2 |= MAP_WIRE_DOWN	, val1 |= MAP_WIRE_UP	; else 
+	if ( i < x ) val2 |=  MAP_WIRE_UP	, val1 |= MAP_WIRE_DOWN  	; else
+	if ( x < i ) val2 |= MAP_WIRE_DOWN	, val1 |=  MAP_WIRE_UP	; else 
 	if ( j < y ) val2 |= MAP_WIRE_LEFT	, val1 |= MAP_WIRE_RIGHT; else
 	if ( y < j ) val2 |= MAP_WIRE_RIGHT	, val1 |= MAP_WIRE_LEFT	;
 
@@ -151,14 +151,42 @@ bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t x, uint
 // определяет коордианы нужной соседней клетики по направлению стрелочки
 bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t &ArrowType)
 {
-	if (ArrowType == MAP_ARROW_DOWN)	
-		return ArrowType = MapElement3D(self, i+1, j, self->currerntLayer), SetHalfLine(self, i, j, i+1, j   );
-	if (ArrowType == MAP_ARROW_UP)		
-		return ArrowType = MapElement3D(self, i-1, j, self->currerntLayer), SetHalfLine(self, i, j, i-1, j   );
-	if (ArrowType == MAP_ARROW_LEFT)	
+	if ((ArrowType & MAP_ARROW_DOWN) == MAP_ARROW_DOWN)	
+	{
+		if ((self->sys->current_start_x == i+1 ) && (self->sys->current_start_y == j))
+		{
+			SetHalfLine(self, i, j, i+1, j   ); 
+			return false; 
+		}
+		else return ArrowType = MapElement3D(self, i+1, j, self->currerntLayer), SetHalfLine(self, i, j, i+1, j   );
+	}
+	if ((ArrowType & MAP_ARROW_UP) == MAP_ARROW_UP)		
+	{
+		if ((self->sys->current_start_x == i-1 ) && (self->sys->current_start_y == j))
+		{
+			SetHalfLine(self, i, j, i-1, j   ); 
+			return false; 
+		}
+		else return ArrowType = MapElement3D(self, i-1, j, self->currerntLayer), SetHalfLine(self, i, j, i-1, j   );
+	}
+	if ((ArrowType & MAP_ARROW_LEFT) == MAP_ARROW_LEFT)	
+	{
+		if ((self->sys->current_start_x == i ) && (self->sys->current_start_y == j-1))
+		{
+			SetHalfLine(self, i, j, i, j-1   ); 
+			return false; 
+		}
 		return ArrowType = MapElement3D(self, i, j-1, self->currerntLayer), SetHalfLine(self, i, j, i  , j-1 );
-	if (ArrowType == MAP_ARROW_RIGHT)	
+	}
+	if ((ArrowType & MAP_ARROW_RIGHT) == MAP_ARROW_RIGHT)	
+	{
+		if ((self->sys->current_start_x == i ) && (self->sys->current_start_y == j+1))
+		{
+			SetHalfLine(self, i, j, i, j+1   ); 
+			return false; 
+		}
 		return ArrowType = MapElement3D(self, i, j+1, self->currerntLayer), SetHalfLine(self, i, j, i  , j+1 );
+	}
 	return false;
 }
 
@@ -177,13 +205,13 @@ void BuildLine(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowType)
 
 			if ( IS_HAS_ARROW(val) && IS_HAS_WIRE(val) )
 			{
-				val = val - (val & MAP_ARROW_LEFT);
-				val = val - (val & MAP_ARROW_RIGHT);
-				val = val - (val & MAP_ARROW_DOWN);
-				val = val - (val & MAP_ARROW_UP);
+				val = val - (val & MAP_ARROW_LEFT) - (val & MAP_NUMBER) - (val & NUMBER_MASK);
+				val = val - (val & MAP_ARROW_RIGHT) - (val & MAP_NUMBER) - (val & NUMBER_MASK);
+				val = val - (val & MAP_ARROW_DOWN) - (val & MAP_NUMBER) - (val & NUMBER_MASK);
+				val = val - (val & MAP_ARROW_UP) - (val & MAP_NUMBER) - (val & NUMBER_MASK);
 				continue;
 			}
-			if ( IS_ONLY_ARROW(val) )
+			if ( IS_ONLY_ARROW(val) | (val & MAP_NUMBER))
 			{
 				val = MAP_EMPTY;
 			}
@@ -210,10 +238,20 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowTy
 		return FindWireToTrace( self );
 	}
 
-	if ((MapElement3D(self, i, j, self->currerntLayer) != MAP_EMPTY) && (MapElement3D(self, i, j, self->currerntLayer) != 0x0C000000) && (MapElement3D(self, i, j, self->currerntLayer) != 0x01000000))  { MapElement3D(self, i, j, self->currerntLayer) | 0x00100000; return MORE_ACTIONS_IN_DEMO_MODE;}
+	if ((MapElement3D(self, i, j, self->currerntLayer) != MAP_EMPTY) && (MapElement3D(self, i, j, self->currerntLayer) != 0x0C000000) && (MapElement3D(self, i, j, self->currerntLayer) != 0x03000000))
+	return MORE_ACTIONS_IN_DEMO_MODE; 
 	self->sys->queue.push_back(((0LL + i) << 32) | j);
+	if ((MapElement3D(self, i, j, self->currerntLayer) == 0x0C000000) || (MapElement3D(self, i, j, self->currerntLayer) == 0x03000000) )
+	{
+		uint32_t num = MapElement3D(self, i, j, self->currerntLayer);
+		num = num & NUMBER_MASK;  ArraowType |= (MAP_NUMBER | num);
+		MapElement3D(self, i, j, self->currerntLayer) |= ArraowType; 
+		return MORE_ACTIONS_IN_DEMO_MODE;
+	}else
+	{
 	MapElement3D(self, i, j, self->currerntLayer) |= ArraowType; 
 	return MORE_ACTIONS_IN_DEMO_MODE;
+	}
 }
 
 // сделать 1 шаг обхода в ширину
@@ -228,10 +266,13 @@ uint32_t ContinueWave( cad_route_map *self )
 		self->sys->queue.pop_front();
 
 		uint32_t result ;
-		result = SetPoint(self, i + 0, j + 1, MAP_ARROW_LEFT 	); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
-		result = SetPoint(self, i + 0, j - 1, MAP_ARROW_RIGHT   ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
-		result = SetPoint(self, i + 1, j + 0, MAP_ARROW_UP  	); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
-		result = SetPoint(self, i - 1, j + 0, MAP_ARROW_DOWN	); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
+		uint32_t vrb ;
+		vrb = MapElement3D(self, i, j, self->currerntLayer);
+		vrb = vrb & NUMBER_MASK; 
+		result = SetPoint(self, i + 0, j + 1, MAP_ARROW_LEFT | (vrb | MAP_NUMBER)); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
+		result = SetPoint(self, i + 0, j - 1, MAP_ARROW_RIGHT | (vrb | MAP_NUMBER) ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
+		result = SetPoint(self, i + 1, j + 0, MAP_ARROW_UP | (vrb | MAP_NUMBER)); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
+		result = SetPoint(self, i - 1, j + 0, MAP_ARROW_DOWN | (vrb | MAP_NUMBER)	); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
 	}
 	return MORE_ACTIONS_IN_DEMO_MODE;
 }
