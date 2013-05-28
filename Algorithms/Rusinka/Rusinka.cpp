@@ -165,19 +165,30 @@ bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t &ArrowT
 // провести провод между 2 точками на плате (по стрелочкам)
 void BuildLine(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowType)
 {
-
-	SetHalfLine(self, i, j, ArraowType);
-
 	while ( SetHalfLine(self, i, j, ArraowType) );
 
 	for(uint32_t i = 0; i < self->height; i++)
+	{
 		for(uint32_t j = 0; j < self->width; j++)
 		{
 			uint32_t &val = MapElement3D(self, i, j, self->currerntLayer);
 
-			if (val == MAP_ARROW_DOWN  ||	val == MAP_ARROW_RIGHT  ||
-				val == MAP_ARROW_LEFT  ||	val == MAP_ARROW_UP	) val = MAP_EMPTY;	
+			if ( (val & MAP_PIN) == MAP_PIN ) continue;
+
+			if ( IS_HAS_ARROW(val) && IS_HAS_WIRE(val) )
+			{
+				val = val - (val & MAP_ARROW_LEFT);
+				val = val - (val & MAP_ARROW_RIGHT);
+				val = val - (val & MAP_ARROW_DOWN);
+				val = val - (val & MAP_ARROW_UP);
+				continue;
+			}
+			if ( IS_ONLY_ARROW(val) )
+			{
+				val = MAP_EMPTY;
+			}
 		}
+	}
 }
 
 // поставить стрелочку в точке i j 
