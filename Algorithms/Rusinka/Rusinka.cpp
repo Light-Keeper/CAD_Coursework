@@ -191,9 +191,9 @@ bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t &ArrowT
 }
 
 // провести провод между 2 точками на плате (по стрелочкам)
-void BuildLine(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowType)
+void BuildLine(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowType)
 {
-	while ( SetHalfLine(self, i, j, ArraowType) );
+	while ( SetHalfLine(self, i, j, ArrowType) );
 
 	for(uint32_t i = 0; i < self->height; i++)
 	{
@@ -220,7 +220,7 @@ void BuildLine(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowType)
 }
 
 // поставить стрелочку в точке i j 
-uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowType)
+uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowType)
 {
 	if (i < 0 || j < 0 || i >= self->height || j >= self->width) return MORE_ACTIONS_IN_DEMO_MODE;
 	if (i == self->sys->current_start_x && j == self->sys->current_start_y) return MORE_ACTIONS_IN_DEMO_MODE;
@@ -233,25 +233,32 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArraowTy
 		int x = (MapElement3D(self, i, j, self->currerntLayer));	
 		bool c = self->sys->EndPoints.empty() && 
 		(MapElement3D(self, i, j, self->currerntLayer) == (MAP_PIN | (*self->sys->CurrentWire)->number));
-		BuildLine(self, i,j, ArraowType);
+		BuildLine(self, i,j, ArrowType);
 		self->sys->queue.clear();
 		return FindWireToTrace( self );
 	}
 
-	if ((MapElement3D(self, i, j, self->currerntLayer) != MAP_EMPTY) && (MapElement3D(self, i, j, self->currerntLayer) != 0x0C000000) && (MapElement3D(self, i, j, self->currerntLayer) != 0x03000000))
-	return MORE_ACTIONS_IN_DEMO_MODE; 
-	self->sys->queue.push_back(((0LL + i) << 32) | j);
-	if ((MapElement3D(self, i, j, self->currerntLayer) == 0x0C000000) || (MapElement3D(self, i, j, self->currerntLayer) == 0x03000000) )
+	uint32_t &val = MapElement3D(self, i, j, self->currerntLayer);
+
+	if ( val & MAP_PIN ) return MORE_ACTIONS_IN_DEMO_MODE;
+
+	if ( val != MAP_EMPTY &&
+		 val != MAP_WIRE_HORIZONTAL &&
+		 val != MAP_WIRE_VERTICAL )
 	{
-		uint32_t num = MapElement3D(self, i, j, self->currerntLayer);
-		num = num & NUMBER_MASK;  ArraowType |= (MAP_NUMBER | num);
-		MapElement3D(self, i, j, self->currerntLayer) |= ArraowType; 
 		return MORE_ACTIONS_IN_DEMO_MODE;
-	}else
-	{
-	MapElement3D(self, i, j, self->currerntLayer) |= ArraowType; 
-	return MORE_ACTIONS_IN_DEMO_MODE;
 	}
+	
+	if ( val == MAP_WIRE_VERTICAL || val == MAP_WIRE_HORIZONTAL )
+	{
+		ArrowType += 1;
+	}
+
+	self->sys->queue.push_back(((0LL + i) << 32) | j);
+	
+	val = ArrowType; 
+	
+	return MORE_ACTIONS_IN_DEMO_MODE;
 }
 
 // сделать 1 шаг обхода в ширину
@@ -266,13 +273,22 @@ uint32_t ContinueWave( cad_route_map *self )
 		self->sys->queue.pop_front();
 
 		uint32_t result ;
-		uint32_t vrb ;
-		vrb = MapElement3D(self, i, j, self->currerntLayer);
-		vrb = vrb & NUMBER_MASK; 
-		result = SetPoint(self, i + 0, j + 1, MAP_ARROW_LEFT | (vrb | MAP_NUMBER)); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
-		result = SetPoint(self, i + 0, j - 1, MAP_ARROW_RIGHT | (vrb | MAP_NUMBER) ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
-		result = SetPoint(self, i + 1, j + 0, MAP_ARROW_UP | (vrb | MAP_NUMBER)); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
-		result = SetPoint(self, i - 1, j + 0, MAP_ARROW_DOWN | (vrb | MAP_NUMBER)	); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
+
+		uint32_t val = MapElement3D(self, i, j, self->currerntLayer);
+
+		uint32_t vrb;
+
+		if ( (val & MAP_NUMBER) == MAP_NUMBER )
+		{
+			vrb = val & NUMBER_MASK;
+		}
+		
+		vrb = MAP_NUMBER;
+
+		result = SetPoint(self, i + 0, j + 1, MAP_ARROW_LEFT	| vrb ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
+		result = SetPoint(self, i + 0, j - 1, MAP_ARROW_RIGHT	| vrb ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
+		result = SetPoint(self, i + 1, j + 0, MAP_ARROW_UP		| vrb ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
+		result = SetPoint(self, i - 1, j + 0, MAP_ARROW_DOWN	| vrb ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
 	}
 	return MORE_ACTIONS_IN_DEMO_MODE;
 }
