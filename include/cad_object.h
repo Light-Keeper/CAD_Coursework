@@ -180,11 +180,14 @@ struct cad_route_map
 #define MAP_PIN					0x60000000		// MAP_PIN | wire_number
 #define MAP_NUMBER				0x80000000		// MAP_NUMBER | number
 
+#define IS_HAS_ARROW(X)		((X & MAP_ARROW_LEFT) || (X & MAP_ARROW_RIGHT) || (X & MAP_ARROW_DOWN) || (X & MAP_ARROW_UP))
+#define IS_HAS_WIRE(X)		((X & MAP_WIRE_LEFT) || (X & MAP_WIRE_RIGHT) || (X & MAP_WIRE_DOWN) || (X & MAP_WIRE_UP))
+
+#define IS_ONLY_ARROW(X)	((X == MAP_ARROW_LEFT) || (X == MAP_ARROW_RIGHT) || (X == MAP_ARROW_DOWN) || (X == MAP_ARROW_UP))
+#define IS_ONLY_WIRE(X)		((X == MAP_WIRE_LEFT) || (X == MAP_WIRE_RIGHT) || (X == MAP_WIRE_DOWN) || (X == MAP_WIRE_UP))
+
 #define CODE_MASK				0xFF000000
 #define NUMBER_MASK				0x00FFFFFF
-
-// use MapElement(i, j) = MAP_WIRE_HORISINTAL, 
-// or  MapElement(i, j) = MAP_NUMBER | ( number ) | MAP_WIRE_HORISINTAL; 
 
 #define MapElement(_self, _i, _j) (_self->map[(_i) * _self->width + (_j)])
 #define MapElement3D(_self, _i, _j, _z) (_self->map[(_z)* _self->width * _self->height  +  (_i) * _self->width + (_j)])
