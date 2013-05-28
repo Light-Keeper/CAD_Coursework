@@ -171,7 +171,7 @@ if (((value & MAP_ARROW_DOWN) == MAP_ARROW_DOWN)	&& ((value & MAP_PIN) != MAP_PI
 //=====================================================
 			//ARROW_LEFT
 //=====================================================
-if (((value & MAP_ARROW_LEFT) == MAP_ARROW_LEFT)	&& ((value & MAP_PIN) != MAP_PIN) )
+if (((value & 0x70000000) == MAP_ARROW_LEFT)	&& ((value & MAP_PIN) != MAP_PIN) )
 {
 	coord = DrawErrow(picture, coord, -1, 0, h, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 2, picture->width);	
 	coord = DrawLine(picture, coord, 1, -int(picture->width), -sqs_div2/2, 3, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 0,1);
@@ -179,7 +179,7 @@ if (((value & MAP_ARROW_LEFT) == MAP_ARROW_LEFT)	&& ((value & MAP_PIN) != MAP_PI
 //=====================================================
 			//ARROW_RIGHT
 //=====================================================
-if (((value & MAP_ARROW_RIGHT) == MAP_ARROW_RIGHT)	&& ((value & MAP_PIN) != MAP_PIN) )
+if (((value & 0x70000000) == MAP_ARROW_RIGHT)	&& ((value & MAP_PIN) != MAP_PIN) )
 {
 	coord = DrawErrow(picture, coord, 1, 0, h, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 2, picture->width);	
 	coord = DrawLine(picture, coord, -1, -int(picture->width), -sqs_div2/2, 3, picture->width, sqs_div2, xcoord, ycoord, 0x000000, 0,1);
