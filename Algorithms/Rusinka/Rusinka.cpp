@@ -238,7 +238,7 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowTyp
 		return FindWireToTrace( self );
 	}
 
-	uint32_t &val = MapElement3D(self, i, j, self->currerntLayer);
+	uint32_t val = MapElement3D(self, i, j, self->currerntLayer);
 
 	if ( val & MAP_PIN ) return MORE_ACTIONS_IN_DEMO_MODE;
 
@@ -249,15 +249,16 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowTyp
 		return MORE_ACTIONS_IN_DEMO_MODE;
 	}
 	
-	if ( val == MAP_WIRE_VERTICAL || val == MAP_WIRE_HORIZONTAL )
+	self->sys->queue.push_back(((0LL + i) << 32) | j);
+
+	if ( (val == MAP_WIRE_VERTICAL || val == MAP_WIRE_HORIZONTAL) )
 	{
 		ArrowType += 1;
 	}
-
-	self->sys->queue.push_back(((0LL + i) << 32) | j);
 	
 	val |= (ArrowType | MAP_NUMBER); 
 	MapElement3D(self, i, j, self->currerntLayer) = val;
+
 	return MORE_ACTIONS_IN_DEMO_MODE;
 }
 
@@ -265,6 +266,8 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowTyp
 uint32_t ContinueWave( cad_route_map *self )
 {
 	uint32_t queuesize = self->sys->queue.size();
+
+	uint32_t vrb;
 
 	for (uint32_t _t = 0; _t < queuesize; _t++)
 	{
@@ -276,14 +279,14 @@ uint32_t ContinueWave( cad_route_map *self )
 
 		uint32_t val = MapElement3D(self, i, j, self->currerntLayer);
 
-		uint32_t vrb=0,v2;
+		vrb = 0;
 
 		if ( (val & MAP_NUMBER) == MAP_NUMBER )
 		{
 			vrb = val & NUMBER_MASK;
 		}
-		v2 = vrb | MAP_NUMBER;
-		vrb = v2;
+		
+		vrb |= MAP_NUMBER;
 
 		result = SetPoint(self, i + 0, j + 1, MAP_ARROW_LEFT	| vrb ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
 		result = SetPoint(self, i + 0, j - 1, MAP_ARROW_RIGHT	| vrb ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
