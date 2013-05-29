@@ -134,9 +134,9 @@ bool SetHalfLine(cad_route_map *self, uint32_t &i, uint32_t &j, uint32_t x, uint
 	self->sys->EndPoints.insert(((0LL + x) << 32) | y);
 
 	if (val1 == (MAP_ARROW_DOWN | MAP_NUMBER)  ||	val1 == (MAP_ARROW_RIGHT | MAP_NUMBER)  ||
-			val1 == (MAP_ARROW_LEFT | MAP_NUMBER)  ||	val1 == (MAP_ARROW_UP | MAP_NUMBER)	)	val1 &= MAP_EMPTY;
+			val1 == (MAP_ARROW_LEFT | MAP_NUMBER)  ||	val1 == (MAP_ARROW_UP | MAP_NUMBER)	)	val1 = MAP_EMPTY;
 	if (val2 == (MAP_ARROW_DOWN | MAP_NUMBER)  ||	val2 == (MAP_ARROW_RIGHT | MAP_NUMBER)  ||
-			val2 == (MAP_ARROW_LEFT | MAP_NUMBER)  ||	val2 == (MAP_ARROW_UP | MAP_NUMBER)	)	val2 &= MAP_EMPTY;
+			val2 == (MAP_ARROW_LEFT | MAP_NUMBER)  ||	val2 == (MAP_ARROW_UP | MAP_NUMBER)	)	val2 = MAP_EMPTY;
 
 	if ( i < x ) val2 |=  MAP_WIRE_UP	, val1 |= MAP_WIRE_DOWN  	; else
 	if ( x < i ) val2 |= MAP_WIRE_DOWN	, val1 |=  MAP_WIRE_UP	; else 
@@ -218,7 +218,7 @@ void BuildLine(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowType)
 		}
 	}
 }
-
+	
 // поставить стрелочку в точке i j 
 uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowType)
 {
@@ -256,8 +256,8 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowTyp
 
 	self->sys->queue.push_back(((0LL + i) << 32) | j);
 	
-	val = ArrowType; 
-	
+	val |= (ArrowType | MAP_NUMBER); 
+	MapElement3D(self, i, j, self->currerntLayer) = val;
 	return MORE_ACTIONS_IN_DEMO_MODE;
 }
 
@@ -276,14 +276,14 @@ uint32_t ContinueWave( cad_route_map *self )
 
 		uint32_t val = MapElement3D(self, i, j, self->currerntLayer);
 
-		uint32_t vrb;
+		uint32_t vrb=0,v2;
 
 		if ( (val & MAP_NUMBER) == MAP_NUMBER )
 		{
 			vrb = val & NUMBER_MASK;
 		}
-		
-		vrb = MAP_NUMBER;
+		v2 = vrb | MAP_NUMBER;
+		vrb = v2;
 
 		result = SetPoint(self, i + 0, j + 1, MAP_ARROW_LEFT	| vrb ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
 		result = SetPoint(self, i + 0, j - 1, MAP_ARROW_RIGHT	| vrb ); if (result != MORE_ACTIONS_IN_DEMO_MODE) return result;
