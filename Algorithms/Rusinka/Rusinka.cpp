@@ -239,6 +239,7 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowTyp
 	}
 
 	uint32_t val = MapElement3D(self, i, j, self->currerntLayer);
+	uint32_t val2 = MapElement3D(self, i+1, j, self->currerntLayer);
 
 	if ( val & MAP_PIN ) return MORE_ACTIONS_IN_DEMO_MODE;
 
@@ -253,7 +254,11 @@ uint32_t SetPoint(cad_route_map *self, uint32_t i, uint32_t j, uint32_t ArrowTyp
 
 	if ( (val == MAP_WIRE_VERTICAL || val == MAP_WIRE_HORIZONTAL) )
 	{
-		ArrowType += 1;
+		uint32_t num = ArrowType & NUMBER_MASK;
+		ArrowType =  (MAP_ARROW_RIGHT | MAP_NUMBER) | num;
+		if (((val2 & MAP_WIRE_VERTICAL)==MAP_WIRE_VERTICAL) && ((val & MAP_WIRE_VERTICAL)==MAP_WIRE_VERTICAL))
+		ArrowType += 0;
+		else ArrowType += 1;
 	}
 	
 	val |= (ArrowType | MAP_NUMBER); 
